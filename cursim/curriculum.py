@@ -1,18 +1,31 @@
-"""Curriculum: a prerequisite DAG of concepts, each with a bank of
-questions carrying their own difficulty.
+"""cursim.curriculum -- the curriculum data model.
 
-Two departures from CurriculumTutor, both deliberate:
+Defines the concept graph and question bank that the rest of the
+`cursim` simulator is built on: a directed acyclic graph (DAG) of
+language-learning concepts, each holding a bank of practice questions
+with their own difficulty. This is a pure data module -- it has no
+dependency on any other `cursim` file. `test_simulator.py` imports it
+to check the graph and question bank are well-formed.
 
-  * questions within a concept are NOT equally difficult. Each has a
-    difficulty in [0, 1] which affects how much mastery it takes to
-    answer, so difficulty-aware item selection becomes possible.
-  * the graph is a language curriculum, not an arithmetic one, so it
-    is wider and shallower with several independent roots.
+Contents, in order:
+  * WORDS, SPEC       -- the raw curriculum data (word pairs, and the
+                          40-concept graph: id, name, tier, prereqs,
+                          question count)
+  * Question, Concept -- dataclasses for one question and one concept
+  * Curriculum         -- the graph itself, with structural checks,
+                          traversal, and JSON save/load
+  * build_curriculum() -- builds a Curriculum from SPEC/WORDS
 
-Item text is illustrative. The simulation consumes only concept
-membership and difficulty; replace the strings before any human
-pilot. Vocabulary concepts carry real Marathi/Bengali pairs where
-available, grammar concepts carry pattern descriptions.
+For why the questions carry individual difficulty and why the graph is
+wide and shallow rather than narrow and deep (both deliberate
+departures from CurriculumTutor), see simulator_expln.md, Part 3.
+
+Item text is illustrative: the simulation itself consumes only concept
+membership and difficulty, never the prompt/answer strings, so the
+placeholder text below must be replaced before any human pilot.
+Vocabulary concepts carry real Marathi/Bengali word pairs (WORDS,
+below) where available; grammar concepts carry generic pattern
+descriptions instead.
 """
 
 import json
@@ -120,6 +133,7 @@ SPEC = [
 
 @dataclass
 class Question:
+    """One practice item belonging to a single concept."""
     qid: str
     concept_id: str
     prompt: str
@@ -129,6 +143,9 @@ class Question:
 
 @dataclass
 class Concept:
+    """One node in the curriculum graph: its id, display name, tier
+    (depth in the prerequisite DAG, tier 0 = no prerequisites), the
+    ids of the concepts it depends on, and its bank of Questions."""
     cid: str
     name: str
     tier: int
@@ -137,18 +154,29 @@ class Concept:
 
 
 class Curriculum:
+    """The whole curriculum: a dict of Concepts keyed by id, checked to
+    be acyclic on construction. Provides read-only structural queries
+    (roots, topo_order, all_questions) plus JSON save/load."""
+
     def __init__(self, concepts: Dict[str, Concept]):
         self.concepts = concepts
         assert self.is_dag(), "curriculum graph must be acyclic"
 
     # -- structure ----------------------------------------------------
     def ids(self) -> List[str]:
+        """All concept ids, in dict-insertion order."""
         return list(self.concepts)
 
     def roots(self) -> List[str]:
+        """Concepts with no prerequisites -- the curriculum's entry
+        points, i.e. the concepts a learner can start with."""
         return [c.cid for c in self.concepts.values() if not c.prereqs]
 
     def is_dag(self) -> bool:
+        """True iff the prerequisite graph has no cycles. Standard
+        depth-first traversal with a 3-colour visited set (0 = unseen,
+        1 = on the current path, 2 = fully explored); finding a node
+        that is still on the current path means a cycle."""
         color = {c: 0 for c in self.concepts}
 
         def visit(c):
@@ -172,10 +200,14 @@ class Curriculum:
                                       key=lambda c: (c.tier, c.cid))]
 
     def all_questions(self) -> List[Question]:
+        """Every Question across every concept, flattened into one
+        list (order not meaningful)."""
         return [q for c in self.concepts.values() for q in c.questions]
 
     # -- persistence --------------------------------------------------
     def to_json(self, path: str):
+        """Write this curriculum to `path` as JSON (see
+        data/curriculum.json)."""
         blob = {
             "source_lang": SOURCE_LANG, "target_lang": TARGET_LANG,
             "concepts": [
@@ -189,6 +221,7 @@ class Curriculum:
 
     @staticmethod
     def from_json(path: str) -> "Curriculum":
+        """Load a curriculum previously written by to_json()."""
         with open(path, encoding="utf-8") as f:
             blob = json.load(f)
         concepts = {}
@@ -200,7 +233,8 @@ class Curriculum:
 
 
 def build_curriculum(seed: int = 11) -> Curriculum:
-    """Generate the curriculum deterministically.
+    """Build a Curriculum from SPEC and WORDS above, generating each
+    concept's questions deterministically for a given seed.
 
     Question difficulty rises with tier (later concepts are harder)
     and varies within a concept, so that item selection has something
@@ -228,6 +262,8 @@ def build_curriculum(seed: int = 11) -> Curriculum:
 
 
 if __name__ == "__main__":
+    # Manual entry point: build the curriculum and persist it, so it
+    # can be inspected or reloaded without regenerating it.
     cur = build_curriculum()
     n_q = len(cur.all_questions())
     print(f"{len(cur.concepts)} concepts, {n_q} questions, "
