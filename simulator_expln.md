@@ -125,10 +125,12 @@ tier 3  negation, past tense, postpositions, simple sentences,
 tier 4  future tense, compound sentences, narrating past events,
         asking directions, at the clinic
            |
-tier 5  conditionals, formal register, storytelling
+tier 5  conditionals, formal register
+           |
+tier 6  storytelling
 ```
 
-Five independent entry points, six tiers. This shape is deliberate: a
+Five independent entry points, seven tiers (0 to 6). This shape is deliberate: a
 language curriculum is wide and shallow, unlike an arithmetic
 curriculum which is narrow and deep. A learner can start greetings and
 numbers on the same day; they cannot start division before addition.
@@ -241,7 +243,7 @@ Two details worth knowing:
 mastery is read, the code first works out how long it has been and
 applies the decay then. Same result, much simpler.
 
-**Later tiers are more fragile.** Tier 5 concepts decay slightly
+**Later tiers are more fragile.** Top-tier concepts decay slightly
 faster than tier 0 concepts, reflecting that complex material fades
 faster than basic vocabulary.
 

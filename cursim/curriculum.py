@@ -29,6 +29,7 @@ descriptions instead.
 """
 
 import json
+import os
 import random
 from dataclasses import dataclass, asdict, field
 from typing import Dict, List
@@ -207,7 +208,11 @@ class Curriculum:
     # -- persistence --------------------------------------------------
     def to_json(self, path: str):
         """Write this curriculum to `path` as JSON (see
-        data/curriculum.json)."""
+        data/curriculum.json). Creates the parent directory if needed,
+        so a fresh clone can run this without first making data/."""
+        parent = os.path.dirname(path)
+        if parent:
+            os.makedirs(parent, exist_ok=True)
         blob = {
             "source_lang": SOURCE_LANG, "target_lang": TARGET_LANG,
             "concepts": [

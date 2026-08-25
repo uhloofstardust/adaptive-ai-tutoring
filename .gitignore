@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+
+# Generated outputs: rebuilt in ~12s by run_experiments.py
+data/*.json
+data/*.csv
+figures/*.png
