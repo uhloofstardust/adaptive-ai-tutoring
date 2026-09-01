@@ -1,7 +1,12 @@
 __pycache__/
 *.pyc
 
-# Generated outputs: rebuilt in ~12s by run_experiments.py
+# Generated outputs.
+# results.csv and the figures ARE committed: they are the record of what the
+# experiments produced, and should be readable without running anything.
+# Regenerate with `python run_experiments.py` (~12s); commit the result if it
+# changes, so the committed numbers and the code never disagree.
+#
+# curriculum.json stays out: it is derived directly from cursim/curriculum.py
+# by `python -m cursim.curriculum`, so committing it would duplicate the source.
 data/*.json
-data/*.csv
-figures/*.png
