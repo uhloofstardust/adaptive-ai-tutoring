@@ -158,7 +158,13 @@ def experiment4(cur):
     print("\n" + "=" * 74)
     print("EXPERIMENT 4  forgetting-rate sweep")
     print("=" * 74)
-    half_lives = [5, 7, 9, 12, 16, 22]
+    # 8, 10, 18, 19 and 20 bracket the two crossovers. The original grid
+    # (5, 7, 9, 12, 16, 22) only located them somewhere between 7 and 9 and
+    # between 16 and 22, which is too loose to quote. With these points the
+    # ordering flips at 8d (adaptive review -> forgetting model) and at 18d
+    # (forgetting model -> binary); a paired sign test on retained_usable
+    # reads 10/30 at both, i.e. a genuine tie rather than a marginal call.
+    half_lives = [5, 7, 8, 9, 10, 12, 16, 18, 19, 20, 22]
     conds = [("curriculum_tutor", "binary", "CT + binary"),
              ("curriculum_tutor", "continuous_forget",
               "CT + forgetting model"),
