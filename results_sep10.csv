@@ -1,0 +1,7 @@
+arm,scheduler,mastery,n,learned,usable,mean_mastery,covered
+CT + binary (paper's original),curriculum_tutor,binary,30,4.5,21.867,0.6108,39.97
+CT + time decay,curriculum_tutor,continuous_forget,30,18.633,30.333,0.6493,33.3
+CT + BKT forget (p_F),curriculum_tutor,bkt_forget,30,5.5,24.833,0.6327,40
+Predictive + BKT forget,predictive,bkt_forget,30,5.533,24.667,0.6329,40
+MAPLE + BKT forget,maple,bkt_forget,30,3.5,24.1,0.6088,40
+Naive MAPLE + BKT forget,naive_maple,bkt_forget,30,3.4,23.967,0.6088,40

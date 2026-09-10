@@ -73,6 +73,7 @@ def run_one(cur: Curriculum, spec: RunSpec, seed: int,
             q = sched.select(cur, model, now_h, rng, last_qid)
             res = learner.answer(q, now_h)
             model.observe(q.concept_id, res["correct"], now_h)
+            sched.observe(q.concept_id, res["correct"], now_h)
             if keep_log:
                 log.append({"session": s, "t_hours": now_h, **res})
             last_qid = q.qid
