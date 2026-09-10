@@ -31,6 +31,10 @@ from .mastery import MasteryModel
 class Scheduler:
     name = "base"
 
+    def observe(self, cid: str, correct: bool, now_h: float):
+        """Told what happened after each answer. Most policies ignore it."""
+        pass
+
     def select(self, cur: Curriculum, model: MasteryModel, now_h: float,
                rng: random.Random, last_qid: Optional[str]) -> Question:
         raise NotImplementedError
@@ -149,9 +153,113 @@ class AdaptiveReviewScheduler(ContinuousScheduler):
                               last_qid=last_qid)
 
 
+class PredictiveScheduler(Scheduler):
+    """Schodde, Bergmann & Kopp (HRI 2017), simplified.
+
+    Instead of sampling, look one step ahead: for every concept the
+    student is ready for, ask "if I posed this, how much would my belief
+    about them move, on average?" Then pick the biggest expected move.
+    Ties broken randomly so it does not get stuck.
+    """
+    name = "predictive"
+
+    def select(self, cur, model, now_h, rng, last_qid):
+        best, best_g = [], -1.0
+        for cid, c in cur.concepts.items():
+            if model.is_mastered(cid, now_h):
+                continue
+            if not all(model.is_mastered(p, now_h) for p in c.prereqs):
+                continue
+            g = model.expected_gain(cid, now_h)
+            if g > best_g + 1e-12:
+                best, best_g = [cid], g
+            elif abs(g - best_g) <= 1e-12:
+                best.append(cid)
+        if not best:
+            best = cur.ids()
+        cid = rng.choice(best)
+        return _pick_question(cur, cid, rng,
+                              target_difficulty=model.belief(cid, now_h),
+                              last_qid=last_qid)
+
+
+class MapleScheduler(Scheduler):
+    """Segal et al. (2018), simplified to concepts instead of items.
+
+    Every concept gets a weight. Easy concepts (low tier) start heavy.
+    Sample a concept in proportion to its weight, plus a little noise so
+    it keeps exploring. After each answer, shift weight toward or away
+    from the harder concepts.
+    """
+    name = "maple"
+
+    def __init__(self, gamma=0.10, step=0.30, ranked=True):
+        self.gamma, self.step, self.ranked = gamma, step, ranked
+        self.w = None
+        self.tier = None
+
+    def _init(self, cur, rng):
+        ids = cur.ids()
+        self.tier = {c: cur.concepts[c].tier for c in ids}
+        if self.ranked:                      # easier concepts start heavier
+            self.w = {c: math.exp(-0.6 * self.tier[c]) for c in ids}
+        else:                                # "naive": no difficulty info
+            self.w = {c: rng.uniform(0.5, 1.5) for c in ids}
+        self._normalize()
+
+    def _normalize(self):
+        tot = sum(self.w.values())
+        for c in self.w:
+            self.w[c] = max(self.w[c] / tot, 1e-9)
+
+    def observe(self, cid, correct, now_h):
+        if self.w is None:
+            return
+        # succeeded -> harder concepts become more attractive, and vice versa
+        d = self.step if correct else -self.step
+        here = self.tier[cid]
+        for c in self.w:
+            if self.tier[c] > here:
+                self.w[c] *= math.exp(d)
+        self._normalize()
+
+    def select(self, cur, model, now_h, rng, last_qid):
+        if self.w is None:
+            self._init(cur, rng)
+        ids = cur.ids()
+        sc = []
+        for c in ids:
+            v = self.w[c] * (1 - self.gamma) + rng.uniform(0, 1) * self.gamma
+            if model.is_mastered(c, now_h):
+                v *= 0.05                    # mostly done, rarely revisit
+            sc.append(max(v, 1e-12))
+        tot = sum(sc)
+        r, acc = rng.uniform(0, tot), 0.0
+        cid = ids[-1]
+        for c, v in zip(ids, sc):
+            acc += v
+            if acc >= r:
+                cid = c
+                break
+        return _pick_question(cur, cid, rng,
+                              target_difficulty=model.belief(cid, now_h),
+                              last_qid=last_qid)
+
+
+class NaiveMapleScheduler(MapleScheduler):
+    """Same bandit, but with no difficulty ranking to start from."""
+    name = "naive_maple"
+
+    def __init__(self, **kw):
+        super().__init__(ranked=False, **kw)
+
+
 SCHEDULERS = {
     "random": RandomScheduler,
     "curriculum_tutor": CurriculumTutorScheduler,
     "continuous": ContinuousScheduler,
     "adaptive_review": AdaptiveReviewScheduler,
+    "predictive": PredictiveScheduler,
+    "maple": MapleScheduler,
+    "naive_maple": NaiveMapleScheduler,
 }
