@@ -254,6 +254,39 @@ class NaiveMapleScheduler(MapleScheduler):
         super().__init__(ranked=False, **kw)
 
 
+class UCBScheduler(Scheduler):
+    """Plain UCB1 over concepts.
+
+    Reward = 1 if the student got it right. Each ready concept gets
+    mean reward + sqrt(2 ln t / n), so rarely-tried concepts get a
+    bonus. Untried concepts are tried first.
+    """
+    name = "ucb"
+
+    def __init__(self, c=1.0):
+        self.c, self.n, self.s, self.t = c, {}, {}, 0
+
+    def observe(self, cid, correct, now_h):
+        self.n[cid] = self.n.get(cid, 0) + 1
+        self.s[cid] = self.s.get(cid, 0.0) + (1.0 if correct else 0.0)
+        self.t += 1
+
+    def select(self, cur, model, now_h, rng, last_qid):
+        ready = [cid for cid, c in cur.concepts.items()
+                 if not model.is_mastered(cid, now_h)
+                 and all(model.is_mastered(p, now_h) for p in c.prereqs)]
+        if not ready:
+            ready = cur.ids()
+        fresh = [cid for cid in ready if self.n.get(cid, 0) == 0]
+        if fresh:
+            cid = rng.choice(fresh)
+        else:
+            t = max(self.t, 1)
+            cid = max(ready, key=lambda k: self.s[k] / self.n[k] +
+                      self.c * math.sqrt(2.0 * math.log(t) / self.n[k]))
+        return _pick_question(cur, cid, rng, last_qid=last_qid)
+
+
 SCHEDULERS = {
     "random": RandomScheduler,
     "curriculum_tutor": CurriculumTutorScheduler,
@@ -262,4 +295,5 @@ SCHEDULERS = {
     "predictive": PredictiveScheduler,
     "maple": MapleScheduler,
     "naive_maple": NaiveMapleScheduler,
+    "ucb": UCBScheduler,
 }
