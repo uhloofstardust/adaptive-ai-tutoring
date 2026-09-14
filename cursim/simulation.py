@@ -13,9 +13,9 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
 from .curriculum import Curriculum
-from .learner import Learner, LearnerProfile, PROFILES, SimConfig
+from .learner import Learner, LearnerProfile, PROFILES, SimConfig, LEARNERS
 from .mastery import make_model
-from .schedulers import SCHEDULERS
+from .schedulers import SCHEDULERS, zpd
 
 
 @dataclass
@@ -23,6 +23,10 @@ class RunSpec:
     """One experimental condition."""
     scheduler: str = "curriculum_tutor"
     mastery_model: str = "binary"
+    learner: str = "continuous"          # key into LEARNERS
+    threshold: Optional[float] = None    # mastery threshold for the tutor
+    prereq_gated_pT: bool = False        # BKT student only: next step in the mail
+    bkt_params: Optional[dict] = None    # override params.BKT_PARAMS for BOTH sides
     profile: str = "average"
     learner_forgets: bool = True
     model_forget_per_day: float = 0.10
@@ -51,31 +55,65 @@ class RunResult:
 
 
 def run_one(cur: Curriculum, spec: RunSpec, seed: int,
-            cfg: Optional[SimConfig] = None, keep_log=False) -> dict:
-    """One learner under one condition."""
+            cfg: Optional[SimConfig] = None, keep_log=False,
+            keep_trace=False) -> dict:
+    """One learner under one condition.
+
+    keep_trace records, for every step, everything the dry-run view and
+    the sanity checks need: the ZPD, what was asked, the answer, and the
+    tutor's belief and the student's true state before and after.
+    """
     cfg = cfg or SimConfig()
     profile: LearnerProfile = PROFILES[spec.profile]
-    learner = Learner(cur, profile, seed=seed, cfg=cfg,
-                      forgetting=spec.learner_forgets)
-    model = make_model(spec.mastery_model, cur.ids(),
-                       **({"forget_per_day": spec.model_forget_per_day}
-                          if spec.mastery_model == "continuous_forget"
-                          else {}))
+    LearnerCls = LEARNERS[spec.learner][0]
+    if spec.learner == "bkt":
+        learner = LearnerCls(cur, profile, seed=seed, cfg=cfg,
+                             prereq_gated_pT=spec.prereq_gated_pT,
+                             params=spec.bkt_params)
+    else:
+        learner = LearnerCls(cur, profile, seed=seed, cfg=cfg,
+                             forgetting=spec.learner_forgets)
+    mkw = {}
+    if spec.mastery_model == "continuous_forget":
+        mkw["forget_per_day"] = spec.model_forget_per_day
+    if spec.threshold is not None:
+        mkw["threshold"] = spec.threshold
+    if spec.bkt_params:
+        mkw.update(spec.bkt_params)
+    model = make_model(spec.mastery_model, cur.ids(), **mkw)
     sched = SCHEDULERS[spec.scheduler]()
     # separate stream so the learner's randomness does not shift when
     # the scheduler changes
     rng = random.Random(seed + 77777)
 
-    now_h, last_qid, log = 0.0, None, []
-    curve = []
+    now_h, last_qid, log, trace = 0.0, None, [], []
+    curve, step = [], 0
     for s in range(spec.n_sessions):
         for _ in range(spec.questions_per_session):
+            step += 1
+            z = zpd(cur, model, now_h) if keep_trace else None
             q = sched.select(cur, model, now_h, rng, last_qid)
+            b_before = model.belief(q.concept_id, now_h)
             res = learner.answer(q, now_h)
             model.observe(q.concept_id, res["correct"], now_h)
             sched.observe(q.concept_id, res["correct"], now_h)
             if keep_log:
                 log.append({"session": s, "t_hours": now_h, **res})
+            if keep_trace:
+                trace.append({
+                    "step": step, "session": s, "t_hours": now_h,
+                    "zpd": z, "concept": q.concept_id, "qid": q.qid,
+                    "correct": res["correct"],
+                    "true_before": res.get("state_before",
+                                           res["mastery_before"]),
+                    "true_after": res.get("state_after",
+                                          res["mastery_after"]),
+                    "belief_before": b_before,
+                    "belief_after": model.belief(q.concept_id, now_h),
+                    "mastered_after": model.is_mastered(q.concept_id, now_h),
+                    "beliefs": {c: model.belief(c, now_h) for c in cur.ids()},
+                    "truth": learner.snapshot(now_h),
+                })
             last_qid = q.qid
             now_h += 1.0 / 60.0
         curve.append(learner.mean_mastery(now_h))
@@ -103,6 +141,8 @@ def run_one(cur: Curriculum, spec: RunSpec, seed: int,
         "snapshot_end": learner.snapshot(end_h),
         "accuracy": statistics.mean(accs) if accs else None,
         "log": log,
+        "trace": trace,
+        "learned_step": dict(getattr(learner, "learned_step", {})),
     }
 
 
