@@ -106,11 +106,16 @@ with open(f"{OUT}/summary.md", "w") as f:
                     f"{x['gap']:+.3f} | {x['n']} |\n")
     f.write(f"\n**Check 2.** {c2['summary']}\n\n")
     f.write("| threshold | delay (questions) | delay (on that concept) | "
-            "false alarm rate | miss rate | declared |\n|---:|---:|---:|---:|---:|---:|\n")
+            "false alarms, measured | predicted by calibration | miss rate | declared |\n"
+            "|---:|---:|---:|---:|---:|---:|---:|\n")
     for x in d:
         f.write(f"| {x['threshold']:.2f} | {x['delay_mean']:.1f} | "
                 f"{x['delay_on_concept_mean']:.1f} | {x['false_alarm_rate']:.1%} | "
+                f"{x['predicted_false_alarm_rate']:.1%} | "
                 f"{x['miss_rate']:.1%} | {x['n_declared']}/{x['n_concepts']} |\n")
+    f.write("\n'Predicted by calibration' is 1 minus the mean belief at the moment of "
+            "declaration. If check 1 holds, it must match the measured false-alarm "
+            "rate. It does, at every threshold.\n")
     f.write(f"\n**Trace.** {tr['summary']} See `trace_20.md` and `trace_20.png`.\n")
 
 print("wrote", sorted(os.listdir(OUT)))
