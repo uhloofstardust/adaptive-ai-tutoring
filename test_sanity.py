@@ -78,10 +78,30 @@ out = detection(n_learners=15, n_steps=300, thresholds=(0.6, 0.8, 0.95), cur=cur
 rows = out["tables"]["detection"]
 check(rows[0]["false_alarm_rate"] > rows[-1]["false_alarm_rate"],
       "false alarms fall as the threshold rises")
-check(rows[0]["delay_mean"] < rows[-1]["delay_mean"],
-      "detection delay grows as the threshold rises")
+check(rows[0]["delay_on_concept_mean"] < rows[-1]["delay_on_concept_mean"],
+      "detection delay (on concept) grows as the threshold rises")
 check(all(0 <= x["false_alarm_rate"] <= 1 and x["delay_mean"] >= 0 for x in rows),
       "rates in [0,1], delays non-negative")
+check(all(abs(x["false_alarm_rate"] - x["predicted_false_alarm_rate"]) < 0.04
+          for x in rows),
+      "measured false-alarm rate matches what calibration predicts (within 0.04)")
+check(all(x["unresolved"] == x["unresolved_learned_late"] +
+          x["unresolved_never_reached"] + x["unresolved_asked_not_crossed"]
+          for x in rows),
+      "unresolved concepts fully decomposed by cause")
+
+print("6b. overall delay excludes concepts known before the run")
+from cursim.sanity import _per_concept, sanity_spec, _population
+recs = [x for r in _population(cur, sanity_spec(threshold=0.9, n_steps=300), 10)
+        for x in _per_concept(r, 0.9)]
+check(all(x["delay_questions"] is None for x in recs if x["known_at_start"]),
+      "no 'questions overall' delay for concepts with learned_step == 0")
+check(any(x["delay_on_concept"] is not None for x in recs if x["known_at_start"]),
+      "but 'questions on that concept' still counts them")
+
+print("6c. partial parameter override merges with the shared defaults")
+r = run_one(cur, spec(bkt_params={"p_T": 0.5}), seed=9, keep_trace=True)
+check(len(r["trace"]) == 300, "run with a partial bkt_params dict does not crash")
 
 print("7. the 20-step trace has every column the mail asks for")
 out = trace_table(n_steps=20, cur=cur)

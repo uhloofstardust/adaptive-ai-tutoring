@@ -25,6 +25,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 from .curriculum import build_curriculum
+from .params import BKT_PARAMS
 from .simulation import RunSpec, run_one
 
 INK, ACCENT, GREY, GOOD = "#1f2937", "#b5541c", "#9aa0a6", "#2f855a"
@@ -32,15 +33,28 @@ plt.rcParams.update({"font.size": 10, "axes.spines.top": False,
                      "axes.spines.right": False, "figure.dpi": 130})
 
 
-def sanity_spec(threshold=0.9, n_steps=400, scheduler="curriculum_tutor",
-                mastery_model="bkt", learner="bkt", prereq_gated_pT=False):
+def sanity_spec(threshold=0.9, n_steps=400, scheduler="uniform_zpd",
+                mastery_model="bkt", learner="bkt", prereq_gated_pT=False,
+                bkt_params=None):
     """The configuration the mail asks for. One flat session: the BKT
     student has no time dynamics, so sessions and gaps are irrelevant."""
+    p = bkt_params or BKT_PARAMS
+    if p["p_L0"] >= threshold:
+        raise ValueError(f"p_L0={p['p_L0']} >= threshold={threshold}: every "
+                         "concept would be 'declared' before any question.")
     return RunSpec(scheduler=scheduler, mastery_model=mastery_model,
                    learner=learner, threshold=threshold,
-                   prereq_gated_pT=prereq_gated_pT,
+                   prereq_gated_pT=prereq_gated_pT, bkt_params=bkt_params,
                    n_sessions=1, questions_per_session=n_steps,
                    gap_hours=0.0, retention_days=0.0, label="sanity")
+
+
+RUN_KEYS = ("scheduler", "mastery_model", "learner", "prereq_gated_pT", "bkt_params")
+
+
+def _spec_from(threshold, n_steps, kw):
+    return sanity_spec(threshold=threshold, n_steps=n_steps,
+                       **{k: kw[k] for k in RUN_KEYS if k in kw})
 
 
 def _population(cur, spec, n_learners, seed0=4242):
@@ -50,13 +64,13 @@ def _population(cur, spec, n_learners, seed0=4242):
 
 # ---------------------------------------------------------------- check 1
 def calibration(n_learners=50, n_steps=400, threshold=0.9, n_bins=10,
-                seed0=4242, cur=None, **_):
+                seed0=4242, cur=None, **run_kw):
     """Every time the tutor updates a belief, record (belief, true state)
     for that concept, then bin by belief. Both are read at the same
     instant: after the tutor's update and after the student's transition,
     i.e. the state going into the next question."""
     cur = cur or build_curriculum()
-    spec = sanity_spec(threshold=threshold, n_steps=n_steps)
+    spec = _spec_from(threshold, n_steps, run_kw)
     runs = _population(cur, spec, n_learners, seed0)
     pairs = [(t["belief_after"], float(t["true_after"]))
              for r in runs for t in r["trace"]]
@@ -93,9 +107,14 @@ def calibration(n_learners=50, n_steps=400, threshold=0.9, n_bins=10,
 
     worst = max((abs(r["gap"]) for r in rows if r["n"] >= 20),
                 default=float("nan"))
+    n_all = sum(r["n"] for r in rows)
+    mean_b = sum(r["mean_belief"] * r["n"] for r in rows if r["n"]) / n_all
+    mean_t = sum(r["frac_truly_known"] * r["n"] for r in rows if r["n"]) / n_all
     summary = (f"{len(pairs)} (belief, truth) pairs from {n_learners} learners x "
-               f"{n_steps} questions. Largest gap from the diagonal in any bin "
-               f"with n>=20: {worst:.3f}.")
+               f"{n_steps} questions. Overall: mean belief {mean_b:.4f}, fraction "
+               f"truly known {mean_t:.4f}. Largest per-bin gap with n>=20: "
+               f"{worst:.3f}. Note: successive pairs on one concept are dependent, "
+               f"so per-bin CIs are nominal; the overall comparison is the robust one.")
     return {"tables": {"calibration": rows}, "figures": {"calibration": fig},
             "summary": summary}
 
@@ -114,33 +133,49 @@ def _per_concept(run, threshold):
         if first_declared[c] is None and t["belief_after"] >= threshold:
             first_declared[c] = t["step"]
             belief_at[c] = t["belief_after"]
+    n_steps = trace[-1]["step"] if trace else 0
     out = []
     for c, t_star in learned.items():
         t_d = first_declared[c]
         premature = t_d is not None and (t_star is None or t_d < t_star)
-        delay = (t_d - t_star) if (t_d is not None and t_star is not None
-                                   and t_d >= t_star) else None
+        detected = t_d is not None and t_star is not None and t_d >= t_star
+        # "questions overall" delay is only a detection delay for concepts
+        # learned DURING the run. For concepts known before step 1 it would
+        # just measure how long the ZPD took to reach them, so it is left out.
+        delay = (t_d - t_star) if (detected and t_star > 0) else None
+        # questions on that concept until declared: valid for all detections
         on_concept = (sum(1 for s in asked_at[c] if t_star < s <= t_d)
-                      if delay is not None else None)
+                      if detected else None)
+        unresolved = t_star is not None and t_d is None
+        why = None
+        if unresolved:
+            if not asked_at[c]:
+                why = "never reached by the ZPD"
+            elif t_star > n_steps - 50:
+                why = "learned in the last 50 questions"
+            else:
+                why = "asked, not yet over threshold"
         out.append(dict(concept=c, learned_step=t_star, declared_step=t_d,
                         belief_at_declaration=belief_at[c],
                         premature=premature, delay_questions=delay,
                         delay_on_concept=on_concept,
-                        missed=(t_star is not None and t_d is None)))
+                        known_at_start=(t_star == 0),
+                        unresolved=unresolved, unresolved_why=why))
     return out
 
 
 def detection(n_learners=30, n_steps=400,
               thresholds=(0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99),
-              seed0=4242, cur=None, **_):
+              seed0=4242, cur=None, **run_kw):
     """One population per threshold, because the threshold also decides
     what the tutor asks (it defines the ZPD). Reports, per threshold:
     detection delay after the true learning step, false-alarm rate
-    (declared before it happened), and miss rate."""
+    (share of declarations made before the concept was learned), and
+    what was still unresolved when the run ended, decomposed by cause."""
     cur = cur or build_curriculum()
     rows = []
     for th in thresholds:
-        spec = sanity_spec(threshold=th, n_steps=n_steps)
+        spec = _spec_from(th, n_steps, run_kw)
         recs = [x for r in _population(cur, spec, n_learners, seed0)
                 for x in _per_concept(r, th)]
         declared = [x for x in recs if x["declared_step"] is not None]
@@ -149,7 +184,14 @@ def detection(n_learners=30, n_steps=400,
                   if x["delay_questions"] is not None]
         on_c = [x["delay_on_concept"] for x in recs
                 if x["delay_on_concept"] is not None]
+        unres = [x for x in recs if x["unresolved"]]
+        why = {k: sum(1 for x in unres if x["unresolved_why"] == k)
+               for k in ("learned in the last 50 questions",
+                         "never reached by the ZPD",
+                         "asked, not yet over threshold")}
         fa = sum(x["premature"] for x in declared)
+        fa_stuck = sum(1 for x in declared if x["premature"]
+                       and x["learned_step"] is None)
         b_cross = (st.mean(x["belief_at_declaration"] for x in declared)
                    if declared else float("nan"))
         rows.append(dict(
@@ -159,21 +201,29 @@ def detection(n_learners=30, n_steps=400,
             predicted_false_alarm_rate=1.0 - b_cross,
             n_concepts=len(recs), n_learned=len(learned), n_declared=len(declared),
             false_alarms=fa,
+            # share of declarations that came before the concept was learned
             false_alarm_rate=fa / len(declared) if declared else float("nan"),
-            missed=sum(x["missed"] for x in recs),
-            miss_rate=(sum(x["missed"] for x in recs) / len(learned)
-                       if learned else float("nan")),
+            # of those, how many concepts were then never learned at all:
+            # once declared it leaves the ZPD and is never asked again
+            false_alarms_never_learned=fa_stuck,
             delay_mean=st.mean(delays) if delays else float("nan"),
             delay_median=st.median(delays) if delays else float("nan"),
+            n_delay=len(delays),
             delay_on_concept_mean=st.mean(on_c) if on_c else float("nan"),
+            n_delay_on_concept=len(on_c),
+            unresolved=len(unres),
+            unresolved_rate=len(unres) / len(learned) if learned else float("nan"),
+            unresolved_learned_late=why["learned in the last 50 questions"],
+            unresolved_never_reached=why["never reached by the ZPD"],
+            unresolved_asked_not_crossed=why["asked, not yet over threshold"],
         ))
 
     fig, (a1, a2) = plt.subplots(1, 2, figsize=(9.2, 3.8))
     th = [r["threshold"] for r in rows]
-    a1.plot(th, [r["delay_mean"] for r in rows], "o-", color=ACCENT, lw=1.6,
-            label="questions overall")
-    a1.plot(th, [r["delay_on_concept_mean"] for r in rows], "s--", color=INK,
-            lw=1.4, label="questions on that concept")
+    a1.plot(th, [r["delay_on_concept_mean"] for r in rows], "o-", color=ACCENT,
+            lw=1.6, label="questions on that concept (all detections)")
+    a1.plot(th, [r["delay_mean"] for r in rows], "s--", color=INK, lw=1.4,
+            label="questions overall (concepts learned during the run)")
     a1.set_xlabel("mastery threshold"); a1.set_ylabel("mean delay after true learning")
     a1.set_title("How long until the tutor notices")
     a1.legend(frameon=False, fontsize=8.5)
@@ -181,38 +231,41 @@ def detection(n_learners=30, n_steps=400,
             label="false alarm rate, measured")
     a2.plot(th, [r["predicted_false_alarm_rate"] for r in rows], "x:", color=INK,
             lw=1.2, ms=7, label="1 - belief at declaration (what calibration predicts)")
-    a2.plot(th, [r["miss_rate"] for r in rows], "s--", color=GREY, lw=1.4,
-            label="miss rate")
+    a2.plot(th, [r["unresolved_rate"] for r in rows], "s--", color=GREY, lw=1.4,
+            label="unresolved when the run ended (horizon effect)")
     a2.set_xlabel("mastery threshold"); a2.set_ylabel("rate")
-    a2.set_ylim(-0.02, 0.42)
-    a2.set_title("Declared too early / never declared")
+    top = max(max(r["false_alarm_rate"] for r in rows),
+              max(r["unresolved_rate"] for r in rows))
+    a2.set_ylim(-0.02, max(0.42, 1.15 * top))
+    a2.set_title("Share of declarations that were too early")
     a2.legend(frameon=False, fontsize=8.5)
     fig.tight_layout()
 
     lo, hi = rows[0], rows[-1]
-    summary = (f"Threshold {lo['threshold']}: mean delay {lo['delay_mean']:.1f} "
-               f"questions, false alarms {lo['false_alarm_rate']:.1%}. "
-               f"Threshold {hi['threshold']}: delay {hi['delay_mean']:.1f}, "
-               f"false alarms {hi['false_alarm_rate']:.1%}.")
+    summary = (f"Threshold {lo['threshold']}: {lo['delay_on_concept_mean']:.1f} "
+               f"questions on the concept until declared, false alarms "
+               f"{lo['false_alarm_rate']:.1%}. Threshold {hi['threshold']}: "
+               f"{hi['delay_on_concept_mean']:.1f} questions, false alarms "
+               f"{hi['false_alarm_rate']:.1%}. 'Unresolved' counts concepts learned "
+               f"but not declared by the end of the {n_steps}-question run; every "
+               f"one is either learned in the last 50 questions or never reached "
+               f"by the ZPD, i.e. a horizon effect, not a detector failure.")
     return {"tables": {"detection": rows}, "figures": {"detection": fig},
             "summary": summary}
 
 
 # ---------------------------------------------------------------- trace
-def trace_table(n_steps=20, threshold=0.9, seed=4242, cur=None,
-                scheduler="curriculum_tutor", mastery_model="bkt",
-                learner="bkt", prereq_gated_pT=False, **_):
+def trace_table(n_steps=20, threshold=0.9, seed=4242, cur=None, **run_kw):
     """One run, one row per question, everything visible."""
     cur = cur or build_curriculum()
-    spec = sanity_spec(threshold=threshold, n_steps=n_steps,
-                       scheduler=scheduler, mastery_model=mastery_model,
-                       learner=learner, prereq_gated_pT=prereq_gated_pT)
+    spec = _spec_from(threshold, n_steps, run_kw)
     run = run_one(cur, spec, seed=seed, keep_trace=True)
     rows = []
     for t in run["trace"]:
         rows.append(dict(
             step=t["step"], zpd=", ".join(t["zpd"]), asked=t["concept"],
             question=t["qid"], answer="right" if t["correct"] else "wrong",
+            pick_in_zpd=(t["concept"] in t["zpd"]) if t["zpd"] else None,
             true_before=_yn(t["true_before"]), true_after=_yn(t["true_after"]),
             belief_before=round(t["belief_before"], 3),
             belief_after=round(t["belief_after"], 3),

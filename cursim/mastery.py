@@ -65,7 +65,7 @@ class _BKTCore:
             num, rest = b * (1 - self.p_S), (1 - b) * self.p_G
         else:
             num, rest = b * self.p_S, (1 - b) * (1 - self.p_G)
-        post = num / (num + rest)
+        post = num / (num + rest) if (num + rest) > 0 else b
         # full BKT transition (Schodde et al. 2017): a known skill can be
         # lost with probability p_F, not just gained with p_T.
         self.b[cid] = post * (1 - self.p_F) + (1 - post) * self.p_T
@@ -143,6 +143,7 @@ class ContinuousMastery(MasteryModel):
 
 def make_model(kind: str, cids, **kw) -> MasteryModel:
     if kind == "bkt":                 # plain BKT tutor, shared params, no decay
+        kw.setdefault("threshold", 0.9)
         return ContinuousMastery(cids, forget_per_day=0.0, **kw)
     if kind == "binary":
         return BinaryMastery(cids, **kw)
@@ -163,7 +164,8 @@ MASTERY_MODELS = {
     "bkt":              "Plain BKT tutor, same parameters as the BKT student, "
                         "mastered = belief >= threshold",
     "binary":           "CurriculumTutor-style: BKT belief latched once it "
-                        "crosses 0.97, never revised down",
+                        "crosses the threshold, never revised down. Uses its "
+                        "own p_T = 0.06, not the shared value",
     "continuous":       "BKT belief used as-is, threshold 0.80",
     "continuous_forget": "BKT belief that decays 10%/day between practices",
     "bkt_forget":       "BKT with a forget probability p_F inside the update",
