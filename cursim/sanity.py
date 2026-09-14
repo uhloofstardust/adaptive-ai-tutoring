@@ -106,12 +106,14 @@ def _per_concept(run, threshold):
     tutor first declared it (belief after update >= threshold)."""
     trace, learned = run["trace"], run["learned_step"]
     first_declared: Dict[str, Optional[int]] = {c: None for c in learned}
+    belief_at: Dict[str, Optional[float]] = {c: None for c in learned}
     asked_at: Dict[str, List[int]] = {c: [] for c in learned}
     for t in trace:
         c = t["concept"]
         asked_at[c].append(t["step"])
         if first_declared[c] is None and t["belief_after"] >= threshold:
             first_declared[c] = t["step"]
+            belief_at[c] = t["belief_after"]
     out = []
     for c, t_star in learned.items():
         t_d = first_declared[c]
@@ -121,6 +123,7 @@ def _per_concept(run, threshold):
         on_concept = (sum(1 for s in asked_at[c] if t_star < s <= t_d)
                       if delay is not None else None)
         out.append(dict(concept=c, learned_step=t_star, declared_step=t_d,
+                        belief_at_declaration=belief_at[c],
                         premature=premature, delay_questions=delay,
                         delay_on_concept=on_concept,
                         missed=(t_star is not None and t_d is None)))
@@ -147,8 +150,13 @@ def detection(n_learners=30, n_steps=400,
         on_c = [x["delay_on_concept"] for x in recs
                 if x["delay_on_concept"] is not None]
         fa = sum(x["premature"] for x in declared)
+        b_cross = (st.mean(x["belief_at_declaration"] for x in declared)
+                   if declared else float("nan"))
         rows.append(dict(
             threshold=th,
+            belief_at_declaration=b_cross,
+            # if check 1 holds, this must match false_alarm_rate
+            predicted_false_alarm_rate=1.0 - b_cross,
             n_concepts=len(recs), n_learned=len(learned), n_declared=len(declared),
             false_alarms=fa,
             false_alarm_rate=fa / len(declared) if declared else float("nan"),
@@ -170,11 +178,13 @@ def detection(n_learners=30, n_steps=400,
     a1.set_title("How long until the tutor notices")
     a1.legend(frameon=False, fontsize=8.5)
     a2.plot(th, [r["false_alarm_rate"] for r in rows], "o-", color=ACCENT, lw=1.6,
-            label="false alarm rate")
+            label="false alarm rate, measured")
+    a2.plot(th, [r["predicted_false_alarm_rate"] for r in rows], "x:", color=INK,
+            lw=1.2, ms=7, label="1 - belief at declaration (what calibration predicts)")
     a2.plot(th, [r["miss_rate"] for r in rows], "s--", color=GREY, lw=1.4,
             label="miss rate")
     a2.set_xlabel("mastery threshold"); a2.set_ylabel("rate")
-    a2.set_ylim(-0.02, 1.02)
+    a2.set_ylim(-0.02, 0.42)
     a2.set_title("Declared too early / never declared")
     a2.legend(frameon=False, fontsize=8.5)
     fig.tight_layout()
