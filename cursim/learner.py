@@ -177,7 +177,7 @@ class BKTLearner:
                  cfg=None, forgetting: bool = False, params=None,
                  prereq_gated_pT: bool = False, pT_low: float = 0.02):
         self.cur = curriculum
-        self.p = dict(BKT_PARAMS if params is None else params)
+        self.p = {**BKT_PARAMS, **(params or {})}
         self.cfg = cfg or SimConfig()
         self.rng = random.Random(seed)
         self.prereq_gated_pT, self.pT_low = prereq_gated_pT, pT_low

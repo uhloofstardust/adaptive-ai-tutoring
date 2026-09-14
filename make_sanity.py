@@ -35,6 +35,8 @@ def dump(name, out):
 # ---------------------------------------------------------------- checks
 c1 = calibration(n_learners=100, n_steps=400, cur=cur)
 dump("check1_calibration", c1)
+c1_big = calibration(n_learners=400, n_steps=400, cur=cur)   # the noise check
+dump("check1_calibration_400learners", c1_big)
 c2 = detection(n_learners=30, n_steps=400, cur=cur)
 dump("check2_detection", c2)
 
@@ -99,23 +101,34 @@ with open(f"{OUT}/summary.md", "w") as f:
     f.write("# Sanity check summary\n\n")
     f.write(f"Shared BKT parameters: `{BKT_PARAMS}`\n\n")
     f.write(f"**Check 1.** {c1['summary']}\n\n")
+    f.write(f"Noise check at 4x the learners: {c1_big['summary']}\n\n")
     f.write("| belief (bin mean) | truly known | gap | n |\n|---:|---:|---:|---:|\n")
     for x in c1["tables"]["calibration"]:
         if x["n"]:
             f.write(f"| {x['mean_belief']:.3f} | {x['frac_truly_known']:.3f} | "
                     f"{x['gap']:+.3f} | {x['n']} |\n")
     f.write(f"\n**Check 2.** {c2['summary']}\n\n")
-    f.write("| threshold | delay (questions) | delay (on that concept) | "
-            "false alarms, measured | predicted by calibration | miss rate | declared |\n"
-            "|---:|---:|---:|---:|---:|---:|---:|\n")
+    f.write("| threshold | questions on that concept until declared | questions overall "
+            "(concepts learned during the run) | false alarms, measured | "
+            "predicted by calibration | of which never learned | unresolved at end "
+            "(late / unreached / other) |\n|---:|---:|---:|---:|---:|---:|---:|\n")
     for x in d:
-        f.write(f"| {x['threshold']:.2f} | {x['delay_mean']:.1f} | "
-                f"{x['delay_on_concept_mean']:.1f} | {x['false_alarm_rate']:.1%} | "
+        f.write(f"| {x['threshold']:.2f} | {x['delay_on_concept_mean']:.1f} | "
+                f"{x['delay_mean']:.1f} | {x['false_alarm_rate']:.1%} | "
                 f"{x['predicted_false_alarm_rate']:.1%} | "
-                f"{x['miss_rate']:.1%} | {x['n_declared']}/{x['n_concepts']} |\n")
-    f.write("\n'Predicted by calibration' is 1 minus the mean belief at the moment of "
-            "declaration. If check 1 holds, it must match the measured false-alarm "
-            "rate. It does, at every threshold.\n")
+                f"{x['false_alarms_never_learned']}/{x['false_alarms']} | "
+                f"{x['unresolved']} ({x['unresolved_learned_late']} / "
+                f"{x['unresolved_never_reached']} / "
+                f"{x['unresolved_asked_not_crossed']}) |\n")
+    f.write("\n- 'Questions overall' is reported only for concepts learned during the "
+            "run. For concepts known before question 1 it would measure how long the "
+            "ZPD took to reach them, which is a curriculum property, not detection.\n"
+            "- 'Predicted by calibration' is 1 minus the mean belief at the moment of "
+            "declaration; if check 1 holds it must match the measured false-alarm rate.\n"
+            "- 'Of which never learned': a falsely declared concept leaves the ZPD and is "
+            "never asked again, so the student never gets the chance to learn it.\n"
+            "- 'Unresolved': learned but not declared when the run ended. Every one is "
+            "either learned in the last 50 questions or never reached by the ZPD.\n")
     f.write(f"\n**Trace.** {tr['summary']} See `trace_20.md` and `trace_20.png`.\n")
 
 print("wrote", sorted(os.listdir(OUT)))
