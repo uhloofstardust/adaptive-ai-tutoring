@@ -1,0 +1,21 @@
+step,zpd,asked,question,answer,true_before,true_after,belief_before,belief_after,declared_mastered
+1,"greetings, numbers_1_5, colors, pronouns, yes_no",numbers_1_5,numbers_1_5_q6,wrong,not yet,not yet,0.15,0.14,False
+2,"greetings, numbers_1_5, colors, pronouns, yes_no",pronouns,pronouns_q5,wrong,not yet,not yet,0.15,0.14,False
+3,"greetings, numbers_1_5, colors, pronouns, yes_no",numbers_1_5,numbers_1_5_q7,wrong,not yet,not yet,0.14,0.139,False
+4,"greetings, numbers_1_5, colors, pronouns, yes_no",yes_no,yes_no_q4,wrong,not yet,not yet,0.15,0.14,False
+5,"greetings, numbers_1_5, colors, pronouns, yes_no",greetings,greetings_q8,right,not yet,not yet,0.15,0.462,False
+6,"greetings, numbers_1_5, colors, pronouns, yes_no",greetings,greetings_q7,wrong,not yet,not yet,0.462,0.21,False
+7,"greetings, numbers_1_5, colors, pronouns, yes_no",colors,colors_q1,right,known,known,0.15,0.462,False
+8,"greetings, numbers_1_5, colors, pronouns, yes_no",yes_no,yes_no_q3,right,not yet,not yet,0.14,0.446,False
+9,"greetings, numbers_1_5, colors, pronouns, yes_no",numbers_1_5,numbers_1_5_q3,wrong,not yet,known,0.139,0.139,False
+10,"greetings, numbers_1_5, colors, pronouns, yes_no",greetings,greetings_q3,wrong,not yet,not yet,0.21,0.15,False
+11,"greetings, numbers_1_5, colors, pronouns, yes_no",greetings,greetings_q7,wrong,not yet,known,0.15,0.14,False
+12,"greetings, numbers_1_5, colors, pronouns, yes_no",numbers_1_5,numbers_1_5_q6,right,known,known,0.139,0.443,False
+13,"greetings, numbers_1_5, colors, pronouns, yes_no",numbers_1_5,numbers_1_5_q7,right,known,known,0.443,0.772,False
+14,"greetings, numbers_1_5, colors, pronouns, yes_no",colors,colors_q5,right,known,known,0.462,0.785,False
+15,"greetings, numbers_1_5, colors, pronouns, yes_no",numbers_1_5,numbers_1_5_q6,right,known,known,0.772,0.933,True
+16,"greetings, colors, pronouns, yes_no, numbers_6_10, time_basic",numbers_6_10,numbers_6_10_q4,wrong,not yet,not yet,0.15,0.14,False
+17,"greetings, colors, pronouns, yes_no, numbers_6_10, time_basic",numbers_6_10,numbers_6_10_q2,wrong,not yet,not yet,0.14,0.139,False
+18,"greetings, colors, pronouns, yes_no, numbers_6_10, time_basic",greetings,greetings_q1,right,known,known,0.14,0.446,False
+19,"greetings, colors, pronouns, yes_no, numbers_6_10, time_basic",greetings,greetings_q4,right,known,known,0.446,0.774,False
+20,"greetings, colors, pronouns, yes_no, numbers_6_10, time_basic",time_basic,time_basic_q3,right,known,known,0.15,0.462,False

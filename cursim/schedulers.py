@@ -40,6 +40,14 @@ class Scheduler:
         raise NotImplementedError
 
 
+def zpd(cur, model, now_h):
+    """Concepts the tutor may teach now: not believed mastered, and every
+    prerequisite believed mastered. This is CurriculumTutor's ZPD."""
+    return [cid for cid, c in cur.concepts.items()
+            if not model.is_mastered(cid, now_h)
+            and all(model.is_mastered(p, now_h) for p in c.prereqs)]
+
+
 def _pick_question(cur, cid, rng, target_difficulty=None,
                    last_qid=None) -> Question:
     qs = [q for q in cur.concepts[cid].questions if q.qid != last_qid]
@@ -67,12 +75,7 @@ class CurriculumTutorScheduler(Scheduler):
     name = "curriculum_tutor"
 
     def select(self, cur, model, now_h, rng, last_qid):
-        eligible = []
-        for cid, c in cur.concepts.items():
-            if model.is_mastered(cid, now_h):
-                continue
-            if all(model.is_mastered(p, now_h) for p in c.prereqs):
-                eligible.append(cid)
+        eligible = zpd(cur, model, now_h)
         if not eligible:
             # everything the tutor can reach is mastered in its view;
             # the paper has nothing more to teach, so it revisits

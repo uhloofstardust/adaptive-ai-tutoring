@@ -21,6 +21,8 @@ value of the representation.
 
 from typing import Dict, List, Optional
 
+from .params import BKT_PARAMS
+
 
 class MasteryModel:
     name = "base"
@@ -39,8 +41,10 @@ class MasteryModel:
 class _BKTCore:
     """Shared Bayesian update. Guess is set for 4-option MCQ."""
 
-    def __init__(self, cids: List[str], p_L0=0.15, p_T=0.12, p_S=0.10,
-                 p_G=0.25, forget_per_day=0.0, floor=0.02, p_F=0.0):
+    def __init__(self, cids: List[str], p_L0=BKT_PARAMS["p_L0"],
+                 p_T=BKT_PARAMS["p_T"], p_S=BKT_PARAMS["p_S"],
+                 p_G=BKT_PARAMS["p_G"], forget_per_day=0.0, floor=0.02,
+                 p_F=0.0):
         self.p_L0, self.p_T, self.p_S, self.p_G = p_L0, p_T, p_S, p_G
         self.p_F = p_F          # BKT forget: chance a known skill is lost
         self.forget_per_day, self.floor = forget_per_day, floor
@@ -138,6 +142,8 @@ class ContinuousMastery(MasteryModel):
 
 
 def make_model(kind: str, cids, **kw) -> MasteryModel:
+    if kind == "bkt":                 # plain BKT tutor, shared params, no decay
+        return ContinuousMastery(cids, forget_per_day=0.0, **kw)
     if kind == "binary":
         return BinaryMastery(cids, **kw)
     if kind == "continuous":
@@ -149,3 +155,16 @@ def make_model(kind: str, cids, **kw) -> MasteryModel:
         kw.setdefault("forget_per_day", 0.10)
         return ContinuousMastery(cids, **kw)
     raise ValueError(kind)
+
+
+# What the UI and the experiments pick from. Add a kind to make_model
+# and a line here; nothing else needs editing.
+MASTERY_MODELS = {
+    "bkt":              "Plain BKT tutor, same parameters as the BKT student, "
+                        "mastered = belief >= threshold",
+    "binary":           "CurriculumTutor-style: BKT belief latched once it "
+                        "crosses 0.97, never revised down",
+    "continuous":       "BKT belief used as-is, threshold 0.80",
+    "continuous_forget": "BKT belief that decays 10%/day between practices",
+    "bkt_forget":       "BKT with a forget probability p_F inside the update",
+}

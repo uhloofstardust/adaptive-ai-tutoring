@@ -30,6 +30,27 @@ so those strategies can be compared before any human pilot.
 **Current state:** all modules described in `simulator_expln.md` Part 8
 are present. `test_simulator.py` passes all 55 checks.
 
+## The `plain-bkt` branch: sanity checks and the viewer
+
+This branch adds a plain BKT student, the two sanity checks from Surya's
+Sep 2026 mail, and a small UI. `main` keeps the original simulator untouched.
+
+```
+streamlit run app.py         # step through one run; run the checks; save results
+python3 make_sanity.py       # every artifact for the meeting -> sanity_outputs/
+python3 test_sanity.py       # 16 checks on the plain-BKT setup
+```
+
+| File | What it adds |
+|---|---|
+| `cursim/params.py` | the one place the shared BKT parameters live |
+| `cursim/learner.py` | `BKTLearner` and the `LEARNERS` registry |
+| `cursim/mastery.py` | `"bkt"` model kind and the `MASTERY_MODELS` registry |
+| `cursim/schedulers.py` | `zpd()` helper so the run loop can log the ZPD |
+| `cursim/simulation.py` | `learner`, `threshold`, `bkt_params` on `RunSpec`; `keep_trace` |
+| `cursim/sanity.py` | check 1, check 2, the trace table; the `EXPERIMENTS` registry |
+| `app.py` | the viewer. Dropdowns come from the registries; nothing to edit for a new method |
+
 ## Running it
 
 ```
