@@ -1,4 +1,11 @@
-# Points for Tuesday's meeting with Surya
+# Meeting notes, 15 September
+
+> **Provenance.** The figures below were produced on the 40-concept
+> curriculum at 400 questions per run. That curriculum is still here as
+> `data/curriculum_language.json`; reproduce these numbers by pointing
+> `make_sanity.py` at `build_curriculum("language")` with `n_steps=400`.
+> The committed `sanity_outputs/` now reflect the 8-concept default
+> instead, so the two do not match by design.
 
 Branch: `plain-bkt` on `uhloofstardust/adaptive-ai-tutoring`. `main` is untouched.
 
@@ -212,7 +219,7 @@ side is implemented yet; it is a few lines once chosen.
 
 ---
 
-## 9. Questions for Surya
+## 9. Open questions
 
 1. Is "moments when the concept was just asked" the right population for check 1?
 2. False-alarm rate is premature ÷ all declarations. Would you rather see it ÷ all
