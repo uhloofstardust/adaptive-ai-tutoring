@@ -1,14 +1,14 @@
 __pycache__/
 *.pyc
-
-# Generated outputs.
-# results.csv and the figures ARE committed: they are the record of what the
-# experiments produced, and should be readable without running anything.
-# Regenerate with `python run_experiments.py` (~12s); commit the result if it
-# changes, so the committed numbers and the code never disagree.
-#
-# curriculum.json stays out: it is derived directly from cursim/curriculum.py
-# by `python -m cursim.curriculum`, so committing it would duplicate the source.
-data/*.json
 .DS_Store
 runs/
+
+# data/ holds SOURCE now, not generated output: the curricula and the
+# shared parameters are the inputs every run reads, so they are committed.
+# (It used to hold a curriculum.json generated from code, which is why an
+# earlier version of this file excluded data/*.json.)
+
+# results.csv and the figures ARE committed: they are the record of what the
+# experiments produced, and should be readable without running anything.
+# Regenerate with `python run_experiments.py`; commit the result if it
+# changes, so the committed numbers and the code never disagree.

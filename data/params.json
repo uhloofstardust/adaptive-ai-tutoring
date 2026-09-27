@@ -1,0 +1,14 @@
+{
+ "bkt": {
+  "p_L0": 0.15,
+  "p_T": 0.12,
+  "p_G": 0.25,
+  "p_S": 0.1
+ },
+ "defaults": {
+  "curriculum": "abstract",
+  "threshold": 0.9,
+  "n_steps": 60,
+  "seed": 4242
+ }
+}

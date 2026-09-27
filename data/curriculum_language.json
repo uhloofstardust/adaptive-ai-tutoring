@@ -1,0 +1,2445 @@
+{
+ "name": "language",
+ "title": "40-concept language curriculum (legacy)",
+ "note": "Frozen from the original generator. Kept so the original experiments and their committed results stay reproducible.",
+ "concepts": [
+  {
+   "cid": "greetings",
+   "name": "Greetings",
+   "tier": 0,
+   "prereqs": [],
+   "questions": [
+    {
+     "qid": "greetings_q1",
+     "concept_id": "greetings",
+     "prompt": "Bengali for '\u0928\u092e\u0938\u094d\u0915\u093e\u0930'?",
+     "answer": "\u09a8\u09ae\u09b8\u09cd\u0995\u09be\u09b0",
+     "difficulty": 0.053
+    },
+    {
+     "qid": "greetings_q2",
+     "concept_id": "greetings",
+     "prompt": "Bengali for '\u0927\u0928\u094d\u092f\u0935\u093e\u0926'?",
+     "answer": "\u09a7\u09a8\u09cd\u09af\u09ac\u09be\u09a6",
+     "difficulty": 0.245
+    },
+    {
+     "qid": "greetings_q3",
+     "concept_id": "greetings",
+     "prompt": "Bengali for '\u0939\u094b\u092f'?",
+     "answer": "\u09b9\u09cd\u09af\u09be\u0981",
+     "difficulty": 0.319
+    },
+    {
+     "qid": "greetings_q4",
+     "concept_id": "greetings",
+     "prompt": "Bengali for '\u0928\u093e\u0939\u0940'?",
+     "answer": "\u09a8\u09be",
+     "difficulty": 0.138
+    },
+    {
+     "qid": "greetings_q5",
+     "concept_id": "greetings",
+     "prompt": "Bengali for '\u0915\u094d\u0937\u092e\u093e \u0915\u0930\u093e'?",
+     "answer": "\u0995\u09cd\u09b7\u09ae\u09be \u0995\u09b0\u09ac\u09c7\u09a8",
+     "difficulty": 0.05
+    },
+    {
+     "qid": "greetings_q6",
+     "concept_id": "greetings",
+     "prompt": "Bengali for '\u0936\u0941\u092d \u0930\u093e\u0924\u094d\u0930\u0940'?",
+     "answer": "\u09b6\u09c1\u09ad \u09b0\u09be\u09a4\u09cd\u09b0\u09bf",
+     "difficulty": 0.192
+    },
+    {
+     "qid": "greetings_q7",
+     "concept_id": "greetings",
+     "prompt": "Greetings: production item 7",
+     "answer": "<greetings_7>",
+     "difficulty": 0.257
+    },
+    {
+     "qid": "greetings_q8",
+     "concept_id": "greetings",
+     "prompt": "Greetings: production item 8",
+     "answer": "<greetings_8>",
+     "difficulty": 0.332
+    }
+   ]
+  },
+  {
+   "cid": "numbers_1_5",
+   "name": "Numbers 1-5",
+   "tier": 0,
+   "prereqs": [],
+   "questions": [
+    {
+     "qid": "numbers_1_5_q1",
+     "concept_id": "numbers_1_5",
+     "prompt": "Bengali for '\u090f\u0915'?",
+     "answer": "\u098f\u0995",
+     "difficulty": 0.054
+    },
+    {
+     "qid": "numbers_1_5_q2",
+     "concept_id": "numbers_1_5",
+     "prompt": "Bengali for '\u0926\u094b\u0928'?",
+     "answer": "\u09a6\u09c1\u0987",
+     "difficulty": 0.05
+    },
+    {
+     "qid": "numbers_1_5_q3",
+     "concept_id": "numbers_1_5",
+     "prompt": "Bengali for '\u0924\u0940\u0928'?",
+     "answer": "\u09a4\u09bf\u09a8",
+     "difficulty": 0.285
+    },
+    {
+     "qid": "numbers_1_5_q4",
+     "concept_id": "numbers_1_5",
+     "prompt": "Bengali for '\u091a\u093e\u0930'?",
+     "answer": "\u099a\u09be\u09b0",
+     "difficulty": 0.257
+    },
+    {
+     "qid": "numbers_1_5_q5",
+     "concept_id": "numbers_1_5",
+     "prompt": "Bengali for '\u092a\u093e\u091a'?",
+     "answer": "\u09aa\u09be\u0981\u099a",
+     "difficulty": 0.384
+    },
+    {
+     "qid": "numbers_1_5_q6",
+     "concept_id": "numbers_1_5",
+     "prompt": "Numbers 1-5: production item 6",
+     "answer": "<numbers_1_5_6>",
+     "difficulty": 0.318
+    },
+    {
+     "qid": "numbers_1_5_q7",
+     "concept_id": "numbers_1_5",
+     "prompt": "Numbers 1-5: production item 7",
+     "answer": "<numbers_1_5_7>",
+     "difficulty": 0.188
+    }
+   ]
+  },
+  {
+   "cid": "colors",
+   "name": "Colors",
+   "tier": 0,
+   "prereqs": [],
+   "questions": [
+    {
+     "qid": "colors_q1",
+     "concept_id": "colors",
+     "prompt": "Bengali for '\u0932\u093e\u0932'?",
+     "answer": "\u09b2\u09be\u09b2",
+     "difficulty": 0.167
+    },
+    {
+     "qid": "colors_q2",
+     "concept_id": "colors",
+     "prompt": "Bengali for '\u0928\u093f\u0933\u093e'?",
+     "answer": "\u09a8\u09c0\u09b2",
+     "difficulty": 0.508
+    },
+    {
+     "qid": "colors_q3",
+     "concept_id": "colors",
+     "prompt": "Bengali for '\u0939\u093f\u0930\u0935\u093e'?",
+     "answer": "\u09b8\u09ac\u09c1\u099c",
+     "difficulty": 0.165
+    },
+    {
+     "qid": "colors_q4",
+     "concept_id": "colors",
+     "prompt": "Bengali for '\u092a\u093f\u0935\u0933\u093e'?",
+     "answer": "\u09b9\u09b2\u09c1\u09a6",
+     "difficulty": 0.106
+    },
+    {
+     "qid": "colors_q5",
+     "concept_id": "colors",
+     "prompt": "Bengali for '\u092a\u093e\u0902\u0922\u0930\u093e'?",
+     "answer": "\u09b8\u09be\u09a6\u09be",
+     "difficulty": 0.063
+    },
+    {
+     "qid": "colors_q6",
+     "concept_id": "colors",
+     "prompt": "Bengali for '\u0915\u093e\u0933\u093e'?",
+     "answer": "\u0995\u09be\u09b2\u09cb",
+     "difficulty": 0.211
+    },
+    {
+     "qid": "colors_q7",
+     "concept_id": "colors",
+     "prompt": "Colors: production item 7",
+     "answer": "<colors_7>",
+     "difficulty": 0.217
+    }
+   ]
+  },
+  {
+   "cid": "pronouns",
+   "name": "Pronouns",
+   "tier": 0,
+   "prereqs": [],
+   "questions": [
+    {
+     "qid": "pronouns_q1",
+     "concept_id": "pronouns",
+     "prompt": "Bengali for '\u092e\u0940'?",
+     "answer": "\u0986\u09ae\u09bf",
+     "difficulty": 0.159
+    },
+    {
+     "qid": "pronouns_q2",
+     "concept_id": "pronouns",
+     "prompt": "Bengali for '\u0924\u0942'?",
+     "answer": "\u09a4\u09c1\u09ae\u09bf",
+     "difficulty": 0.193
+    },
+    {
+     "qid": "pronouns_q3",
+     "concept_id": "pronouns",
+     "prompt": "Bengali for '\u0924\u094b'?",
+     "answer": "\u09b8\u09c7",
+     "difficulty": 0.233
+    },
+    {
+     "qid": "pronouns_q4",
+     "concept_id": "pronouns",
+     "prompt": "Bengali for '\u0906\u092e\u094d\u0939\u0940'?",
+     "answer": "\u0986\u09ae\u09b0\u09be",
+     "difficulty": 0.283
+    },
+    {
+     "qid": "pronouns_q5",
+     "concept_id": "pronouns",
+     "prompt": "Bengali for '\u0924\u0947'?",
+     "answer": "\u09a4\u09be\u09b0\u09be",
+     "difficulty": 0.332
+    },
+    {
+     "qid": "pronouns_q6",
+     "concept_id": "pronouns",
+     "prompt": "Pronouns: production item 6",
+     "answer": "<pronouns_6>",
+     "difficulty": 0.225
+    }
+   ]
+  },
+  {
+   "cid": "yes_no",
+   "name": "Yes / no answers",
+   "tier": 0,
+   "prereqs": [],
+   "questions": [
+    {
+     "qid": "yes_no_q1",
+     "concept_id": "yes_no",
+     "prompt": "Yes / no answers: production item 1",
+     "answer": "<yes_no_1>",
+     "difficulty": 0.05
+    },
+    {
+     "qid": "yes_no_q2",
+     "concept_id": "yes_no",
+     "prompt": "Yes / no answers: production item 2",
+     "answer": "<yes_no_2>",
+     "difficulty": 0.284
+    },
+    {
+     "qid": "yes_no_q3",
+     "concept_id": "yes_no",
+     "prompt": "Yes / no answers: production item 3",
+     "answer": "<yes_no_3>",
+     "difficulty": 0.05
+    },
+    {
+     "qid": "yes_no_q4",
+     "concept_id": "yes_no",
+     "prompt": "Yes / no answers: production item 4",
+     "answer": "<yes_no_4>",
+     "difficulty": 0.179
+    },
+    {
+     "qid": "yes_no_q5",
+     "concept_id": "yes_no",
+     "prompt": "Yes / no answers: production item 5",
+     "answer": "<yes_no_5>",
+     "difficulty": 0.05
+    }
+   ]
+  },
+  {
+   "cid": "numbers_6_10",
+   "name": "Numbers 6-10",
+   "tier": 1,
+   "prereqs": [
+    "numbers_1_5"
+   ],
+   "questions": [
+    {
+     "qid": "numbers_6_10_q1",
+     "concept_id": "numbers_6_10",
+     "prompt": "Bengali for '\u0938\u0939\u093e'?",
+     "answer": "\u099b\u09af\u09bc",
+     "difficulty": 0.31
+    },
+    {
+     "qid": "numbers_6_10_q2",
+     "concept_id": "numbers_6_10",
+     "prompt": "Bengali for '\u0938\u093e\u0924'?",
+     "answer": "\u09b8\u09be\u09a4",
+     "difficulty": 0.217
+    },
+    {
+     "qid": "numbers_6_10_q3",
+     "concept_id": "numbers_6_10",
+     "prompt": "Bengali for '\u0906\u0920'?",
+     "answer": "\u0986\u099f",
+     "difficulty": 0.336
+    },
+    {
+     "qid": "numbers_6_10_q4",
+     "concept_id": "numbers_6_10",
+     "prompt": "Bengali for '\u0928\u090a'?",
+     "answer": "\u09a8\u09af\u09bc",
+     "difficulty": 0.706
+    },
+    {
+     "qid": "numbers_6_10_q5",
+     "concept_id": "numbers_6_10",
+     "prompt": "Bengali for '\u0926\u0939\u093e'?",
+     "answer": "\u09a6\u09b6",
+     "difficulty": 0.304
+    },
+    {
+     "qid": "numbers_6_10_q6",
+     "concept_id": "numbers_6_10",
+     "prompt": "Numbers 6-10: production item 6",
+     "answer": "<numbers_6_10_6>",
+     "difficulty": 0.411
+    },
+    {
+     "qid": "numbers_6_10_q7",
+     "concept_id": "numbers_6_10",
+     "prompt": "Numbers 6-10: production item 7",
+     "answer": "<numbers_6_10_7>",
+     "difficulty": 0.151
+    }
+   ]
+  },
+  {
+   "cid": "family",
+   "name": "Family words",
+   "tier": 1,
+   "prereqs": [
+    "greetings"
+   ],
+   "questions": [
+    {
+     "qid": "family_q1",
+     "concept_id": "family",
+     "prompt": "Bengali for '\u0906\u0908'?",
+     "answer": "\u09ae\u09be",
+     "difficulty": 0.275
+    },
+    {
+     "qid": "family_q2",
+     "concept_id": "family",
+     "prompt": "Bengali for '\u0935\u0921\u0940\u0932'?",
+     "answer": "\u09ac\u09be\u09ac\u09be",
+     "difficulty": 0.389
+    },
+    {
+     "qid": "family_q3",
+     "concept_id": "family",
+     "prompt": "Bengali for '\u092d\u093e\u090a'?",
+     "answer": "\u09ad\u09be\u0987",
+     "difficulty": 0.299
+    },
+    {
+     "qid": "family_q4",
+     "concept_id": "family",
+     "prompt": "Bengali for '\u092c\u0939\u0940\u0923'?",
+     "answer": "\u09ac\u09cb\u09a8",
+     "difficulty": 0.354
+    },
+    {
+     "qid": "family_q5",
+     "concept_id": "family",
+     "prompt": "Bengali for '\u092e\u0941\u0932\u0917\u093e'?",
+     "answer": "\u099b\u09c7\u09b2\u09c7",
+     "difficulty": 0.322
+    },
+    {
+     "qid": "family_q6",
+     "concept_id": "family",
+     "prompt": "Bengali for '\u092e\u0941\u0932\u0917\u0940'?",
+     "answer": "\u09ae\u09c7\u09af\u09bc\u09c7",
+     "difficulty": 0.189
+    },
+    {
+     "qid": "family_q7",
+     "concept_id": "family",
+     "prompt": "Family words: production item 7",
+     "answer": "<family_7>",
+     "difficulty": 0.378
+    },
+    {
+     "qid": "family_q8",
+     "concept_id": "family",
+     "prompt": "Family words: production item 8",
+     "answer": "<family_8>",
+     "difficulty": 0.213
+    }
+   ]
+  },
+  {
+   "cid": "food",
+   "name": "Food and drink",
+   "tier": 1,
+   "prereqs": [
+    "greetings"
+   ],
+   "questions": [
+    {
+     "qid": "food_q1",
+     "concept_id": "food",
+     "prompt": "Bengali for '\u092a\u093e\u0923\u0940'?",
+     "answer": "\u099c\u09b2",
+     "difficulty": 0.535
+    },
+    {
+     "qid": "food_q2",
+     "concept_id": "food",
+     "prompt": "Bengali for '\u0926\u0942\u0927'?",
+     "answer": "\u09a6\u09c1\u09a7",
+     "difficulty": 0.249
+    },
+    {
+     "qid": "food_q3",
+     "concept_id": "food",
+     "prompt": "Bengali for '\u092d\u093e\u0924'?",
+     "answer": "\u09ad\u09be\u09a4",
+     "difficulty": 0.392
+    },
+    {
+     "qid": "food_q4",
+     "concept_id": "food",
+     "prompt": "Bengali for '\u092b\u0933'?",
+     "answer": "\u09ab\u09b2",
+     "difficulty": 0.31
+    },
+    {
+     "qid": "food_q5",
+     "concept_id": "food",
+     "prompt": "Bengali for '\u091a\u0939\u093e'?",
+     "answer": "\u099a\u09be",
+     "difficulty": 0.424
+    },
+    {
+     "qid": "food_q6",
+     "concept_id": "food",
+     "prompt": "Bengali for '\u092e\u0940\u0920'?",
+     "answer": "\u09a8\u09c1\u09a8",
+     "difficulty": 0.238
+    },
+    {
+     "qid": "food_q7",
+     "concept_id": "food",
+     "prompt": "Food and drink: production item 7",
+     "answer": "<food_7>",
+     "difficulty": 0.43
+    },
+    {
+     "qid": "food_q8",
+     "concept_id": "food",
+     "prompt": "Food and drink: production item 8",
+     "answer": "<food_8>",
+     "difficulty": 0.295
+    }
+   ]
+  },
+  {
+   "cid": "animals",
+   "name": "Animals",
+   "tier": 1,
+   "prereqs": [
+    "greetings"
+   ],
+   "questions": [
+    {
+     "qid": "animals_q1",
+     "concept_id": "animals",
+     "prompt": "Bengali for '\u0915\u0941\u0924\u094d\u0930\u093e'?",
+     "answer": "\u0995\u09c1\u0995\u09c1\u09b0",
+     "difficulty": 0.462
+    },
+    {
+     "qid": "animals_q2",
+     "concept_id": "animals",
+     "prompt": "Bengali for '\u092e\u093e\u0902\u091c\u0930'?",
+     "answer": "\u09ac\u09bf\u09a1\u09bc\u09be\u09b2",
+     "difficulty": 0.385
+    },
+    {
+     "qid": "animals_q3",
+     "concept_id": "animals",
+     "prompt": "Bengali for '\u0917\u093e\u092f'?",
+     "answer": "\u0997\u09b0\u09c1",
+     "difficulty": 0.327
+    },
+    {
+     "qid": "animals_q4",
+     "concept_id": "animals",
+     "prompt": "Bengali for '\u092a\u0915\u094d\u0937\u0940'?",
+     "answer": "\u09aa\u09be\u0996\u09bf",
+     "difficulty": 0.216
+    },
+    {
+     "qid": "animals_q5",
+     "concept_id": "animals",
+     "prompt": "Bengali for '\u092e\u093e\u0938\u093e'?",
+     "answer": "\u09ae\u09be\u099b",
+     "difficulty": 0.402
+    },
+    {
+     "qid": "animals_q6",
+     "concept_id": "animals",
+     "prompt": "Animals: production item 6",
+     "answer": "<animals_6>",
+     "difficulty": 0.366
+    }
+   ]
+  },
+  {
+   "cid": "body",
+   "name": "Body parts",
+   "tier": 1,
+   "prereqs": [
+    "greetings"
+   ],
+   "questions": [
+    {
+     "qid": "body_q1",
+     "concept_id": "body",
+     "prompt": "Bengali for '\u0939\u093e\u0924'?",
+     "answer": "\u09b9\u09be\u09a4",
+     "difficulty": 0.507
+    },
+    {
+     "qid": "body_q2",
+     "concept_id": "body",
+     "prompt": "Bengali for '\u0921\u094b\u0933\u093e'?",
+     "answer": "\u099a\u09cb\u0996",
+     "difficulty": 0.265
+    },
+    {
+     "qid": "body_q3",
+     "concept_id": "body",
+     "prompt": "Bengali for '\u092a\u093e\u092f'?",
+     "answer": "\u09aa\u09be",
+     "difficulty": 0.377
+    },
+    {
+     "qid": "body_q4",
+     "concept_id": "body",
+     "prompt": "Bengali for '\u0921\u094b\u0915\u0902'?",
+     "answer": "\u09ae\u09be\u09a5\u09be",
+     "difficulty": 0.371
+    },
+    {
+     "qid": "body_q5",
+     "concept_id": "body",
+     "prompt": "Bengali for '\u0915\u093e\u0928'?",
+     "answer": "\u0995\u09be\u09a8",
+     "difficulty": 0.344
+    },
+    {
+     "qid": "body_q6",
+     "concept_id": "body",
+     "prompt": "Body parts: production item 6",
+     "answer": "<body_6>",
+     "difficulty": 0.335
+    }
+   ]
+  },
+  {
+   "cid": "household",
+   "name": "Household objects",
+   "tier": 1,
+   "prereqs": [
+    "greetings"
+   ],
+   "questions": [
+    {
+     "qid": "household_q1",
+     "concept_id": "household",
+     "prompt": "Bengali for '\u0918\u0930'?",
+     "answer": "\u09ac\u09be\u09a1\u09bc\u09bf",
+     "difficulty": 0.332
+    },
+    {
+     "qid": "household_q2",
+     "concept_id": "household",
+     "prompt": "Bengali for '\u0926\u093e\u0930'?",
+     "answer": "\u09a6\u09b0\u099c\u09be",
+     "difficulty": 0.238
+    },
+    {
+     "qid": "household_q3",
+     "concept_id": "household",
+     "prompt": "Bengali for '\u0916\u093f\u0921\u0915\u0940'?",
+     "answer": "\u099c\u09be\u09a8\u09be\u09b2\u09be",
+     "difficulty": 0.188
+    },
+    {
+     "qid": "household_q4",
+     "concept_id": "household",
+     "prompt": "Bengali for '\u092a\u0941\u0938\u094d\u0924\u0915'?",
+     "answer": "\u09ac\u0987",
+     "difficulty": 0.262
+    },
+    {
+     "qid": "household_q5",
+     "concept_id": "household",
+     "prompt": "Bengali for '\u0916\u0941\u0930\u094d\u091a\u0940'?",
+     "answer": "\u099a\u09c7\u09af\u09bc\u09be\u09b0",
+     "difficulty": 0.381
+    },
+    {
+     "qid": "household_q6",
+     "concept_id": "household",
+     "prompt": "Household objects: production item 6",
+     "answer": "<household_6>",
+     "difficulty": 0.491
+    },
+    {
+     "qid": "household_q7",
+     "concept_id": "household",
+     "prompt": "Household objects: production item 7",
+     "answer": "<household_7>",
+     "difficulty": 0.427
+    }
+   ]
+  },
+  {
+   "cid": "adjectives_basic",
+   "name": "Basic adjectives",
+   "tier": 1,
+   "prereqs": [
+    "colors"
+   ],
+   "questions": [
+    {
+     "qid": "adjectives_basic_q1",
+     "concept_id": "adjectives_basic",
+     "prompt": "Bengali for '\u092e\u094b\u0920\u093e'?",
+     "answer": "\u09ac\u09a1\u09bc",
+     "difficulty": 0.436
+    },
+    {
+     "qid": "adjectives_basic_q2",
+     "concept_id": "adjectives_basic",
+     "prompt": "Bengali for '\u0932\u0939\u093e\u0928'?",
+     "answer": "\u099b\u09cb\u099f",
+     "difficulty": 0.403
+    },
+    {
+     "qid": "adjectives_basic_q3",
+     "concept_id": "adjectives_basic",
+     "prompt": "Bengali for '\u091a\u093e\u0902\u0917\u0932\u093e'?",
+     "answer": "\u09ad\u09be\u09b2\u09cb",
+     "difficulty": 0.394
+    },
+    {
+     "qid": "adjectives_basic_q4",
+     "concept_id": "adjectives_basic",
+     "prompt": "Bengali for '\u0928\u0935\u0940\u0928'?",
+     "answer": "\u09a8\u09a4\u09c1\u09a8",
+     "difficulty": 0.332
+    },
+    {
+     "qid": "adjectives_basic_q5",
+     "concept_id": "adjectives_basic",
+     "prompt": "Bengali for '\u0917\u0930\u092e'?",
+     "answer": "\u0997\u09b0\u09ae",
+     "difficulty": 0.403
+    },
+    {
+     "qid": "adjectives_basic_q6",
+     "concept_id": "adjectives_basic",
+     "prompt": "Basic adjectives: production item 6",
+     "answer": "<adjectives_basic_6>",
+     "difficulty": 0.523
+    },
+    {
+     "qid": "adjectives_basic_q7",
+     "concept_id": "adjectives_basic",
+     "prompt": "Basic adjectives: production item 7",
+     "answer": "<adjectives_basic_7>",
+     "difficulty": 0.271
+    }
+   ]
+  },
+  {
+   "cid": "time_basic",
+   "name": "Time words",
+   "tier": 1,
+   "prereqs": [
+    "numbers_1_5"
+   ],
+   "questions": [
+    {
+     "qid": "time_basic_q1",
+     "concept_id": "time_basic",
+     "prompt": "Bengali for '\u0926\u093f\u0935\u0938'?",
+     "answer": "\u09a6\u09bf\u09a8",
+     "difficulty": 0.227
+    },
+    {
+     "qid": "time_basic_q2",
+     "concept_id": "time_basic",
+     "prompt": "Bengali for '\u0930\u093e\u0924\u094d\u0930'?",
+     "answer": "\u09b0\u09be\u09a4",
+     "difficulty": 0.545
+    },
+    {
+     "qid": "time_basic_q3",
+     "concept_id": "time_basic",
+     "prompt": "Bengali for '\u0938\u0915\u093e\u0933'?",
+     "answer": "\u09b8\u0995\u09be\u09b2",
+     "difficulty": 0.339
+    },
+    {
+     "qid": "time_basic_q4",
+     "concept_id": "time_basic",
+     "prompt": "Bengali for '\u0906\u091c'?",
+     "answer": "\u0986\u099c",
+     "difficulty": 0.427
+    },
+    {
+     "qid": "time_basic_q5",
+     "concept_id": "time_basic",
+     "prompt": "Bengali for '\u0909\u0926\u094d\u092f\u093e'?",
+     "answer": "\u0986\u0997\u09be\u09ae\u09c0\u0995\u09be\u09b2",
+     "difficulty": 0.415
+    },
+    {
+     "qid": "time_basic_q6",
+     "concept_id": "time_basic",
+     "prompt": "Time words: production item 6",
+     "answer": "<time_basic_6>",
+     "difficulty": 0.174
+    }
+   ]
+  },
+  {
+   "cid": "directions",
+   "name": "Direction words",
+   "tier": 1,
+   "prereqs": [
+    "pronouns"
+   ],
+   "questions": [
+    {
+     "qid": "directions_q1",
+     "concept_id": "directions",
+     "prompt": "Direction words: production item 1",
+     "answer": "<directions_1>",
+     "difficulty": 0.602
+    },
+    {
+     "qid": "directions_q2",
+     "concept_id": "directions",
+     "prompt": "Direction words: production item 2",
+     "answer": "<directions_2>",
+     "difficulty": 0.523
+    },
+    {
+     "qid": "directions_q3",
+     "concept_id": "directions",
+     "prompt": "Direction words: production item 3",
+     "answer": "<directions_3>",
+     "difficulty": 0.331
+    },
+    {
+     "qid": "directions_q4",
+     "concept_id": "directions",
+     "prompt": "Direction words: production item 4",
+     "answer": "<directions_4>",
+     "difficulty": 0.4
+    },
+    {
+     "qid": "directions_q5",
+     "concept_id": "directions",
+     "prompt": "Direction words: production item 5",
+     "answer": "<directions_5>",
+     "difficulty": 0.325
+    },
+    {
+     "qid": "directions_q6",
+     "concept_id": "directions",
+     "prompt": "Direction words: production item 6",
+     "answer": "<directions_6>",
+     "difficulty": 0.204
+    }
+   ]
+  },
+  {
+   "cid": "plurals",
+   "name": "Plural forms",
+   "tier": 2,
+   "prereqs": [
+    "family",
+    "food"
+   ],
+   "questions": [
+    {
+     "qid": "plurals_q1",
+     "concept_id": "plurals",
+     "prompt": "Plural forms: production item 1",
+     "answer": "<plurals_1>",
+     "difficulty": 0.407
+    },
+    {
+     "qid": "plurals_q2",
+     "concept_id": "plurals",
+     "prompt": "Plural forms: production item 2",
+     "answer": "<plurals_2>",
+     "difficulty": 0.465
+    },
+    {
+     "qid": "plurals_q3",
+     "concept_id": "plurals",
+     "prompt": "Plural forms: production item 3",
+     "answer": "<plurals_3>",
+     "difficulty": 0.554
+    },
+    {
+     "qid": "plurals_q4",
+     "concept_id": "plurals",
+     "prompt": "Plural forms: production item 4",
+     "answer": "<plurals_4>",
+     "difficulty": 0.505
+    },
+    {
+     "qid": "plurals_q5",
+     "concept_id": "plurals",
+     "prompt": "Plural forms: production item 5",
+     "answer": "<plurals_5>",
+     "difficulty": 0.427
+    },
+    {
+     "qid": "plurals_q6",
+     "concept_id": "plurals",
+     "prompt": "Plural forms: production item 6",
+     "answer": "<plurals_6>",
+     "difficulty": 0.583
+    },
+    {
+     "qid": "plurals_q7",
+     "concept_id": "plurals",
+     "prompt": "Plural forms: production item 7",
+     "answer": "<plurals_7>",
+     "difficulty": 0.329
+    }
+   ]
+  },
+  {
+   "cid": "possessives",
+   "name": "Possessives",
+   "tier": 2,
+   "prereqs": [
+    "pronouns",
+    "family"
+   ],
+   "questions": [
+    {
+     "qid": "possessives_q1",
+     "concept_id": "possessives",
+     "prompt": "Possessives: production item 1",
+     "answer": "<possessives_1>",
+     "difficulty": 0.515
+    },
+    {
+     "qid": "possessives_q2",
+     "concept_id": "possessives",
+     "prompt": "Possessives: production item 2",
+     "answer": "<possessives_2>",
+     "difficulty": 0.553
+    },
+    {
+     "qid": "possessives_q3",
+     "concept_id": "possessives",
+     "prompt": "Possessives: production item 3",
+     "answer": "<possessives_3>",
+     "difficulty": 0.385
+    },
+    {
+     "qid": "possessives_q4",
+     "concept_id": "possessives",
+     "prompt": "Possessives: production item 4",
+     "answer": "<possessives_4>",
+     "difficulty": 0.205
+    },
+    {
+     "qid": "possessives_q5",
+     "concept_id": "possessives",
+     "prompt": "Possessives: production item 5",
+     "answer": "<possessives_5>",
+     "difficulty": 0.311
+    },
+    {
+     "qid": "possessives_q6",
+     "concept_id": "possessives",
+     "prompt": "Possessives: production item 6",
+     "answer": "<possessives_6>",
+     "difficulty": 0.448
+    },
+    {
+     "qid": "possessives_q7",
+     "concept_id": "possessives",
+     "prompt": "Possessives: production item 7",
+     "answer": "<possessives_7>",
+     "difficulty": 0.483
+    }
+   ]
+  },
+  {
+   "cid": "verbs_present",
+   "name": "Present tense verbs",
+   "tier": 2,
+   "prereqs": [
+    "pronouns"
+   ],
+   "questions": [
+    {
+     "qid": "verbs_present_q1",
+     "concept_id": "verbs_present",
+     "prompt": "Present tense verbs: production item 1",
+     "answer": "<verbs_present_1>",
+     "difficulty": 0.606
+    },
+    {
+     "qid": "verbs_present_q2",
+     "concept_id": "verbs_present",
+     "prompt": "Present tense verbs: production item 2",
+     "answer": "<verbs_present_2>",
+     "difficulty": 0.299
+    },
+    {
+     "qid": "verbs_present_q3",
+     "concept_id": "verbs_present",
+     "prompt": "Present tense verbs: production item 3",
+     "answer": "<verbs_present_3>",
+     "difficulty": 0.42
+    },
+    {
+     "qid": "verbs_present_q4",
+     "concept_id": "verbs_present",
+     "prompt": "Present tense verbs: production item 4",
+     "answer": "<verbs_present_4>",
+     "difficulty": 0.498
+    },
+    {
+     "qid": "verbs_present_q5",
+     "concept_id": "verbs_present",
+     "prompt": "Present tense verbs: production item 5",
+     "answer": "<verbs_present_5>",
+     "difficulty": 0.401
+    },
+    {
+     "qid": "verbs_present_q6",
+     "concept_id": "verbs_present",
+     "prompt": "Present tense verbs: production item 6",
+     "answer": "<verbs_present_6>",
+     "difficulty": 0.136
+    },
+    {
+     "qid": "verbs_present_q7",
+     "concept_id": "verbs_present",
+     "prompt": "Present tense verbs: production item 7",
+     "answer": "<verbs_present_7>",
+     "difficulty": 0.517
+    },
+    {
+     "qid": "verbs_present_q8",
+     "concept_id": "verbs_present",
+     "prompt": "Present tense verbs: production item 8",
+     "answer": "<verbs_present_8>",
+     "difficulty": 0.697
+    },
+    {
+     "qid": "verbs_present_q9",
+     "concept_id": "verbs_present",
+     "prompt": "Present tense verbs: production item 9",
+     "answer": "<verbs_present_9>",
+     "difficulty": 0.541
+    }
+   ]
+  },
+  {
+   "cid": "question_words",
+   "name": "Question words",
+   "tier": 2,
+   "prereqs": [
+    "yes_no",
+    "pronouns"
+   ],
+   "questions": [
+    {
+     "qid": "question_words_q1",
+     "concept_id": "question_words",
+     "prompt": "Question words: production item 1",
+     "answer": "<question_words_1>",
+     "difficulty": 0.31
+    },
+    {
+     "qid": "question_words_q2",
+     "concept_id": "question_words",
+     "prompt": "Question words: production item 2",
+     "answer": "<question_words_2>",
+     "difficulty": 0.371
+    },
+    {
+     "qid": "question_words_q3",
+     "concept_id": "question_words",
+     "prompt": "Question words: production item 3",
+     "answer": "<question_words_3>",
+     "difficulty": 0.447
+    },
+    {
+     "qid": "question_words_q4",
+     "concept_id": "question_words",
+     "prompt": "Question words: production item 4",
+     "answer": "<question_words_4>",
+     "difficulty": 0.719
+    },
+    {
+     "qid": "question_words_q5",
+     "concept_id": "question_words",
+     "prompt": "Question words: production item 5",
+     "answer": "<question_words_5>",
+     "difficulty": 0.494
+    },
+    {
+     "qid": "question_words_q6",
+     "concept_id": "question_words",
+     "prompt": "Question words: production item 6",
+     "answer": "<question_words_6>",
+     "difficulty": 0.434
+    },
+    {
+     "qid": "question_words_q7",
+     "concept_id": "question_words",
+     "prompt": "Question words: production item 7",
+     "answer": "<question_words_7>",
+     "difficulty": 0.607
+    }
+   ]
+  },
+  {
+   "cid": "places",
+   "name": "Places",
+   "tier": 2,
+   "prereqs": [
+    "directions"
+   ],
+   "questions": [
+    {
+     "qid": "places_q1",
+     "concept_id": "places",
+     "prompt": "Bengali for '\u0936\u093e\u0933\u093e'?",
+     "answer": "\u09b8\u09cd\u0995\u09c1\u09b2",
+     "difficulty": 0.41
+    },
+    {
+     "qid": "places_q2",
+     "concept_id": "places",
+     "prompt": "Bengali for '\u0926\u0941\u0915\u093e\u0928'?",
+     "answer": "\u09a6\u09cb\u0995\u09be\u09a8",
+     "difficulty": 0.643
+    },
+    {
+     "qid": "places_q3",
+     "concept_id": "places",
+     "prompt": "Bengali for '\u0936\u0939\u0930'?",
+     "answer": "\u09b6\u09b9\u09b0",
+     "difficulty": 0.338
+    },
+    {
+     "qid": "places_q4",
+     "concept_id": "places",
+     "prompt": "Bengali for '\u0917\u093e\u0935'?",
+     "answer": "\u0997\u09cd\u09b0\u09be\u09ae",
+     "difficulty": 0.363
+    },
+    {
+     "qid": "places_q5",
+     "concept_id": "places",
+     "prompt": "Bengali for '\u0930\u0938\u094d\u0924\u093e'?",
+     "answer": "\u09b0\u09be\u09b8\u09cd\u09a4\u09be",
+     "difficulty": 0.507
+    },
+    {
+     "qid": "places_q6",
+     "concept_id": "places",
+     "prompt": "Places: production item 6",
+     "answer": "<places_6>",
+     "difficulty": 0.591
+    }
+   ]
+  },
+  {
+   "cid": "numbers_teens",
+   "name": "Numbers 11-20",
+   "tier": 2,
+   "prereqs": [
+    "numbers_6_10"
+   ],
+   "questions": [
+    {
+     "qid": "numbers_teens_q1",
+     "concept_id": "numbers_teens",
+     "prompt": "Numbers 11-20: production item 1",
+     "answer": "<numbers_teens_1>",
+     "difficulty": 0.498
+    },
+    {
+     "qid": "numbers_teens_q2",
+     "concept_id": "numbers_teens",
+     "prompt": "Numbers 11-20: production item 2",
+     "answer": "<numbers_teens_2>",
+     "difficulty": 0.456
+    },
+    {
+     "qid": "numbers_teens_q3",
+     "concept_id": "numbers_teens",
+     "prompt": "Numbers 11-20: production item 3",
+     "answer": "<numbers_teens_3>",
+     "difficulty": 0.201
+    },
+    {
+     "qid": "numbers_teens_q4",
+     "concept_id": "numbers_teens",
+     "prompt": "Numbers 11-20: production item 4",
+     "answer": "<numbers_teens_4>",
+     "difficulty": 0.334
+    },
+    {
+     "qid": "numbers_teens_q5",
+     "concept_id": "numbers_teens",
+     "prompt": "Numbers 11-20: production item 5",
+     "answer": "<numbers_teens_5>",
+     "difficulty": 0.347
+    },
+    {
+     "qid": "numbers_teens_q6",
+     "concept_id": "numbers_teens",
+     "prompt": "Numbers 11-20: production item 6",
+     "answer": "<numbers_teens_6>",
+     "difficulty": 0.356
+    },
+    {
+     "qid": "numbers_teens_q7",
+     "concept_id": "numbers_teens",
+     "prompt": "Numbers 11-20: production item 7",
+     "answer": "<numbers_teens_7>",
+     "difficulty": 0.49
+    }
+   ]
+  },
+  {
+   "cid": "weather",
+   "name": "Weather",
+   "tier": 2,
+   "prereqs": [
+    "adjectives_basic"
+   ],
+   "questions": [
+    {
+     "qid": "weather_q1",
+     "concept_id": "weather",
+     "prompt": "Weather: production item 1",
+     "answer": "<weather_1>",
+     "difficulty": 0.38
+    },
+    {
+     "qid": "weather_q2",
+     "concept_id": "weather",
+     "prompt": "Weather: production item 2",
+     "answer": "<weather_2>",
+     "difficulty": 0.515
+    },
+    {
+     "qid": "weather_q3",
+     "concept_id": "weather",
+     "prompt": "Weather: production item 3",
+     "answer": "<weather_3>",
+     "difficulty": 0.43
+    },
+    {
+     "qid": "weather_q4",
+     "concept_id": "weather",
+     "prompt": "Weather: production item 4",
+     "answer": "<weather_4>",
+     "difficulty": 0.38
+    },
+    {
+     "qid": "weather_q5",
+     "concept_id": "weather",
+     "prompt": "Weather: production item 5",
+     "answer": "<weather_5>",
+     "difficulty": 0.434
+    },
+    {
+     "qid": "weather_q6",
+     "concept_id": "weather",
+     "prompt": "Weather: production item 6",
+     "answer": "<weather_6>",
+     "difficulty": 0.471
+    }
+   ]
+  },
+  {
+   "cid": "clothing",
+   "name": "Clothing",
+   "tier": 2,
+   "prereqs": [
+    "colors",
+    "household"
+   ],
+   "questions": [
+    {
+     "qid": "clothing_q1",
+     "concept_id": "clothing",
+     "prompt": "Clothing: production item 1",
+     "answer": "<clothing_1>",
+     "difficulty": 0.523
+    },
+    {
+     "qid": "clothing_q2",
+     "concept_id": "clothing",
+     "prompt": "Clothing: production item 2",
+     "answer": "<clothing_2>",
+     "difficulty": 0.363
+    },
+    {
+     "qid": "clothing_q3",
+     "concept_id": "clothing",
+     "prompt": "Clothing: production item 3",
+     "answer": "<clothing_3>",
+     "difficulty": 0.392
+    },
+    {
+     "qid": "clothing_q4",
+     "concept_id": "clothing",
+     "prompt": "Clothing: production item 4",
+     "answer": "<clothing_4>",
+     "difficulty": 0.256
+    },
+    {
+     "qid": "clothing_q5",
+     "concept_id": "clothing",
+     "prompt": "Clothing: production item 5",
+     "answer": "<clothing_5>",
+     "difficulty": 0.612
+    },
+    {
+     "qid": "clothing_q6",
+     "concept_id": "clothing",
+     "prompt": "Clothing: production item 6",
+     "answer": "<clothing_6>",
+     "difficulty": 0.594
+    }
+   ]
+  },
+  {
+   "cid": "market",
+   "name": "Market words",
+   "tier": 2,
+   "prereqs": [
+    "food",
+    "numbers_6_10"
+   ],
+   "questions": [
+    {
+     "qid": "market_q1",
+     "concept_id": "market",
+     "prompt": "Market words: production item 1",
+     "answer": "<market_1>",
+     "difficulty": 0.399
+    },
+    {
+     "qid": "market_q2",
+     "concept_id": "market",
+     "prompt": "Market words: production item 2",
+     "answer": "<market_2>",
+     "difficulty": 0.363
+    },
+    {
+     "qid": "market_q3",
+     "concept_id": "market",
+     "prompt": "Market words: production item 3",
+     "answer": "<market_3>",
+     "difficulty": 0.272
+    },
+    {
+     "qid": "market_q4",
+     "concept_id": "market",
+     "prompt": "Market words: production item 4",
+     "answer": "<market_4>",
+     "difficulty": 0.44
+    },
+    {
+     "qid": "market_q5",
+     "concept_id": "market",
+     "prompt": "Market words: production item 5",
+     "answer": "<market_5>",
+     "difficulty": 0.445
+    },
+    {
+     "qid": "market_q6",
+     "concept_id": "market",
+     "prompt": "Market words: production item 6",
+     "answer": "<market_6>",
+     "difficulty": 0.682
+    },
+    {
+     "qid": "market_q7",
+     "concept_id": "market",
+     "prompt": "Market words: production item 7",
+     "answer": "<market_7>",
+     "difficulty": 0.45
+    }
+   ]
+  },
+  {
+   "cid": "ailments",
+   "name": "Talking about illness",
+   "tier": 2,
+   "prereqs": [
+    "body"
+   ],
+   "questions": [
+    {
+     "qid": "ailments_q1",
+     "concept_id": "ailments",
+     "prompt": "Talking about illness: production item 1",
+     "answer": "<ailments_1>",
+     "difficulty": 0.327
+    },
+    {
+     "qid": "ailments_q2",
+     "concept_id": "ailments",
+     "prompt": "Talking about illness: production item 2",
+     "answer": "<ailments_2>",
+     "difficulty": 0.127
+    },
+    {
+     "qid": "ailments_q3",
+     "concept_id": "ailments",
+     "prompt": "Talking about illness: production item 3",
+     "answer": "<ailments_3>",
+     "difficulty": 0.589
+    },
+    {
+     "qid": "ailments_q4",
+     "concept_id": "ailments",
+     "prompt": "Talking about illness: production item 4",
+     "answer": "<ailments_4>",
+     "difficulty": 0.443
+    },
+    {
+     "qid": "ailments_q5",
+     "concept_id": "ailments",
+     "prompt": "Talking about illness: production item 5",
+     "answer": "<ailments_5>",
+     "difficulty": 0.227
+    },
+    {
+     "qid": "ailments_q6",
+     "concept_id": "ailments",
+     "prompt": "Talking about illness: production item 6",
+     "answer": "<ailments_6>",
+     "difficulty": 0.442
+    }
+   ]
+  },
+  {
+   "cid": "negation",
+   "name": "Negation",
+   "tier": 3,
+   "prereqs": [
+    "verbs_present",
+    "yes_no"
+   ],
+   "questions": [
+    {
+     "qid": "negation_q1",
+     "concept_id": "negation",
+     "prompt": "Negation: production item 1",
+     "answer": "<negation_1>",
+     "difficulty": 0.337
+    },
+    {
+     "qid": "negation_q2",
+     "concept_id": "negation",
+     "prompt": "Negation: production item 2",
+     "answer": "<negation_2>",
+     "difficulty": 0.948
+    },
+    {
+     "qid": "negation_q3",
+     "concept_id": "negation",
+     "prompt": "Negation: production item 3",
+     "answer": "<negation_3>",
+     "difficulty": 0.664
+    },
+    {
+     "qid": "negation_q4",
+     "concept_id": "negation",
+     "prompt": "Negation: production item 4",
+     "answer": "<negation_4>",
+     "difficulty": 0.599
+    },
+    {
+     "qid": "negation_q5",
+     "concept_id": "negation",
+     "prompt": "Negation: production item 5",
+     "answer": "<negation_5>",
+     "difficulty": 0.509
+    },
+    {
+     "qid": "negation_q6",
+     "concept_id": "negation",
+     "prompt": "Negation: production item 6",
+     "answer": "<negation_6>",
+     "difficulty": 0.273
+    },
+    {
+     "qid": "negation_q7",
+     "concept_id": "negation",
+     "prompt": "Negation: production item 7",
+     "answer": "<negation_7>",
+     "difficulty": 0.515
+    }
+   ]
+  },
+  {
+   "cid": "verbs_past",
+   "name": "Past tense verbs",
+   "tier": 3,
+   "prereqs": [
+    "verbs_present"
+   ],
+   "questions": [
+    {
+     "qid": "verbs_past_q1",
+     "concept_id": "verbs_past",
+     "prompt": "Past tense verbs: production item 1",
+     "answer": "<verbs_past_1>",
+     "difficulty": 0.343
+    },
+    {
+     "qid": "verbs_past_q2",
+     "concept_id": "verbs_past",
+     "prompt": "Past tense verbs: production item 2",
+     "answer": "<verbs_past_2>",
+     "difficulty": 0.602
+    },
+    {
+     "qid": "verbs_past_q3",
+     "concept_id": "verbs_past",
+     "prompt": "Past tense verbs: production item 3",
+     "answer": "<verbs_past_3>",
+     "difficulty": 0.273
+    },
+    {
+     "qid": "verbs_past_q4",
+     "concept_id": "verbs_past",
+     "prompt": "Past tense verbs: production item 4",
+     "answer": "<verbs_past_4>",
+     "difficulty": 0.421
+    },
+    {
+     "qid": "verbs_past_q5",
+     "concept_id": "verbs_past",
+     "prompt": "Past tense verbs: production item 5",
+     "answer": "<verbs_past_5>",
+     "difficulty": 0.676
+    },
+    {
+     "qid": "verbs_past_q6",
+     "concept_id": "verbs_past",
+     "prompt": "Past tense verbs: production item 6",
+     "answer": "<verbs_past_6>",
+     "difficulty": 0.727
+    },
+    {
+     "qid": "verbs_past_q7",
+     "concept_id": "verbs_past",
+     "prompt": "Past tense verbs: production item 7",
+     "answer": "<verbs_past_7>",
+     "difficulty": 0.388
+    },
+    {
+     "qid": "verbs_past_q8",
+     "concept_id": "verbs_past",
+     "prompt": "Past tense verbs: production item 8",
+     "answer": "<verbs_past_8>",
+     "difficulty": 0.346
+    },
+    {
+     "qid": "verbs_past_q9",
+     "concept_id": "verbs_past",
+     "prompt": "Past tense verbs: production item 9",
+     "answer": "<verbs_past_9>",
+     "difficulty": 0.636
+    }
+   ]
+  },
+  {
+   "cid": "postpositions",
+   "name": "Postpositions",
+   "tier": 3,
+   "prereqs": [
+    "places",
+    "possessives"
+   ],
+   "questions": [
+    {
+     "qid": "postpositions_q1",
+     "concept_id": "postpositions",
+     "prompt": "Postpositions: production item 1",
+     "answer": "<postpositions_1>",
+     "difficulty": 0.632
+    },
+    {
+     "qid": "postpositions_q2",
+     "concept_id": "postpositions",
+     "prompt": "Postpositions: production item 2",
+     "answer": "<postpositions_2>",
+     "difficulty": 0.412
+    },
+    {
+     "qid": "postpositions_q3",
+     "concept_id": "postpositions",
+     "prompt": "Postpositions: production item 3",
+     "answer": "<postpositions_3>",
+     "difficulty": 0.447
+    },
+    {
+     "qid": "postpositions_q4",
+     "concept_id": "postpositions",
+     "prompt": "Postpositions: production item 4",
+     "answer": "<postpositions_4>",
+     "difficulty": 0.447
+    },
+    {
+     "qid": "postpositions_q5",
+     "concept_id": "postpositions",
+     "prompt": "Postpositions: production item 5",
+     "answer": "<postpositions_5>",
+     "difficulty": 0.387
+    },
+    {
+     "qid": "postpositions_q6",
+     "concept_id": "postpositions",
+     "prompt": "Postpositions: production item 6",
+     "answer": "<postpositions_6>",
+     "difficulty": 0.448
+    },
+    {
+     "qid": "postpositions_q7",
+     "concept_id": "postpositions",
+     "prompt": "Postpositions: production item 7",
+     "answer": "<postpositions_7>",
+     "difficulty": 0.68
+    },
+    {
+     "qid": "postpositions_q8",
+     "concept_id": "postpositions",
+     "prompt": "Postpositions: production item 8",
+     "answer": "<postpositions_8>",
+     "difficulty": 0.613
+    }
+   ]
+  },
+  {
+   "cid": "simple_sentences",
+   "name": "Simple sentences",
+   "tier": 3,
+   "prereqs": [
+    "verbs_present",
+    "plurals"
+   ],
+   "questions": [
+    {
+     "qid": "simple_sentences_q1",
+     "concept_id": "simple_sentences",
+     "prompt": "Simple sentences: production item 1",
+     "answer": "<simple_sentences_1>",
+     "difficulty": 0.777
+    },
+    {
+     "qid": "simple_sentences_q2",
+     "concept_id": "simple_sentences",
+     "prompt": "Simple sentences: production item 2",
+     "answer": "<simple_sentences_2>",
+     "difficulty": 0.52
+    },
+    {
+     "qid": "simple_sentences_q3",
+     "concept_id": "simple_sentences",
+     "prompt": "Simple sentences: production item 3",
+     "answer": "<simple_sentences_3>",
+     "difficulty": 0.514
+    },
+    {
+     "qid": "simple_sentences_q4",
+     "concept_id": "simple_sentences",
+     "prompt": "Simple sentences: production item 4",
+     "answer": "<simple_sentences_4>",
+     "difficulty": 0.412
+    },
+    {
+     "qid": "simple_sentences_q5",
+     "concept_id": "simple_sentences",
+     "prompt": "Simple sentences: production item 5",
+     "answer": "<simple_sentences_5>",
+     "difficulty": 0.515
+    },
+    {
+     "qid": "simple_sentences_q6",
+     "concept_id": "simple_sentences",
+     "prompt": "Simple sentences: production item 6",
+     "answer": "<simple_sentences_6>",
+     "difficulty": 0.372
+    },
+    {
+     "qid": "simple_sentences_q7",
+     "concept_id": "simple_sentences",
+     "prompt": "Simple sentences: production item 7",
+     "answer": "<simple_sentences_7>",
+     "difficulty": 0.317
+    },
+    {
+     "qid": "simple_sentences_q8",
+     "concept_id": "simple_sentences",
+     "prompt": "Simple sentences: production item 8",
+     "answer": "<simple_sentences_8>",
+     "difficulty": 0.614
+    },
+    {
+     "qid": "simple_sentences_q9",
+     "concept_id": "simple_sentences",
+     "prompt": "Simple sentences: production item 9",
+     "answer": "<simple_sentences_9>",
+     "difficulty": 0.703
+    }
+   ]
+  },
+  {
+   "cid": "politeness",
+   "name": "Polite forms",
+   "tier": 3,
+   "prereqs": [
+    "greetings",
+    "verbs_present"
+   ],
+   "questions": [
+    {
+     "qid": "politeness_q1",
+     "concept_id": "politeness",
+     "prompt": "Polite forms: production item 1",
+     "answer": "<politeness_1>",
+     "difficulty": 0.63
+    },
+    {
+     "qid": "politeness_q2",
+     "concept_id": "politeness",
+     "prompt": "Polite forms: production item 2",
+     "answer": "<politeness_2>",
+     "difficulty": 0.69
+    },
+    {
+     "qid": "politeness_q3",
+     "concept_id": "politeness",
+     "prompt": "Polite forms: production item 3",
+     "answer": "<politeness_3>",
+     "difficulty": 0.56
+    },
+    {
+     "qid": "politeness_q4",
+     "concept_id": "politeness",
+     "prompt": "Polite forms: production item 4",
+     "answer": "<politeness_4>",
+     "difficulty": 0.444
+    },
+    {
+     "qid": "politeness_q5",
+     "concept_id": "politeness",
+     "prompt": "Polite forms: production item 5",
+     "answer": "<politeness_5>",
+     "difficulty": 0.54
+    },
+    {
+     "qid": "politeness_q6",
+     "concept_id": "politeness",
+     "prompt": "Polite forms: production item 6",
+     "answer": "<politeness_6>",
+     "difficulty": 0.485
+    },
+    {
+     "qid": "politeness_q7",
+     "concept_id": "politeness",
+     "prompt": "Polite forms: production item 7",
+     "answer": "<politeness_7>",
+     "difficulty": 0.397
+    }
+   ]
+  },
+  {
+   "cid": "telling_time",
+   "name": "Telling the time",
+   "tier": 3,
+   "prereqs": [
+    "time_basic",
+    "numbers_teens"
+   ],
+   "questions": [
+    {
+     "qid": "telling_time_q1",
+     "concept_id": "telling_time",
+     "prompt": "Telling the time: production item 1",
+     "answer": "<telling_time_1>",
+     "difficulty": 0.327
+    },
+    {
+     "qid": "telling_time_q2",
+     "concept_id": "telling_time",
+     "prompt": "Telling the time: production item 2",
+     "answer": "<telling_time_2>",
+     "difficulty": 0.352
+    },
+    {
+     "qid": "telling_time_q3",
+     "concept_id": "telling_time",
+     "prompt": "Telling the time: production item 3",
+     "answer": "<telling_time_3>",
+     "difficulty": 0.529
+    },
+    {
+     "qid": "telling_time_q4",
+     "concept_id": "telling_time",
+     "prompt": "Telling the time: production item 4",
+     "answer": "<telling_time_4>",
+     "difficulty": 0.548
+    },
+    {
+     "qid": "telling_time_q5",
+     "concept_id": "telling_time",
+     "prompt": "Telling the time: production item 5",
+     "answer": "<telling_time_5>",
+     "difficulty": 0.473
+    },
+    {
+     "qid": "telling_time_q6",
+     "concept_id": "telling_time",
+     "prompt": "Telling the time: production item 6",
+     "answer": "<telling_time_6>",
+     "difficulty": 0.701
+    },
+    {
+     "qid": "telling_time_q7",
+     "concept_id": "telling_time",
+     "prompt": "Telling the time: production item 7",
+     "answer": "<telling_time_7>",
+     "difficulty": 0.551
+    }
+   ]
+  },
+  {
+   "cid": "shopping_talk",
+   "name": "Shopping dialogue",
+   "tier": 3,
+   "prereqs": [
+    "market",
+    "question_words"
+   ],
+   "questions": [
+    {
+     "qid": "shopping_talk_q1",
+     "concept_id": "shopping_talk",
+     "prompt": "Shopping dialogue: production item 1",
+     "answer": "<shopping_talk_1>",
+     "difficulty": 0.6
+    },
+    {
+     "qid": "shopping_talk_q2",
+     "concept_id": "shopping_talk",
+     "prompt": "Shopping dialogue: production item 2",
+     "answer": "<shopping_talk_2>",
+     "difficulty": 0.676
+    },
+    {
+     "qid": "shopping_talk_q3",
+     "concept_id": "shopping_talk",
+     "prompt": "Shopping dialogue: production item 3",
+     "answer": "<shopping_talk_3>",
+     "difficulty": 0.432
+    },
+    {
+     "qid": "shopping_talk_q4",
+     "concept_id": "shopping_talk",
+     "prompt": "Shopping dialogue: production item 4",
+     "answer": "<shopping_talk_4>",
+     "difficulty": 0.294
+    },
+    {
+     "qid": "shopping_talk_q5",
+     "concept_id": "shopping_talk",
+     "prompt": "Shopping dialogue: production item 5",
+     "answer": "<shopping_talk_5>",
+     "difficulty": 0.62
+    },
+    {
+     "qid": "shopping_talk_q6",
+     "concept_id": "shopping_talk",
+     "prompt": "Shopping dialogue: production item 6",
+     "answer": "<shopping_talk_6>",
+     "difficulty": 0.447
+    },
+    {
+     "qid": "shopping_talk_q7",
+     "concept_id": "shopping_talk",
+     "prompt": "Shopping dialogue: production item 7",
+     "answer": "<shopping_talk_7>",
+     "difficulty": 0.687
+    },
+    {
+     "qid": "shopping_talk_q8",
+     "concept_id": "shopping_talk",
+     "prompt": "Shopping dialogue: production item 8",
+     "answer": "<shopping_talk_8>",
+     "difficulty": 0.571
+    }
+   ]
+  },
+  {
+   "cid": "describing",
+   "name": "Describing people",
+   "tier": 3,
+   "prereqs": [
+    "adjectives_basic",
+    "body"
+   ],
+   "questions": [
+    {
+     "qid": "describing_q1",
+     "concept_id": "describing",
+     "prompt": "Describing people: production item 1",
+     "answer": "<describing_1>",
+     "difficulty": 0.651
+    },
+    {
+     "qid": "describing_q2",
+     "concept_id": "describing",
+     "prompt": "Describing people: production item 2",
+     "answer": "<describing_2>",
+     "difficulty": 0.622
+    },
+    {
+     "qid": "describing_q3",
+     "concept_id": "describing",
+     "prompt": "Describing people: production item 3",
+     "answer": "<describing_3>",
+     "difficulty": 0.28
+    },
+    {
+     "qid": "describing_q4",
+     "concept_id": "describing",
+     "prompt": "Describing people: production item 4",
+     "answer": "<describing_4>",
+     "difficulty": 0.616
+    },
+    {
+     "qid": "describing_q5",
+     "concept_id": "describing",
+     "prompt": "Describing people: production item 5",
+     "answer": "<describing_5>",
+     "difficulty": 0.449
+    },
+    {
+     "qid": "describing_q6",
+     "concept_id": "describing",
+     "prompt": "Describing people: production item 6",
+     "answer": "<describing_6>",
+     "difficulty": 0.439
+    },
+    {
+     "qid": "describing_q7",
+     "concept_id": "describing",
+     "prompt": "Describing people: production item 7",
+     "answer": "<describing_7>",
+     "difficulty": 0.478
+    }
+   ]
+  },
+  {
+   "cid": "verbs_future",
+   "name": "Future tense verbs",
+   "tier": 4,
+   "prereqs": [
+    "verbs_past"
+   ],
+   "questions": [
+    {
+     "qid": "verbs_future_q1",
+     "concept_id": "verbs_future",
+     "prompt": "Future tense verbs: production item 1",
+     "answer": "<verbs_future_1>",
+     "difficulty": 0.732
+    },
+    {
+     "qid": "verbs_future_q2",
+     "concept_id": "verbs_future",
+     "prompt": "Future tense verbs: production item 2",
+     "answer": "<verbs_future_2>",
+     "difficulty": 0.746
+    },
+    {
+     "qid": "verbs_future_q3",
+     "concept_id": "verbs_future",
+     "prompt": "Future tense verbs: production item 3",
+     "answer": "<verbs_future_3>",
+     "difficulty": 0.761
+    },
+    {
+     "qid": "verbs_future_q4",
+     "concept_id": "verbs_future",
+     "prompt": "Future tense verbs: production item 4",
+     "answer": "<verbs_future_4>",
+     "difficulty": 0.441
+    },
+    {
+     "qid": "verbs_future_q5",
+     "concept_id": "verbs_future",
+     "prompt": "Future tense verbs: production item 5",
+     "answer": "<verbs_future_5>",
+     "difficulty": 0.569
+    },
+    {
+     "qid": "verbs_future_q6",
+     "concept_id": "verbs_future",
+     "prompt": "Future tense verbs: production item 6",
+     "answer": "<verbs_future_6>",
+     "difficulty": 0.355
+    },
+    {
+     "qid": "verbs_future_q7",
+     "concept_id": "verbs_future",
+     "prompt": "Future tense verbs: production item 7",
+     "answer": "<verbs_future_7>",
+     "difficulty": 0.628
+    },
+    {
+     "qid": "verbs_future_q8",
+     "concept_id": "verbs_future",
+     "prompt": "Future tense verbs: production item 8",
+     "answer": "<verbs_future_8>",
+     "difficulty": 0.712
+    }
+   ]
+  },
+  {
+   "cid": "compound_sentences",
+   "name": "Compound sentences",
+   "tier": 4,
+   "prereqs": [
+    "simple_sentences",
+    "negation"
+   ],
+   "questions": [
+    {
+     "qid": "compound_sentences_q1",
+     "concept_id": "compound_sentences",
+     "prompt": "Compound sentences: production item 1",
+     "answer": "<compound_sentences_1>",
+     "difficulty": 0.548
+    },
+    {
+     "qid": "compound_sentences_q2",
+     "concept_id": "compound_sentences",
+     "prompt": "Compound sentences: production item 2",
+     "answer": "<compound_sentences_2>",
+     "difficulty": 0.669
+    },
+    {
+     "qid": "compound_sentences_q3",
+     "concept_id": "compound_sentences",
+     "prompt": "Compound sentences: production item 3",
+     "answer": "<compound_sentences_3>",
+     "difficulty": 0.668
+    },
+    {
+     "qid": "compound_sentences_q4",
+     "concept_id": "compound_sentences",
+     "prompt": "Compound sentences: production item 4",
+     "answer": "<compound_sentences_4>",
+     "difficulty": 0.761
+    },
+    {
+     "qid": "compound_sentences_q5",
+     "concept_id": "compound_sentences",
+     "prompt": "Compound sentences: production item 5",
+     "answer": "<compound_sentences_5>",
+     "difficulty": 0.541
+    },
+    {
+     "qid": "compound_sentences_q6",
+     "concept_id": "compound_sentences",
+     "prompt": "Compound sentences: production item 6",
+     "answer": "<compound_sentences_6>",
+     "difficulty": 0.541
+    },
+    {
+     "qid": "compound_sentences_q7",
+     "concept_id": "compound_sentences",
+     "prompt": "Compound sentences: production item 7",
+     "answer": "<compound_sentences_7>",
+     "difficulty": 0.548
+    },
+    {
+     "qid": "compound_sentences_q8",
+     "concept_id": "compound_sentences",
+     "prompt": "Compound sentences: production item 8",
+     "answer": "<compound_sentences_8>",
+     "difficulty": 0.85
+    },
+    {
+     "qid": "compound_sentences_q9",
+     "concept_id": "compound_sentences",
+     "prompt": "Compound sentences: production item 9",
+     "answer": "<compound_sentences_9>",
+     "difficulty": 0.771
+    }
+   ]
+  },
+  {
+   "cid": "narration_past",
+   "name": "Narrating past events",
+   "tier": 4,
+   "prereqs": [
+    "verbs_past",
+    "simple_sentences"
+   ],
+   "questions": [
+    {
+     "qid": "narration_past_q1",
+     "concept_id": "narration_past",
+     "prompt": "Narrating past events: production item 1",
+     "answer": "<narration_past_1>",
+     "difficulty": 0.625
+    },
+    {
+     "qid": "narration_past_q2",
+     "concept_id": "narration_past",
+     "prompt": "Narrating past events: production item 2",
+     "answer": "<narration_past_2>",
+     "difficulty": 0.667
+    },
+    {
+     "qid": "narration_past_q3",
+     "concept_id": "narration_past",
+     "prompt": "Narrating past events: production item 3",
+     "answer": "<narration_past_3>",
+     "difficulty": 0.654
+    },
+    {
+     "qid": "narration_past_q4",
+     "concept_id": "narration_past",
+     "prompt": "Narrating past events: production item 4",
+     "answer": "<narration_past_4>",
+     "difficulty": 0.664
+    },
+    {
+     "qid": "narration_past_q5",
+     "concept_id": "narration_past",
+     "prompt": "Narrating past events: production item 5",
+     "answer": "<narration_past_5>",
+     "difficulty": 0.615
+    },
+    {
+     "qid": "narration_past_q6",
+     "concept_id": "narration_past",
+     "prompt": "Narrating past events: production item 6",
+     "answer": "<narration_past_6>",
+     "difficulty": 0.6
+    },
+    {
+     "qid": "narration_past_q7",
+     "concept_id": "narration_past",
+     "prompt": "Narrating past events: production item 7",
+     "answer": "<narration_past_7>",
+     "difficulty": 0.489
+    },
+    {
+     "qid": "narration_past_q8",
+     "concept_id": "narration_past",
+     "prompt": "Narrating past events: production item 8",
+     "answer": "<narration_past_8>",
+     "difficulty": 0.563
+    },
+    {
+     "qid": "narration_past_q9",
+     "concept_id": "narration_past",
+     "prompt": "Narrating past events: production item 9",
+     "answer": "<narration_past_9>",
+     "difficulty": 0.838
+    }
+   ]
+  },
+  {
+   "cid": "directions_talk",
+   "name": "Asking for directions",
+   "tier": 4,
+   "prereqs": [
+    "postpositions",
+    "question_words"
+   ],
+   "questions": [
+    {
+     "qid": "directions_talk_q1",
+     "concept_id": "directions_talk",
+     "prompt": "Asking for directions: production item 1",
+     "answer": "<directions_talk_1>",
+     "difficulty": 0.704
+    },
+    {
+     "qid": "directions_talk_q2",
+     "concept_id": "directions_talk",
+     "prompt": "Asking for directions: production item 2",
+     "answer": "<directions_talk_2>",
+     "difficulty": 0.648
+    },
+    {
+     "qid": "directions_talk_q3",
+     "concept_id": "directions_talk",
+     "prompt": "Asking for directions: production item 3",
+     "answer": "<directions_talk_3>",
+     "difficulty": 0.614
+    },
+    {
+     "qid": "directions_talk_q4",
+     "concept_id": "directions_talk",
+     "prompt": "Asking for directions: production item 4",
+     "answer": "<directions_talk_4>",
+     "difficulty": 0.648
+    },
+    {
+     "qid": "directions_talk_q5",
+     "concept_id": "directions_talk",
+     "prompt": "Asking for directions: production item 5",
+     "answer": "<directions_talk_5>",
+     "difficulty": 0.682
+    },
+    {
+     "qid": "directions_talk_q6",
+     "concept_id": "directions_talk",
+     "prompt": "Asking for directions: production item 6",
+     "answer": "<directions_talk_6>",
+     "difficulty": 0.562
+    },
+    {
+     "qid": "directions_talk_q7",
+     "concept_id": "directions_talk",
+     "prompt": "Asking for directions: production item 7",
+     "answer": "<directions_talk_7>",
+     "difficulty": 0.664
+    },
+    {
+     "qid": "directions_talk_q8",
+     "concept_id": "directions_talk",
+     "prompt": "Asking for directions: production item 8",
+     "answer": "<directions_talk_8>",
+     "difficulty": 0.669
+    }
+   ]
+  },
+  {
+   "cid": "clinic_talk",
+   "name": "At the clinic",
+   "tier": 4,
+   "prereqs": [
+    "ailments",
+    "politeness"
+   ],
+   "questions": [
+    {
+     "qid": "clinic_talk_q1",
+     "concept_id": "clinic_talk",
+     "prompt": "At the clinic: production item 1",
+     "answer": "<clinic_talk_1>",
+     "difficulty": 0.55
+    },
+    {
+     "qid": "clinic_talk_q2",
+     "concept_id": "clinic_talk",
+     "prompt": "At the clinic: production item 2",
+     "answer": "<clinic_talk_2>",
+     "difficulty": 0.545
+    },
+    {
+     "qid": "clinic_talk_q3",
+     "concept_id": "clinic_talk",
+     "prompt": "At the clinic: production item 3",
+     "answer": "<clinic_talk_3>",
+     "difficulty": 0.52
+    },
+    {
+     "qid": "clinic_talk_q4",
+     "concept_id": "clinic_talk",
+     "prompt": "At the clinic: production item 4",
+     "answer": "<clinic_talk_4>",
+     "difficulty": 0.512
+    },
+    {
+     "qid": "clinic_talk_q5",
+     "concept_id": "clinic_talk",
+     "prompt": "At the clinic: production item 5",
+     "answer": "<clinic_talk_5>",
+     "difficulty": 0.747
+    },
+    {
+     "qid": "clinic_talk_q6",
+     "concept_id": "clinic_talk",
+     "prompt": "At the clinic: production item 6",
+     "answer": "<clinic_talk_6>",
+     "difficulty": 0.357
+    },
+    {
+     "qid": "clinic_talk_q7",
+     "concept_id": "clinic_talk",
+     "prompt": "At the clinic: production item 7",
+     "answer": "<clinic_talk_7>",
+     "difficulty": 0.608
+    }
+   ]
+  },
+  {
+   "cid": "conditionals",
+   "name": "Conditional sentences",
+   "tier": 5,
+   "prereqs": [
+    "compound_sentences"
+   ],
+   "questions": [
+    {
+     "qid": "conditionals_q1",
+     "concept_id": "conditionals",
+     "prompt": "Conditional sentences: production item 1",
+     "answer": "<conditionals_1>",
+     "difficulty": 0.677
+    },
+    {
+     "qid": "conditionals_q2",
+     "concept_id": "conditionals",
+     "prompt": "Conditional sentences: production item 2",
+     "answer": "<conditionals_2>",
+     "difficulty": 0.676
+    },
+    {
+     "qid": "conditionals_q3",
+     "concept_id": "conditionals",
+     "prompt": "Conditional sentences: production item 3",
+     "answer": "<conditionals_3>",
+     "difficulty": 0.762
+    },
+    {
+     "qid": "conditionals_q4",
+     "concept_id": "conditionals",
+     "prompt": "Conditional sentences: production item 4",
+     "answer": "<conditionals_4>",
+     "difficulty": 0.885
+    },
+    {
+     "qid": "conditionals_q5",
+     "concept_id": "conditionals",
+     "prompt": "Conditional sentences: production item 5",
+     "answer": "<conditionals_5>",
+     "difficulty": 0.759
+    },
+    {
+     "qid": "conditionals_q6",
+     "concept_id": "conditionals",
+     "prompt": "Conditional sentences: production item 6",
+     "answer": "<conditionals_6>",
+     "difficulty": 0.733
+    },
+    {
+     "qid": "conditionals_q7",
+     "concept_id": "conditionals",
+     "prompt": "Conditional sentences: production item 7",
+     "answer": "<conditionals_7>",
+     "difficulty": 0.677
+    },
+    {
+     "qid": "conditionals_q8",
+     "concept_id": "conditionals",
+     "prompt": "Conditional sentences: production item 8",
+     "answer": "<conditionals_8>",
+     "difficulty": 0.735
+    }
+   ]
+  },
+  {
+   "cid": "formal_register",
+   "name": "Formal register",
+   "tier": 5,
+   "prereqs": [
+    "politeness",
+    "compound_sentences"
+   ],
+   "questions": [
+    {
+     "qid": "formal_register_q1",
+     "concept_id": "formal_register",
+     "prompt": "Formal register: production item 1",
+     "answer": "<formal_register_1>",
+     "difficulty": 0.859
+    },
+    {
+     "qid": "formal_register_q2",
+     "concept_id": "formal_register",
+     "prompt": "Formal register: production item 2",
+     "answer": "<formal_register_2>",
+     "difficulty": 0.703
+    },
+    {
+     "qid": "formal_register_q3",
+     "concept_id": "formal_register",
+     "prompt": "Formal register: production item 3",
+     "answer": "<formal_register_3>",
+     "difficulty": 0.612
+    },
+    {
+     "qid": "formal_register_q4",
+     "concept_id": "formal_register",
+     "prompt": "Formal register: production item 4",
+     "answer": "<formal_register_4>",
+     "difficulty": 0.598
+    },
+    {
+     "qid": "formal_register_q5",
+     "concept_id": "formal_register",
+     "prompt": "Formal register: production item 5",
+     "answer": "<formal_register_5>",
+     "difficulty": 0.617
+    },
+    {
+     "qid": "formal_register_q6",
+     "concept_id": "formal_register",
+     "prompt": "Formal register: production item 6",
+     "answer": "<formal_register_6>",
+     "difficulty": 0.583
+    },
+    {
+     "qid": "formal_register_q7",
+     "concept_id": "formal_register",
+     "prompt": "Formal register: production item 7",
+     "answer": "<formal_register_7>",
+     "difficulty": 0.882
+    },
+    {
+     "qid": "formal_register_q8",
+     "concept_id": "formal_register",
+     "prompt": "Formal register: production item 8",
+     "answer": "<formal_register_8>",
+     "difficulty": 0.793
+    }
+   ]
+  },
+  {
+   "cid": "storytelling",
+   "name": "Storytelling",
+   "tier": 6,
+   "prereqs": [
+    "narration_past",
+    "conditionals"
+   ],
+   "questions": [
+    {
+     "qid": "storytelling_q1",
+     "concept_id": "storytelling",
+     "prompt": "Storytelling: production item 1",
+     "answer": "<storytelling_1>",
+     "difficulty": 0.832
+    },
+    {
+     "qid": "storytelling_q2",
+     "concept_id": "storytelling",
+     "prompt": "Storytelling: production item 2",
+     "answer": "<storytelling_2>",
+     "difficulty": 0.95
+    },
+    {
+     "qid": "storytelling_q3",
+     "concept_id": "storytelling",
+     "prompt": "Storytelling: production item 3",
+     "answer": "<storytelling_3>",
+     "difficulty": 0.781
+    },
+    {
+     "qid": "storytelling_q4",
+     "concept_id": "storytelling",
+     "prompt": "Storytelling: production item 4",
+     "answer": "<storytelling_4>",
+     "difficulty": 0.95
+    },
+    {
+     "qid": "storytelling_q5",
+     "concept_id": "storytelling",
+     "prompt": "Storytelling: production item 5",
+     "answer": "<storytelling_5>",
+     "difficulty": 0.95
+    },
+    {
+     "qid": "storytelling_q6",
+     "concept_id": "storytelling",
+     "prompt": "Storytelling: production item 6",
+     "answer": "<storytelling_6>",
+     "difficulty": 0.674
+    },
+    {
+     "qid": "storytelling_q7",
+     "concept_id": "storytelling",
+     "prompt": "Storytelling: production item 7",
+     "answer": "<storytelling_7>",
+     "difficulty": 0.673
+    },
+    {
+     "qid": "storytelling_q8",
+     "concept_id": "storytelling",
+     "prompt": "Storytelling: production item 8",
+     "answer": "<storytelling_8>",
+     "difficulty": 0.749
+    },
+    {
+     "qid": "storytelling_q9",
+     "concept_id": "storytelling",
+     "prompt": "Storytelling: production item 9",
+     "answer": "<storytelling_9>",
+     "difficulty": 0.95
+    }
+   ]
+  }
+ ]
+}

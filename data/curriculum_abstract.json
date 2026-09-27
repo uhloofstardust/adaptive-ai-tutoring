@@ -1,0 +1,367 @@
+{
+ "name": "abstract",
+ "title": "8-concept abstract curriculum",
+ "note": "Subject-free. Concept ids are <tier letter><index>, so a name states its own depth: A = no prerequisites, D = the capstone. Shape is a symmetric diamond, 2-3-2-1, chosen so the ZPD stays small and readable and so one weak concept visibly blocks two downstream.",
+ "concepts": [
+  {
+   "cid": "A1",
+   "name": "A1",
+   "tier": 0,
+   "prereqs": [],
+   "questions": [
+    {
+     "qid": "A1.q1",
+     "concept_id": "A1",
+     "prompt": "A1 item 1",
+     "answer": "-",
+     "difficulty": 0.187
+    },
+    {
+     "qid": "A1.q2",
+     "concept_id": "A1",
+     "prompt": "A1 item 2",
+     "answer": "-",
+     "difficulty": 0.226
+    },
+    {
+     "qid": "A1.q3",
+     "concept_id": "A1",
+     "prompt": "A1 item 3",
+     "answer": "-",
+     "difficulty": 0.189
+    },
+    {
+     "qid": "A1.q4",
+     "concept_id": "A1",
+     "prompt": "A1 item 4",
+     "answer": "-",
+     "difficulty": 0.184
+    },
+    {
+     "qid": "A1.q5",
+     "concept_id": "A1",
+     "prompt": "A1 item 5",
+     "answer": "-",
+     "difficulty": 0.153
+    }
+   ]
+  },
+  {
+   "cid": "A2",
+   "name": "A2",
+   "tier": 0,
+   "prereqs": [],
+   "questions": [
+    {
+     "qid": "A2.q1",
+     "concept_id": "A2",
+     "prompt": "A2 item 1",
+     "answer": "-",
+     "difficulty": 0.189
+    },
+    {
+     "qid": "A2.q2",
+     "concept_id": "A2",
+     "prompt": "A2 item 2",
+     "answer": "-",
+     "difficulty": 0.256
+    },
+    {
+     "qid": "A2.q3",
+     "concept_id": "A2",
+     "prompt": "A2 item 3",
+     "answer": "-",
+     "difficulty": 0.221
+    },
+    {
+     "qid": "A2.q4",
+     "concept_id": "A2",
+     "prompt": "A2 item 4",
+     "answer": "-",
+     "difficulty": 0.252
+    },
+    {
+     "qid": "A2.q5",
+     "concept_id": "A2",
+     "prompt": "A2 item 5",
+     "answer": "-",
+     "difficulty": 0.212
+    }
+   ]
+  },
+  {
+   "cid": "B1",
+   "name": "B1",
+   "tier": 1,
+   "prereqs": [
+    "A1"
+   ],
+   "questions": [
+    {
+     "qid": "B1.q1",
+     "concept_id": "B1",
+     "prompt": "B1 item 1",
+     "answer": "-",
+     "difficulty": 0.42
+    },
+    {
+     "qid": "B1.q2",
+     "concept_id": "B1",
+     "prompt": "B1 item 2",
+     "answer": "-",
+     "difficulty": 0.409
+    },
+    {
+     "qid": "B1.q3",
+     "concept_id": "B1",
+     "prompt": "B1 item 3",
+     "answer": "-",
+     "difficulty": 0.317
+    },
+    {
+     "qid": "B1.q4",
+     "concept_id": "B1",
+     "prompt": "B1 item 4",
+     "answer": "-",
+     "difficulty": 0.443
+    },
+    {
+     "qid": "B1.q5",
+     "concept_id": "B1",
+     "prompt": "B1 item 5",
+     "answer": "-",
+     "difficulty": 0.425
+    }
+   ]
+  },
+  {
+   "cid": "B2",
+   "name": "B2",
+   "tier": 1,
+   "prereqs": [
+    "A1",
+    "A2"
+   ],
+   "questions": [
+    {
+     "qid": "B2.q1",
+     "concept_id": "B2",
+     "prompt": "B2 item 1",
+     "answer": "-",
+     "difficulty": 0.425
+    },
+    {
+     "qid": "B2.q2",
+     "concept_id": "B2",
+     "prompt": "B2 item 2",
+     "answer": "-",
+     "difficulty": 0.315
+    },
+    {
+     "qid": "B2.q3",
+     "concept_id": "B2",
+     "prompt": "B2 item 3",
+     "answer": "-",
+     "difficulty": 0.313
+    },
+    {
+     "qid": "B2.q4",
+     "concept_id": "B2",
+     "prompt": "B2 item 4",
+     "answer": "-",
+     "difficulty": 0.356
+    },
+    {
+     "qid": "B2.q5",
+     "concept_id": "B2",
+     "prompt": "B2 item 5",
+     "answer": "-",
+     "difficulty": 0.377
+    }
+   ]
+  },
+  {
+   "cid": "B3",
+   "name": "B3",
+   "tier": 1,
+   "prereqs": [
+    "A2"
+   ],
+   "questions": [
+    {
+     "qid": "B3.q1",
+     "concept_id": "B3",
+     "prompt": "B3 item 1",
+     "answer": "-",
+     "difficulty": 0.415
+    },
+    {
+     "qid": "B3.q2",
+     "concept_id": "B3",
+     "prompt": "B3 item 2",
+     "answer": "-",
+     "difficulty": 0.398
+    },
+    {
+     "qid": "B3.q3",
+     "concept_id": "B3",
+     "prompt": "B3 item 3",
+     "answer": "-",
+     "difficulty": 0.426
+    },
+    {
+     "qid": "B3.q4",
+     "concept_id": "B3",
+     "prompt": "B3 item 4",
+     "answer": "-",
+     "difficulty": 0.368
+    },
+    {
+     "qid": "B3.q5",
+     "concept_id": "B3",
+     "prompt": "B3 item 5",
+     "answer": "-",
+     "difficulty": 0.415
+    }
+   ]
+  },
+  {
+   "cid": "C1",
+   "name": "C1",
+   "tier": 2,
+   "prereqs": [
+    "B1",
+    "B2"
+   ],
+   "questions": [
+    {
+     "qid": "C1.q1",
+     "concept_id": "C1",
+     "prompt": "C1 item 1",
+     "answer": "-",
+     "difficulty": 0.62
+    },
+    {
+     "qid": "C1.q2",
+     "concept_id": "C1",
+     "prompt": "C1 item 2",
+     "answer": "-",
+     "difficulty": 0.567
+    },
+    {
+     "qid": "C1.q3",
+     "concept_id": "C1",
+     "prompt": "C1 item 3",
+     "answer": "-",
+     "difficulty": 0.686
+    },
+    {
+     "qid": "C1.q4",
+     "concept_id": "C1",
+     "prompt": "C1 item 4",
+     "answer": "-",
+     "difficulty": 0.628
+    },
+    {
+     "qid": "C1.q5",
+     "concept_id": "C1",
+     "prompt": "C1 item 5",
+     "answer": "-",
+     "difficulty": 0.66
+    }
+   ]
+  },
+  {
+   "cid": "C2",
+   "name": "C2",
+   "tier": 2,
+   "prereqs": [
+    "B2",
+    "B3"
+   ],
+   "questions": [
+    {
+     "qid": "C2.q1",
+     "concept_id": "C2",
+     "prompt": "C2 item 1",
+     "answer": "-",
+     "difficulty": 0.569
+    },
+    {
+     "qid": "C2.q2",
+     "concept_id": "C2",
+     "prompt": "C2 item 2",
+     "answer": "-",
+     "difficulty": 0.563
+    },
+    {
+     "qid": "C2.q3",
+     "concept_id": "C2",
+     "prompt": "C2 item 3",
+     "answer": "-",
+     "difficulty": 0.583
+    },
+    {
+     "qid": "C2.q4",
+     "concept_id": "C2",
+     "prompt": "C2 item 4",
+     "answer": "-",
+     "difficulty": 0.595
+    },
+    {
+     "qid": "C2.q5",
+     "concept_id": "C2",
+     "prompt": "C2 item 5",
+     "answer": "-",
+     "difficulty": 0.632
+    }
+   ]
+  },
+  {
+   "cid": "D1",
+   "name": "D1",
+   "tier": 3,
+   "prereqs": [
+    "C1",
+    "C2"
+   ],
+   "questions": [
+    {
+     "qid": "D1.q1",
+     "concept_id": "D1",
+     "prompt": "D1 item 1",
+     "answer": "-",
+     "difficulty": 0.812
+    },
+    {
+     "qid": "D1.q2",
+     "concept_id": "D1",
+     "prompt": "D1 item 2",
+     "answer": "-",
+     "difficulty": 0.778
+    },
+    {
+     "qid": "D1.q3",
+     "concept_id": "D1",
+     "prompt": "D1 item 3",
+     "answer": "-",
+     "difficulty": 0.752
+    },
+    {
+     "qid": "D1.q4",
+     "concept_id": "D1",
+     "prompt": "D1 item 4",
+     "answer": "-",
+     "difficulty": 0.774
+    },
+    {
+     "qid": "D1.q5",
+     "concept_id": "D1",
+     "prompt": "D1 item 5",
+     "answer": "-",
+     "difficulty": 0.861
+    }
+   ]
+  }
+ ]
+}
