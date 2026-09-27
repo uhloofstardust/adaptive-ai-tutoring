@@ -154,7 +154,7 @@ class Learner:
 # ======================================================================
 # Plain BKT student (the sanity-check learner)
 # ======================================================================
-from .params import BKT_PARAMS
+from .params import BKT_PARAMS, STUDENT_MODELS
 
 
 class BKTLearner:
@@ -246,7 +246,10 @@ LEARNERS = {
     "bkt_prereq": (BKTLearner,
                    "S2. Same, but a concept learns at pT_low until every "
                    "prerequisite is truly known, so order starts to matter",
-                   {"prereq_gated_pT": True}),
+                   # carry S2's own numbers, so selecting this learner
+                   # anywhere gives the same student the experiments use
+                   {"prereq_gated_pT": True,
+                    "pT_low": STUDENT_MODELS["S2"]["pT_low"]}),
     "continuous": (Learner,
                    "Original cursim student: continuous mastery, difficulty, "
                    "prerequisites, time decay", {}),

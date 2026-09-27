@@ -127,10 +127,9 @@ check(all(not t["zpd"] or t["concept"] in t["zpd"] for t in r2["trace"]),
 print("9. S2 learns slower than S1 when prerequisites are unmet")
 from cursim.params import STUDENT_MODELS
 def s_spec(learner, **kw):
-    sm = STUDENT_MODELS["S2" if learner == "bkt_prereq" else "S1"]
-    pr = dict(BKT_PARAMS, p_T=sm["p_T"])
+    pr = dict(BKT_PARAMS)
     return RunSpec(scheduler="uniform_unmastered", mastery_model="bkt",
-                   learner=learner, pT_low=sm.get("pT_low"), threshold=0.9,
+                   learner=learner, threshold=0.9,
                    student_params=pr, tutor_params=pr, n_sessions=1,
                    questions_per_session=60, gap_hours=0.0, retention_days=0.0,
                    **kw)
@@ -168,5 +167,46 @@ check(pr["S2"]["diff_Q2_minus_Q1"] > 0,
       f"S2 does better with Q2 ({pr['S2']['diff_Q2_minus_Q1']:+.2f})")
 check(pr["interaction (S2 minus S1)"]["scheduler_matters"],
       "the scheduler effect depends on the student model")
+
+print("12. the verdict sentence can never contradict its own table")
+from cursim.sanity import restriction_only
+def verdict_of(out):
+    return out["summary"].split(": ", 1)[1].split(". Note")[0] if ": " in out["summary"] else ""
+o2 = two_by_two(n_learners=40, n_steps=1, cur=cur)
+p2 = {r["student"]: r for r in o2["tables"]["paired"]}
+flip = "flips with the student model" in o2["summary"]
+both = {p2["S1"]["favours"], p2["S2"]["favours"]} == {"Q1", "Q2"}
+check(flip == both,
+      f"a sign flip is claimed only when the marginals actually flip "
+      f"(n_steps=1: S1 {p2['S1']['favours']}, S2 {p2['S2']['favours']}, "
+      f"claimed={flip})")
+check(not (o2["tables"]["paired"][2]["scheduler_matters"]
+           and "no interaction detected" in o2["summary"]),
+      "never denies an interaction its own table reports")
+
+print("13. the restriction alone is neutral for S1")
+ro = restriction_only(n_learners=60, n_steps=40, cur=cur)
+rr = {r["student"]: r for r in ro["tables"]["restriction_only"]}
+check(rr["S1"]["restriction_effect"] == 0.0,
+      "truth-gated: the prerequisite restriction costs S1 exactly nothing")
+check(rr["S2"]["restriction_effect"] > 0.5,
+      f"...and is worth {rr['S2']['restriction_effect']:+.2f} to S2")
+
+print("14. detection refuses a student it cannot measure")
+try:
+    detection(n_learners=2, n_steps=10, learner="continuous", cur=cur)
+    check(False, "detection should refuse the continuous student")
+except ValueError as e:
+    check("learned_step" in str(e) or "continuous" in str(e),
+          "detection refuses the continuous student with a clear message")
+
+print("15. degenerate inputs are refused, not crashed on")
+for bad_kw in (dict(n_learners=1), dict(n_learners=0), dict(n_steps=0)):
+    try:
+        two_by_two(cur=cur, **bad_kw)
+        check(False, f"two_by_two should refuse {bad_kw}")
+    except ValueError:
+        pass
+check(True, "two_by_two refuses n_learners<2 and n_steps<1")
 
 print(f"\nALL {passed} CHECKS PASSED")
