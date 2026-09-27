@@ -29,16 +29,18 @@ from .params import BKT_PARAMS
 from .simulation import RunSpec, run_one
 
 # same palette as the interface, so a saved figure and the screen agree
-INK, ACCENT, GREY, GOOD = "#1b2230", "#3f6ae0", "#8b94a7", "#1f9d6b"
+INK, ACCENT, GREY, GOOD = "#e6e9f0", "#6f8ffb", "#98a1b5", "#3ecf8e"
+PAPER, PANEL = "#12151d", "#12151d"
 plt.rcParams.update({
     "font.size": 10, "figure.dpi": 130,
     "font.family": "sans-serif",
     "font.sans-serif": ["Helvetica Neue", "Helvetica", "Arial", "DejaVu Sans"],
     "axes.spines.top": False, "axes.spines.right": False,
-    "axes.edgecolor": "#c9d0dd", "axes.labelcolor": INK,
+    "axes.edgecolor": "#3a4253", "axes.labelcolor": INK,
     "text.color": INK, "xtick.color": GREY, "ytick.color": GREY,
-    "figure.facecolor": "white", "axes.facecolor": "white",
-    "grid.color": "#e3e7ef",
+    "figure.facecolor": PAPER, "axes.facecolor": PANEL,
+    "savefig.facecolor": PAPER, "grid.color": "#252b38",
+    "legend.facecolor": PANEL, "legend.edgecolor": "#3a4253",
 })
 
 
@@ -97,7 +99,8 @@ def calibration(n_learners=50, n_steps=120, threshold=0.9, n_bins=10,
                          gap=(frac - mean_b) if n else float("nan")))
 
     fig, ax = plt.subplots(figsize=(5.2, 4.4))
-    ax.plot([0, 1], [0, 1], "--", color=GREY, lw=1, label="perfect calibration")
+    ax.plot([0, 1], [0, 1], "--", color="#5a6377", lw=1,
+            label="perfect calibration")
     xs = [r["mean_belief"] for r in rows if r["n"]]
     ys = [r["frac_truly_known"] for r in rows if r["n"]]
     es = [r["ci95"] for r in rows if r["n"]]

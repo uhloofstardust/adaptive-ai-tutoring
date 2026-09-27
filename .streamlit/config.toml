@@ -1,5 +1,15 @@
 [server]
 headless = true
 port = 8765
+
 [browser]
 gatherUsageStats = false
+
+# Pinned, so the interface never follows the OS theme and fights its own CSS.
+[theme]
+base = "dark"
+primaryColor = "#6f8ffb"
+backgroundColor = "#0d1016"
+secondaryBackgroundColor = "#161b26"
+textColor = "#e6e9f0"
+font = "sans serif"

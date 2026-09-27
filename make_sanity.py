@@ -28,7 +28,8 @@ def dump(name, out):
     for tn, rows in out["tables"].items():
         pd.DataFrame(rows).to_csv(f"{OUT}/{name}.csv", index=False)
     for fn, fig in out["figures"].items():
-        fig.savefig(f"{OUT}/{name}.png", dpi=170, bbox_inches="tight")
+        fig.savefig(f"{OUT}/{name}.png", dpi=170, bbox_inches="tight",
+                    facecolor=fig.get_facecolor())
         plt.close(fig)
 
 
@@ -68,6 +69,7 @@ with open(f"{OUT}/trace_20.md", "w") as f:
 
 # rendered table image, for slides
 fig, ax = plt.subplots(figsize=(13, 0.42 * len(rows) + 1.0), dpi=150)
+fig.patch.set_facecolor("#12151d")
 ax.axis("off")
 cells = [[r["step"], textwrap.fill(pretty_zpd(r["zpd"]), 44), name_of[r["asked"]],
           r["answer"], f"{r['true_before']} -> {r['true_after']}",
@@ -80,19 +82,24 @@ tbl = ax.table(cellText=cells,
                loc="upper left", cellLoc="left")
 tbl.auto_set_font_size(False); tbl.set_fontsize(7.5)
 for (i, j), c in tbl.get_celld().items():
-    c.set_edgecolor("#e5e7eb")
+    c.set_edgecolor("#2a3140")
     c.set_height(0.062 if i == 0 else 0.055)
     if i == 0:
-        c.set_text_props(weight="bold", color="white"); c.set_facecolor("#1f2937")
-    elif j == 3:
-        c.set_text_props(color="#2f855a" if rows[i - 1]["answer"] == "right" else "#b5541c",
-                         weight="bold")
-    elif j == 4 and rows[i - 1]["true_before"] != rows[i - 1]["true_after"]:
-        c.set_facecolor("#e6f4ea")          # the step the student actually learned
+        c.set_text_props(weight="bold", color="#0d1016"); c.set_facecolor("#6f8ffb")
+    else:
+        c.set_facecolor("#171c26")
+        c.set_text_props(color="#e6e9f0")
+        if j == 3:
+            c.set_text_props(
+                color="#3ecf8e" if rows[i - 1]["answer"] == "right" else "#f07a54",
+                weight="bold")
+        elif j == 4 and rows[i - 1]["true_before"] != rows[i - 1]["true_after"]:
+            c.set_facecolor("#16342a")      # the step the student actually learned
 ax.set_title("One run, 20 questions: what was asked, what happened, what the tutor "
              "believed. Green row = the student learned it on that step.",
-             fontsize=9, loc="left", pad=8)
-fig.savefig(f"{OUT}/trace_20.png", bbox_inches="tight")
+             fontsize=9, loc="left", pad=8, color="#e6e9f0")
+fig.savefig(f"{OUT}/trace_20.png", bbox_inches="tight",
+            facecolor=fig.get_facecolor())
 plt.close(fig)
 
 # ---------------------------------------------------------------- summary
