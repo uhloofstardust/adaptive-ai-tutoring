@@ -10,3 +10,5 @@ __pycache__/
 # curriculum.json stays out: it is derived directly from cursim/curriculum.py
 # by `python -m cursim.curriculum`, so committing it would duplicate the source.
 data/*.json
+.DS_Store
+runs/

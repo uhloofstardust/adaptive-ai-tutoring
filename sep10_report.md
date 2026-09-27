@@ -1,6 +1,6 @@
 # Sep 10 report: two new schedulers and a new forgetting model
 
-Jigar Shaikh (DA25M014) · cursim
+cursim
 
 I added three things from two papers and tested them against what we already had.
 Short version: **none of them beat what we already had**, and the reason why is

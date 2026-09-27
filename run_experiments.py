@@ -193,7 +193,7 @@ def experiment4(cur):
 
 # --------------------------------------------------------------------
 def selftest():
-    cur = build_curriculum()
+    cur = build_curriculum("language")
     cfg = SimConfig()
 
     assert cur.is_dag() and len(cur.concepts) == 40
@@ -264,7 +264,7 @@ def selftest():
 def main():
     os.makedirs(FIG, exist_ok=True)
     os.makedirs(DATA, exist_ok=True)
-    cur = build_curriculum()
+    cur = build_curriculum("language")
     cur.to_json(f"{DATA}/curriculum.json")
     fig_curriculum(cur, f"{FIG}/fig1_curriculum.png")
     print(f"curriculum: {len(cur.concepts)} concepts, "

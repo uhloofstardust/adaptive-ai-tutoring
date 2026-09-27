@@ -1,4 +1,4 @@
-"""Produce every artifact Surya's mail asks for, from the command line.
+"""Produce every sanity-check artifact from the command line.
 
     python3 make_sanity.py            -> sanity_outputs/
 
@@ -33,11 +33,11 @@ def dump(name, out):
 
 
 # ---------------------------------------------------------------- checks
-c1 = calibration(n_learners=100, n_steps=400, cur=cur)
+c1 = calibration(n_learners=100, n_steps=120, cur=cur)
 dump("check1_calibration", c1)
-c1_big = calibration(n_learners=400, n_steps=400, cur=cur)   # the noise check
+c1_big = calibration(n_learners=400, n_steps=120, cur=cur)   # the noise check
 dump("check1_calibration_400learners", c1_big)
-c2 = detection(n_learners=30, n_steps=400, cur=cur)
+c2 = detection(n_learners=30, n_steps=120, cur=cur)
 dump("check2_detection", c2)
 
 # ---------------------------------------------------------------- trace
@@ -70,8 +70,8 @@ with open(f"{OUT}/trace_20.md", "w") as f:
 fig, ax = plt.subplots(figsize=(13, 0.42 * len(rows) + 1.0), dpi=150)
 ax.axis("off")
 cells = [[r["step"], textwrap.fill(pretty_zpd(r["zpd"]), 44), name_of[r["asked"]],
-          r["answer"], f"{r['true_before']} → {r['true_after']}",
-          f"{r['belief_before']:.3f} → {r['belief_after']:.3f}",
+          r["answer"], f"{r['true_before']} -> {r['true_after']}",
+          f"{r['belief_before']:.3f} -> {r['belief_after']:.3f}",
           "yes" if r["declared_mastered"] else ""] for r in rows]
 tbl = ax.table(cellText=cells,
                colLabels=["step", "ZPD before the question", "asked", "answer",

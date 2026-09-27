@@ -152,7 +152,7 @@ class Learner:
 
 
 # ======================================================================
-# Plain BKT student (the sanity-check learner Surya asked for)
+# Plain BKT student (the sanity-check learner)
 # ======================================================================
 from .params import BKT_PARAMS
 
@@ -168,9 +168,9 @@ class BKTLearner:
     Records the exact step at which each concept was learned, which is
     what the detection-delay check needs.
 
-    prereq_gated_pT is the ONE hook for the next step in Surya's mail:
-    when on, a concept whose prerequisites are not all truly known
-    learns with pT_low instead of p_T. Off by default.
+    prereq_gated_pT is the ONE hook for the prerequisite-based
+    student model: when on, a concept whose prerequisites are not
+    all truly known learns with pT_low instead of p_T. Off by default.
     """
 
     def __init__(self, curriculum: Curriculum, profile=None, seed: int = 0,

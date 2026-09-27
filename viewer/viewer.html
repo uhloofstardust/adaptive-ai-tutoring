@@ -1,0 +1,355 @@
+<meta charset="utf-8">
+<style>
+:root{
+  --ink:#1b2230; --soft:#5b6478; --faint:#8b94a7; --line:#e3e7ef;
+  --bg1:#eef2f9; --bg2:#f7f9fc; --glass:rgba(255,255,255,.62);
+  --accent:#3f6ae0; --accent-soft:rgba(63,106,224,.12);
+  --ok:#1f9d6b; --ok-soft:rgba(31,157,107,.14);
+  --warn:#d0762a; --warn-soft:rgba(208,118,42,.14);
+  --ready:#e3a008; --shadow:0 1px 2px rgba(27,34,48,.05),0 8px 26px -14px rgba(27,34,48,.28);
+  --r:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;
+  color:var(--ink); font-size:13px; line-height:1.45;
+  background:
+    radial-gradient(1100px 520px at 12% -8%, #dfe8fb 0%, transparent 60%),
+    radial-gradient(900px 480px at 92% 4%, #e6f3ee 0%, transparent 55%),
+    linear-gradient(170deg,var(--bg1),var(--bg2));
+  -webkit-font-smoothing:antialiased; padding:14px;
+}
+.glass{
+  background:var(--glass); backdrop-filter:blur(14px) saturate(150%);
+  -webkit-backdrop-filter:blur(14px) saturate(150%);
+  border:1px solid rgba(255,255,255,.75); border-radius:var(--r);
+  box-shadow:var(--shadow);
+}
+.lbl{font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);font-weight:600}
+
+/* ---------- transport ---------- */
+.bar{display:flex;align-items:center;gap:14px;padding:11px 14px;margin-bottom:12px}
+button{
+  font:inherit;font-weight:600;font-size:12.5px;color:var(--ink);cursor:pointer;
+  border:1px solid rgba(255,255,255,.8);border-radius:9px;padding:7px 14px;
+  background:rgba(255,255,255,.72);transition:.15s;
+}
+button:hover{background:#fff;transform:translateY(-1px)}
+button:active{transform:none}
+button.primary{background:var(--accent);color:#fff;border-color:transparent}
+button.primary:hover{background:#3459c4}
+button:disabled{opacity:.4;cursor:default;transform:none}
+input[type=range]{-webkit-appearance:none;height:4px;border-radius:4px;background:var(--line);outline:none}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:15px;height:15px;border-radius:50%;
+  background:var(--accent);border:2.5px solid #fff;box-shadow:0 1px 4px rgba(27,34,48,.3);cursor:pointer}
+#scrub{flex:1;min-width:120px}
+.stepno{font-variant-numeric:tabular-nums;font-weight:700;font-size:15px;min-width:74px}
+.stepno small{font-weight:500;color:var(--faint);font-size:11px}
+select{font:inherit;font-size:12px;border:1px solid var(--line);border-radius:8px;
+  padding:5px 8px;background:rgba(255,255,255,.75);color:var(--ink)}
+
+/* ---------- layout ---------- */
+.cols{display:grid;grid-template-columns:minmax(300px,1fr) minmax(380px,1.2fr);gap:12px;align-items:start}
+@media(max-width:720px){.cols{grid-template-columns:1fr}}
+.panel{padding:13px 15px}
+.head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:9px}
+.head h3{margin:0;font-size:13.5px;font-weight:650;letter-spacing:-.01em}
+
+/* ---------- now-playing ---------- */
+.now{display:grid;grid-template-columns:auto 1fr;gap:5px 14px;align-items:baseline;
+  padding:11px 14px;margin-bottom:12px}
+.now .k{font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);font-weight:600}
+.now .v{font-size:13px}
+.pill{display:inline-block;padding:2px 9px;border-radius:999px;font-weight:650;font-size:11.5px}
+.pill.right{background:var(--ok-soft);color:var(--ok)}
+.pill.wrong{background:var(--warn-soft);color:var(--warn)}
+.pill.declared{background:var(--accent-soft);color:var(--accent)}
+.mono{font-variant-numeric:tabular-nums}
+.delta{font-weight:650}
+.up{color:var(--ok)} .down{color:var(--warn)}
+
+/* ---------- graph ---------- */
+#graph{width:100%;display:block}
+.nd{transition:.25s}
+.nd circle{stroke-width:2}
+.nd text{text-anchor:middle;pointer-events:none}
+.nd .cap{font-size:11.5px;font-weight:700}
+.nd .sub{font-size:9px;font-weight:500;fill:var(--soft)}
+.nd.asked circle{filter:drop-shadow(0 2px 7px rgba(63,106,224,.5))}
+@keyframes ping{0%{r:20}50%{r:21.5}100%{r:20}}
+@media(prefers-reduced-motion:no-preference){.nd.asked circle{animation:ping 1.4s ease-in-out infinite}}
+.edge{stroke:#c3cbdb;stroke-width:1.5;fill:none}
+.edge.live{stroke:var(--accent);stroke-width:2.2}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;font-size:11px;color:var(--soft)}
+.legend i{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:-1px}
+
+/* ---------- chart grid ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.chip{
+  font-size:11px;font-weight:600;padding:3px 10px;border-radius:999px;cursor:pointer;
+  border:1px solid var(--line);background:rgba(255,255,255,.6);color:var(--soft);user-select:none;transition:.13s}
+.chip:hover{border-color:var(--accent)}
+.chip.on{background:var(--accent);border-color:transparent;color:#fff}
+.chip.mini{font-size:10px;padding:2px 8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px}
+.cell{background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.8);
+  border-radius:10px;padding:7px 8px 4px;transition:.2s}
+.cell.asked{border-color:var(--accent);background:rgba(63,106,224,.07)}
+.cell .ct{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px}
+.cell .cn{font-size:11.5px;font-weight:700}
+.cell .cv{font-size:11px;font-variant-numeric:tabular-nums;color:var(--soft)}
+.cell .wrap{position:relative;height:56px}
+.note{font-size:11px;color:var(--faint);margin-top:9px}
+</style>
+
+<div class="bar glass">
+  <button id="play" class="primary">Play</button>
+  <button id="back">&#8592;</button>
+  <button id="fwd">&#8594;</button>
+  <input type="range" id="scrub" min="1" value="1">
+  <div class="stepno"><span id="cur">1</span><small id="tot"></small></div>
+  <select id="speed">
+    <option value="900">0.5&times;</option>
+    <option value="450" selected>1&times;</option>
+    <option value="220">2&times;</option>
+    <option value="90">5&times;</option>
+  </select>
+</div>
+
+<div class="now glass">
+  <div class="k">Asks</div>
+  <div class="v"><b id="nAsk"></b> <span class="mono" id="nQid" style="color:var(--faint)"></span></div>
+  <div class="k">Answer</div>
+  <div class="v"><span id="nAns"></span> &nbsp; <span style="color:var(--faint)">true state</span>
+    <b id="nTrue"></b></div>
+  <div class="k">Belief</div>
+  <div class="v mono"><span id="nB0"></span> &rarr; <b id="nB1"></b>
+    <span class="delta" id="nD"></span> &nbsp; <span id="nDec"></span></div>
+  <div class="k">ZPD</div>
+  <div class="v" id="nZpd"></div>
+</div>
+
+<div class="cols">
+  <div class="panel glass">
+    <div class="head"><h3>Curriculum graph</h3><span class="lbl" id="gMeta"></span></div>
+    <svg id="graph" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="legend">
+      <span><i style="background:var(--ok)"></i>declared mastered</span>
+      <span><i style="background:var(--ready)"></i>in the ZPD</span>
+      <span><i style="background:#c7cedd"></i>not ready</span>
+      <span><i style="background:var(--accent)"></i>being asked</span>
+      <span>ring = the student truly knows it</span>
+    </div>
+  </div>
+
+  <div class="panel glass">
+    <div class="head"><h3>Belief over time</h3>
+      <span><span class="chip mini" id="selAll">all</span>
+            <span class="chip mini" id="selZpd">ZPD only</span>
+            <span class="chip mini" id="selNone">none</span></span></div>
+    <div class="chips" id="chips"></div>
+    <div class="grid" id="grid"></div>
+    <div class="note">Every selected concept advances together, so you never have to wait
+      for one to come round again. Dashed line = the mastery threshold.
+      Green band = the student truly knows it.</div>
+  </div>
+</div>
+
+<script>
+const D = __PAYLOAD__;
+const TH = D.meta.threshold;
+const IDS = D.concepts.map(c => c.id);
+const CONCEPT = Object.fromEntries(D.concepts.map(c => [c.id, c]));
+const CSS = getComputedStyle(document.documentElement);
+const C = n => CSS.getPropertyValue(n).trim();
+
+let step = 1, timer = null, shown = new Set(IDS);
+
+/* ---------------- graph ---------------- */
+const W = 400, H = 300, PAD = 34;
+const svg = document.getElementById("graph");
+const X = c => PAD + CONCEPT[c].x * (W - 2 * PAD);
+const Y = c => PAD + CONCEPT[c].y * (H - 2 * PAD);
+
+svg.innerHTML =
+  D.edges.map(e =>
+    `<path class="edge" id="e-${e.from}-${e.to}" d="M ${X(e.from)},${Y(e.from)}
+      C ${X(e.from)},${(Y(e.from)+Y(e.to))/2} ${X(e.to)},${(Y(e.from)+Y(e.to))/2}
+        ${X(e.to)},${Y(e.to)}"/>`).join("") +
+  D.concepts.map(c =>
+    `<g class="nd" id="n-${c.id}">
+       <circle cx="${X(c.id)}" cy="${Y(c.id)}" r="17"/>
+       <text class="cap" x="${X(c.id)}" y="${Y(c.id)+4}">${c.id}</text>
+       <text class="sub" x="${X(c.id)}" y="${Y(c.id)+30}"></text>
+     </g>`).join("");
+
+function paintGraph(s) {
+  const inZpd = new Set(s.zpd);
+  for (const c of IDS) {
+    const g = document.getElementById("n-" + c);
+    const circle = g.querySelector("circle");
+    const sub = g.querySelector(".sub");
+    const b = s.beliefs[c], known = s.truth[c] >= 0.999;
+    const declared = b >= TH;
+    let fill = "#eceff5", stroke = "#c7cedd", tx = C("--soft");
+    if (declared) { fill = C("--ok-soft"); stroke = C("--ok"); tx = C("--ok"); }
+    else if (inZpd.has(c)) { fill = "rgba(227,160,8,.14)"; stroke = C("--ready"); tx = "#8a6300"; }
+    // the concept being asked is filled solid: it must be the single most
+    // legible thing on the graph, at any size
+    if (c === s.asked) { fill = C("--accent"); stroke = C("--accent"); tx = "#ffffff"; }
+    circle.setAttribute("fill", fill);
+    circle.setAttribute("stroke", stroke);
+    circle.setAttribute("r", c === s.asked ? 20 : 17);
+    circle.setAttribute("stroke-dasharray", known ? "" : "3 2.5");
+    g.classList.toggle("asked", c === s.asked);
+    const cap = g.querySelector(".cap");
+    cap.setAttribute("fill", tx);
+    cap.setAttribute("font-size", c === s.asked ? "13" : "11.5");
+    sub.setAttribute("fill", c === s.asked ? C("--accent") : C("--soft"));
+    sub.setAttribute("font-weight", c === s.asked ? "700" : "500");
+    sub.textContent = b.toFixed(2);
+  }
+  for (const e of D.edges) {
+    const p = document.getElementById(`e-${e.from}-${e.to}`);
+    p.classList.toggle("live", e.to === s.asked || e.from === s.asked);
+  }
+}
+
+/* ---------------- chart grid ---------------- */
+const charts = {};
+function buildGrid() {
+  const grid = document.getElementById("grid");
+  grid.innerHTML = IDS.filter(c => shown.has(c)).map(c =>
+    `<div class="cell" id="cell-${c}">
+       <div class="ct"><span class="cn">${c}</span><span class="cv" id="cv-${c}"></span></div>
+       <div class="wrap"><canvas id="cv-canvas-${c}"></canvas></div>
+     </div>`).join("");
+  for (const k in charts) { charts[k].destroy(); delete charts[k]; }
+  for (const c of IDS) {
+    if (!shown.has(c)) continue;
+    charts[c] = new Chart(document.getElementById("cv-canvas-" + c), {
+      type: "line",
+      data: { labels: [], datasets: [
+        { data: [], borderColor: C("--accent"), borderWidth: 1.9,
+          pointRadius: 0, tension: .25, fill: false },
+        { data: [], borderColor: "transparent",
+          backgroundColor: C("--ok-soft"), pointRadius: 0, fill: "origin",
+          stepped: true },
+      ]},
+      options: {
+        animation: false, responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        scales: {
+          y: { min: 0, max: 1, grid: { color: "rgba(0,0,0,.05)" },
+               ticks: { font: { size: 8 }, color: C("--faint"),
+                        callback: v => (v === 0 || v === 1 ? v : "") } },
+          x: { display: false, min: 0, max: Math.max(2, D.meta.nSteps) },
+        },
+        elements: { line: { borderJoinStyle: "round" } },
+      },
+      plugins: [{
+        id: "thresh",
+        afterDraw(ch) {
+          const y = ch.scales.y.getPixelForValue(TH), a = ch.chartArea;
+          const x = ch.ctx;
+          x.save(); x.setLineDash([3, 3]); x.strokeStyle = "rgba(27,34,48,.28)";
+          x.lineWidth = 1; x.beginPath(); x.moveTo(a.left, y); x.lineTo(a.right, y);
+          x.stroke(); x.restore();
+        },
+      }],
+    });
+  }
+  paintCharts(step);
+}
+
+function paintCharts(n) {
+  const labels = Array.from({ length: n }, (_, i) => i + 1);
+  const s = D.steps[n - 1];
+  for (const c of IDS) {
+    if (!shown.has(c)) continue;
+    const ch = charts[c];
+    ch.data.labels = labels;
+    ch.data.datasets[0].data = D.steps.slice(0, n).map(t => t.beliefs[c]);
+    ch.data.datasets[1].data = D.steps.slice(0, n).map(t => t.truth[c]);
+    ch.update("none");
+    document.getElementById("cv-" + c).textContent = s.beliefs[c].toFixed(3);
+    document.getElementById("cell-" + c).classList.toggle("asked", c === s.asked);
+  }
+}
+
+/* ---------------- chips ---------------- */
+const chips = document.getElementById("chips");
+chips.innerHTML = IDS.map(c =>
+  `<span class="chip on" data-c="${c}">${c}</span>`).join("");
+chips.onclick = e => {
+  const c = e.target.dataset.c; if (!c) return;
+  shown.has(c) ? shown.delete(c) : shown.add(c);
+  e.target.classList.toggle("on", shown.has(c));
+  buildGrid();
+};
+function setShown(list) {
+  shown = new Set(list);
+  [...chips.children].forEach(el => el.classList.toggle("on", shown.has(el.dataset.c)));
+  buildGrid();
+}
+document.getElementById("selAll").onclick = () => setShown(IDS);
+document.getElementById("selNone").onclick = () => setShown([]);
+document.getElementById("selZpd").onclick = () => setShown(D.steps[step - 1].zpd);
+
+/* ---------------- now-playing ---------------- */
+function paintNow(s) {
+  document.getElementById("nAsk").textContent = s.asked;
+  document.getElementById("nQid").textContent = s.qid;
+  document.getElementById("nAns").innerHTML =
+    `<span class="pill ${s.correct ? "right" : "wrong"}">${s.correct ? "right" : "wrong"}</span>`;
+  const f = v => (v >= .999 ? "knows it" : v <= .001 ? "not yet" : v.toFixed(2));
+  document.getElementById("nTrue").textContent = " " + f(s.trueBefore) + " \u2192 " + f(s.trueAfter);
+  document.getElementById("nB0").textContent = s.beliefBefore.toFixed(3);
+  document.getElementById("nB1").textContent = s.beliefAfter.toFixed(3);
+  const d = s.beliefAfter - s.beliefBefore;
+  const de = document.getElementById("nD");
+  de.textContent = (d >= 0 ? "\u25b2 +" : "\u25bc ") + d.toFixed(3);
+  de.className = "delta " + (d >= 0 ? "up" : "down");
+  document.getElementById("nDec").innerHTML =
+    s.declared ? '<span class="pill declared">declared mastered</span>' : "";
+  document.getElementById("nZpd").innerHTML = s.zpd.length
+    ? s.zpd.map(c => `<span class="chip ${c === s.asked ? "on" : ""}" style="cursor:default">${c}</span>`).join(" ")
+    : '<span style="color:var(--faint)">empty — everything believed mastered</span>';
+}
+
+/* ---------------- transport ---------------- */
+const scrub = document.getElementById("scrub");
+scrub.max = D.meta.nSteps;
+document.getElementById("tot").textContent = " / " + D.meta.nSteps;
+document.getElementById("gMeta").textContent =
+  D.meta.curriculum + " \u00b7 " + D.concepts.length + " concepts";
+
+function go(n) {
+  step = Math.min(Math.max(1, n), D.meta.nSteps);
+  scrub.value = step;
+  document.getElementById("cur").textContent = step;
+  const s = D.steps[step - 1];
+  paintNow(s); paintGraph(s); paintCharts(step);
+}
+scrub.oninput = () => go(+scrub.value);
+document.getElementById("back").onclick = () => { pause(); go(step - 1); };
+document.getElementById("fwd").onclick = () => { pause(); go(step + 1); };
+
+const playBtn = document.getElementById("play");
+function pause() { clearInterval(timer); timer = null; playBtn.textContent = "Play"; }
+function play() {
+  if (step >= D.meta.nSteps) go(1);
+  playBtn.textContent = "Pause";
+  timer = setInterval(() => {
+    if (step >= D.meta.nSteps) { pause(); return; }
+    go(step + 1);
+  }, +document.getElementById("speed").value);
+}
+playBtn.onclick = () => (timer ? pause() : play());
+document.getElementById("speed").onchange = () => { if (timer) { pause(); play(); } };
+
+buildGrid();
+go(1);
+</script>

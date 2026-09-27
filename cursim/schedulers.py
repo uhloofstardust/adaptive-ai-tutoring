@@ -291,7 +291,7 @@ class UCBScheduler(Scheduler):
 
 
 SCHEDULERS = {
-    "uniform_zpd": CurriculumTutorScheduler,     # the mail's scheduler, by its plain name
+    "uniform_zpd": CurriculumTutorScheduler,     # the same class, by its plain name
     "random": RandomScheduler,
     "curriculum_tutor": CurriculumTutorScheduler,
     "continuous": ContinuousScheduler,

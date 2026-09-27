@@ -1,135 +1,41 @@
 """cursim.curriculum -- the curriculum data model.
 
-Defines the concept graph and question bank that the rest of the
-`cursim` simulator is built on: a directed acyclic graph (DAG) of
-language-learning concepts, each holding a bank of practice questions
-with their own difficulty. This is a pure data module -- it has no
-dependency on any other `cursim` file. `test_simulator.py` imports it
-to check the graph and question bank are well-formed.
+The curriculum is DATA, not code. Every graph lives as JSON under
+`data/`, so adding one is a new file, never an edit here:
 
-Contents, in order:
-  * WORDS, SPEC       -- the raw curriculum data (word pairs, and the
-                          40-concept graph: id, name, tier, prereqs,
-                          question count)
-  * Question, Concept -- dataclasses for one question and one concept
-  * Curriculum         -- the graph itself, with structural checks,
-                          traversal, and JSON save/load
-  * build_curriculum() -- builds a Curriculum from SPEC/WORDS
+    data/curriculum_abstract.json   8 concepts, the default
+    data/curriculum_language.json   40 concepts, the original, kept so
+                                    the earlier experiments and their
+                                    committed results stay reproducible
 
-For why the questions carry individual difficulty and why the graph is
-wide and shallow rather than narrow and deep (both deliberate
-departures from CurriculumTutor), see simulator_expln.md, Part 3.
+Anything in `data/` named `curriculum_<name>.json` is loadable by
+`<name>`, and `available()` lists whatever is actually present, so the
+interface picks up a new curriculum with no code change.
 
-Item text is illustrative: the simulation itself consumes only concept
-membership and difficulty, never the prompt/answer strings, so the
-placeholder text below must be replaced before any human pilot.
-Vocabulary concepts carry real Marathi/Bengali word pairs (WORDS,
-below) where available; grammar concepts carry generic pattern
-descriptions instead.
+Contents:
+  * Question, Concept  -- one practice item, one node
+  * Curriculum         -- the graph, with structural checks, traversal,
+                          a tier layout for drawing, and JSON round-trip
+  * build_curriculum() -- load one by name
 """
 
 import json
 import os
-import random
 from dataclasses import dataclass, asdict, field
 from typing import Dict, List
 
-SOURCE_LANG, TARGET_LANG = "Marathi", "Bengali"
+DATA_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
+DEFAULT = "abstract"
 
-# Real word pairs for the vocabulary concepts. Where a concept needs
-# more questions than there are pairs, extra items are generated as
-# clearly-labelled recall variants.
-WORDS = {
-    "greetings": [("नमस्कार", "নমস্কার"), ("धन्यवाद", "ধন্যবাদ"),
-                  ("होय", "হ্যাঁ"), ("नाही", "না"),
-                  ("क्षमा करा", "ক্ষমা করবেন"), ("शुभ रात्री", "শুভ রাত্রি")],
-    "numbers_1_5": [("एक", "এক"), ("दोन", "দুই"), ("तीन", "তিন"),
-                    ("चार", "চার"), ("पाच", "পাঁচ")],
-    "numbers_6_10": [("सहा", "ছয়"), ("सात", "সাত"), ("आठ", "আট"),
-                     ("नऊ", "নয়"), ("दहा", "দশ")],
-    "colors": [("लाल", "লাল"), ("निळा", "নীল"), ("हिरवा", "সবুজ"),
-               ("पिवळा", "হলুদ"), ("पांढरा", "সাদা"), ("काळा", "কালো")],
-    "pronouns": [("मी", "আমি"), ("तू", "তুমি"), ("तो", "সে"),
-                 ("आम्ही", "আমরা"), ("ते", "তারা")],
-    "family": [("आई", "মা"), ("वडील", "বাবা"), ("भाऊ", "ভাই"),
-               ("बहीण", "বোন"), ("मुलगा", "ছেলে"), ("मुलगी", "মেয়ে")],
-    "food": [("पाणी", "জল"), ("दूध", "দুধ"), ("भात", "ভাত"),
-             ("फळ", "ফল"), ("चहा", "চা"), ("मीठ", "নুন")],
-    "animals": [("कुत्रा", "কুকুর"), ("मांजर", "বিড়াল"), ("गाय", "গরু"),
-                ("पक्षी", "পাখি"), ("मासा", "মাছ")],
-    "body": [("हात", "হাত"), ("डोळा", "চোখ"), ("पाय", "পা"),
-             ("डोकं", "মাথা"), ("कान", "কান")],
-    "household": [("घर", "বাড়ি"), ("दार", "দরজা"), ("खिडकी", "জানালা"),
-                  ("पुस्तक", "বই"), ("खुर्ची", "চেয়ার")],
-    "time_basic": [("दिवस", "দিন"), ("रात्र", "রাত"), ("सकाळ", "সকাল"),
-                   ("आज", "আজ"), ("उद्या", "আগামীকাল")],
-    "places": [("शाळा", "স্কুল"), ("दुकान", "দোকান"), ("शहर", "শহর"),
-               ("गाव", "গ্রাম"), ("रस्ता", "রাস্তা")],
-    "adjectives_basic": [("मोठा", "বড়"), ("लहान", "ছোট"),
-                         ("चांगला", "ভালো"), ("नवीन", "নতুন"),
-                         ("गरम", "গরম")],
-}
 
-# (concept_id, display name, tier, prerequisites, n_questions)
-SPEC = [
-    # tier 0: independent roots
-    ("greetings", "Greetings", 0, [], 8),
-    ("numbers_1_5", "Numbers 1-5", 0, [], 7),
-    ("colors", "Colors", 0, [], 7),
-    ("pronouns", "Pronouns", 0, [], 6),
-    ("yes_no", "Yes / no answers", 0, [], 5),
-    # tier 1
-    ("numbers_6_10", "Numbers 6-10", 1, ["numbers_1_5"], 7),
-    ("family", "Family words", 1, ["greetings"], 8),
-    ("food", "Food and drink", 1, ["greetings"], 8),
-    ("animals", "Animals", 1, ["greetings"], 6),
-    ("body", "Body parts", 1, ["greetings"], 6),
-    ("household", "Household objects", 1, ["greetings"], 7),
-    ("adjectives_basic", "Basic adjectives", 1, ["colors"], 7),
-    ("time_basic", "Time words", 1, ["numbers_1_5"], 6),
-    ("directions", "Direction words", 1, ["pronouns"], 6),
-    # tier 2
-    ("plurals", "Plural forms", 2, ["family", "food"], 7),
-    ("possessives", "Possessives", 2, ["pronouns", "family"], 7),
-    ("verbs_present", "Present tense verbs", 2, ["pronouns"], 9),
-    ("question_words", "Question words", 2, ["yes_no", "pronouns"], 7),
-    ("places", "Places", 2, ["directions"], 6),
-    ("numbers_teens", "Numbers 11-20", 2, ["numbers_6_10"], 7),
-    ("weather", "Weather", 2, ["adjectives_basic"], 6),
-    ("clothing", "Clothing", 2, ["colors", "household"], 6),
-    ("market", "Market words", 2, ["food", "numbers_6_10"], 7),
-    ("ailments", "Talking about illness", 2, ["body"], 6),
-    # tier 3
-    ("negation", "Negation", 3, ["verbs_present", "yes_no"], 7),
-    ("verbs_past", "Past tense verbs", 3, ["verbs_present"], 9),
-    ("postpositions", "Postpositions", 3, ["places", "possessives"], 8),
-    ("simple_sentences", "Simple sentences", 3,
-     ["verbs_present", "plurals"], 9),
-    ("politeness", "Polite forms", 3, ["greetings", "verbs_present"], 7),
-    ("telling_time", "Telling the time", 3,
-     ["time_basic", "numbers_teens"], 7),
-    ("shopping_talk", "Shopping dialogue", 3,
-     ["market", "question_words"], 8),
-    ("describing", "Describing people", 3,
-     ["adjectives_basic", "body"], 7),
-    # tier 4
-    ("verbs_future", "Future tense verbs", 4, ["verbs_past"], 8),
-    ("compound_sentences", "Compound sentences", 4,
-     ["simple_sentences", "negation"], 9),
-    ("narration_past", "Narrating past events", 4,
-     ["verbs_past", "simple_sentences"], 9),
-    ("directions_talk", "Asking for directions", 4,
-     ["postpositions", "question_words"], 8),
-    ("clinic_talk", "At the clinic", 4, ["ailments", "politeness"], 7),
-    # tier 5
-    ("conditionals", "Conditional sentences", 5,
-     ["compound_sentences"], 8),
-    ("formal_register", "Formal register", 5,
-     ["politeness", "compound_sentences"], 8),
-    # tier 6: depends on a tier-5 concept, so it needs its own level
-    ("storytelling", "Storytelling", 6,
-     ["narration_past", "conditionals"], 9),
-]
+def available() -> List[str]:
+    """Every curriculum name present in data/."""
+    if not os.path.isdir(DATA_DIR):
+        return []
+    return sorted(f[len("curriculum_"):-len(".json")]
+                  for f in os.listdir(DATA_DIR)
+                  if f.startswith("curriculum_") and f.endswith(".json"))
 
 
 @dataclass
@@ -157,10 +63,14 @@ class Concept:
 class Curriculum:
     """The whole curriculum: a dict of Concepts keyed by id, checked to
     be acyclic on construction. Provides read-only structural queries
-    (roots, topo_order, all_questions) plus JSON save/load."""
+    (roots, edges, topo_order, all_questions, layout) plus JSON
+    save/load."""
 
-    def __init__(self, concepts: Dict[str, Concept]):
+    def __init__(self, concepts: Dict[str, Concept], name: str = "",
+                 title: str = ""):
         self.concepts = concepts
+        self.name = name
+        self.title = title
         assert self.is_dag(), "curriculum graph must be acyclic"
 
     # -- structure ----------------------------------------------------
@@ -172,6 +82,10 @@ class Curriculum:
         """Concepts with no prerequisites -- the curriculum's entry
         points, i.e. the concepts a learner can start with."""
         return [c.cid for c in self.concepts.values() if not c.prereqs]
+
+    def edges(self) -> List[tuple]:
+        """(prerequisite, dependant) pairs, for drawing the graph."""
+        return [(p, c.cid) for c in self.concepts.values() for p in c.prereqs]
 
     def is_dag(self) -> bool:
         """True iff the prerequisite graph has no cycles. Standard
@@ -205,16 +119,31 @@ class Curriculum:
         list (order not meaningful)."""
         return [q for c in self.concepts.values() for q in c.questions]
 
+    def layout(self) -> Dict[str, Dict[str, float]]:
+        """Node positions for drawing: one row per tier, evenly spread
+        and centred. Computed here rather than in the viewer so every
+        picture of this graph agrees. x and y are both in [0, 1]."""
+        by_tier: Dict[int, List[str]] = {}
+        for c in sorted(self.concepts.values(), key=lambda c: (c.tier, c.cid)):
+            by_tier.setdefault(c.tier, []).append(c.cid)
+        tiers = sorted(by_tier)
+        pos = {}
+        for t in tiers:
+            row = by_tier[t]
+            y = tiers.index(t) / max(1, len(tiers) - 1)
+            for i, cid in enumerate(row):
+                pos[cid] = {"x": round((i + 1) / (len(row) + 1), 4),
+                            "y": round(y, 4), "tier": t}
+        return pos
+
     # -- persistence --------------------------------------------------
     def to_json(self, path: str):
-        """Write this curriculum to `path` as JSON (see
-        data/curriculum.json). Creates the parent directory if needed,
-        so a fresh clone can run this without first making data/."""
+        """Write this curriculum to `path` as JSON."""
         parent = os.path.dirname(path)
         if parent:
             os.makedirs(parent, exist_ok=True)
         blob = {
-            "source_lang": SOURCE_LANG, "target_lang": TARGET_LANG,
+            "name": self.name, "title": self.title,
             "concepts": [
                 {"cid": c.cid, "name": c.name, "tier": c.tier,
                  "prereqs": c.prereqs,
@@ -226,7 +155,7 @@ class Curriculum:
 
     @staticmethod
     def from_json(path: str) -> "Curriculum":
-        """Load a curriculum previously written by to_json()."""
+        """Load a curriculum from a JSON file written by to_json()."""
         with open(path, encoding="utf-8") as f:
             blob = json.load(f)
         concepts = {}
@@ -234,45 +163,27 @@ class Curriculum:
             qs = [Question(**q) for q in c["questions"]]
             concepts[c["cid"]] = Concept(c["cid"], c["name"], c["tier"],
                                          c["prereqs"], qs)
-        return Curriculum(concepts)
+        return Curriculum(concepts, blob.get("name", ""), blob.get("title", ""))
 
 
-def build_curriculum(seed: int = 11) -> Curriculum:
-    """Build a Curriculum from SPEC and WORDS above, generating each
-    concept's questions deterministically for a given seed.
+def build_curriculum(name: str = DEFAULT) -> Curriculum:
+    """Load a curriculum by name from data/.
 
-    Question difficulty rises with tier (later concepts are harder)
-    and varies within a concept, so that item selection has something
-    to choose between.
+    "abstract" (the default) is the small subject-free graph;
+    "language" is the original 40-concept one.
     """
-    rng = random.Random(seed)
-    concepts = {}
-    for cid, name, tier, prereqs, nq in SPEC:
-        base = 0.20 + 0.11 * tier              # tier 0 easy, tier 5 hard
-        pairs = WORDS.get(cid, [])
-        qs = []
-        for i in range(nq):
-            d = min(0.95, max(0.05, rng.gauss(base, 0.12)))
-            if i < len(pairs):
-                src, tgt = pairs[i]
-                prompt = f"{TARGET_LANG} for '{src}'?"
-                answer = tgt
-            else:
-                prompt = f"{name}: production item {i + 1}"
-                answer = f"<{cid}_{i + 1}>"
-            qs.append(Question(f"{cid}_q{i + 1}", cid, prompt, answer,
-                               round(d, 3)))
-        concepts[cid] = Concept(cid, name, tier, list(prereqs), qs)
-    return Curriculum(concepts)
+    path = os.path.join(DATA_DIR, f"curriculum_{name}.json")
+    if not os.path.exists(path):
+        raise FileNotFoundError(
+            f"no curriculum named {name!r} in {DATA_DIR}. "
+            f"Available: {', '.join(available()) or 'none'}")
+    return Curriculum.from_json(path)
 
 
 if __name__ == "__main__":
-    # Manual entry point: build the curriculum and persist it, so it
-    # can be inspected or reloaded without regenerating it.
-    cur = build_curriculum()
-    n_q = len(cur.all_questions())
-    print(f"{len(cur.concepts)} concepts, {n_q} questions, "
-          f"{len(cur.roots())} roots, "
-          f"max tier {max(c.tier for c in cur.concepts.values())}")
-    cur.to_json("data/curriculum.json")
-    print("wrote data/curriculum.json")
+    for n in available():
+        c = build_curriculum(n)
+        tiers = len({x.tier for x in c.concepts.values()})
+        print(f"{n:10s} {len(c.concepts):3d} concepts  "
+              f"{len(c.all_questions()):4d} questions  {tiers} tiers  "
+              f"roots: {', '.join(c.roots())}")
