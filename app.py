@@ -28,42 +28,39 @@ from cursim import viewer
 
 st.set_page_config(page_title="cursim", page_icon="◍", layout="wide")
 
-ACCENT, INK, FAINT = "#3f6ae0", "#1b2230", "#8b94a7"
+ACCENT, INK, FAINT = "#6f8ffb", "#e6e9f0", "#6e7688"
 OUT = "runs"
 
 st.markdown("""
 <style>
   .stApp{
     background:
-      radial-gradient(1100px 520px at 10% -6%, #dfe8fb 0%, transparent 58%),
-      radial-gradient(900px 460px at 94% 2%, #e6f3ee 0%, transparent 52%),
-      linear-gradient(170deg,#eef2f9,#f7f9fc);
+      radial-gradient(1100px 520px at 10% -6%, #18233d 0%, transparent 58%),
+      radial-gradient(900px 460px at 94% 2%, #142a2a 0%, transparent 52%),
+      linear-gradient(170deg,#0d1016,#11151e);
   }
   html,body,[class*="css"],button,input,select,textarea{
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif!important;
   }
-  h1{font-weight:650;letter-spacing:-.02em;margin-bottom:.1rem}
-  .sub{color:#5b6478;margin-top:0;font-size:14px}
+  h1{font-weight:650;letter-spacing:-.02em;margin-bottom:.1rem;color:#e9ecf3}
+  .sub{color:#98a1b5;margin-top:0;font-size:14px}
   section[data-testid="stSidebar"]{
-    background:rgba(255,255,255,.58);backdrop-filter:blur(14px) saturate(150%);
-    border-right:1px solid rgba(255,255,255,.8);
+    background:rgba(255,255,255,.035);backdrop-filter:blur(16px) saturate(140%);
+    border-right:1px solid rgba(255,255,255,.07);
   }
   div[data-testid="stExpander"],div[data-testid="stDataFrame"]{
-    background:rgba(255,255,255,.6);backdrop-filter:blur(12px);
-    border:1px solid rgba(255,255,255,.8);border-radius:14px;
+    background:rgba(255,255,255,.04);backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,.08);border-radius:14px;
   }
   .stTabs [data-baseweb="tab-list"]{gap:4px;background:transparent}
   .stTabs [data-baseweb="tab"]{
     border-radius:10px 10px 0 0;padding:6px 16px;font-weight:600;font-size:13.5px}
   .stButton>button{
-    border-radius:10px;font-weight:600;border:1px solid rgba(255,255,255,.8);
-    background:rgba(255,255,255,.75);transition:.15s}
-  .stButton>button:hover{background:#fff;transform:translateY(-1px)}
+    border-radius:10px;font-weight:600;border:1px solid rgba(255,255,255,.1);
+    background:rgba(255,255,255,.06);color:#e6e9f0;transition:.15s}
+  .stButton>button:hover{background:rgba(255,255,255,.12);transform:translateY(-1px)}
   .stDownloadButton>button{border-radius:10px;font-weight:600}
-  .card{background:rgba(255,255,255,.62);backdrop-filter:blur(14px) saturate(150%);
-    border:1px solid rgba(255,255,255,.8);border-radius:14px;padding:14px 16px;
-    box-shadow:0 1px 2px rgba(27,34,48,.05),0 8px 26px -14px rgba(27,34,48,.28)}
-  .kv{font-size:12px;color:#8b94a7;margin:0}
+  .kv{font-size:12px;color:#6e7688;margin:0}
 </style>
 """, unsafe_allow_html=True)
 
@@ -73,7 +70,7 @@ def show_fig(fig, width, close=True):
     """Render at a fixed pixel width; st.pyplot upscales unpredictably."""
     buf = io.BytesIO()
     fig.savefig(buf, format="png", dpi=160, bbox_inches="tight",
-                facecolor="white")
+                facecolor="#12151d")
     if close:
         plt.close(fig)
     st.image(buf.getvalue(), width=width)
@@ -92,7 +89,7 @@ def save_bundle(name, config, tables, figures, summary=""):
             pd.DataFrame(rows).to_csv(os.path.join(d, f"{tn}.csv"), index=False)
     for fn, fig in figures.items():
         fig.savefig(os.path.join(d, f"{fn}.png"), dpi=160, bbox_inches="tight",
-                    facecolor="white")
+                    facecolor="#12151d")
         plt.close(fig)
     if summary:
         with open(os.path.join(d, "summary.txt"), "w") as f:
