@@ -375,9 +375,17 @@ def two_by_two(n_learners=60, n_steps=40, threshold=0.9, seed0=4242,
 
     # the interaction: does the sign of (Q2 - Q1) depend on which student
     # it is? This, not either column on its own, is the claim.
+    #
+    # Seed i is the same person in all four cells, so the two per-student
+    # differences are paired, not independent: treating them as independent
+    # (sqrt(var/n + var/n)) ignores a positive correlation and gives an SE
+    # that is too wide. The per-seed difference of differences is the right
+    # statistic.
     a, b = diffs["S1"], diffs["S2"]
-    inter = st.mean(b) - st.mean(a)
-    inter_se = math.sqrt(st.variance(a) / len(a) + st.variance(b) / len(b))
+    per_seed = [y - x for x, y in zip(a, b)]
+    inter = st.mean(per_seed)
+    inter_se = (st.stdev(per_seed) / math.sqrt(len(per_seed))
+                if len(per_seed) > 1 else 0.0)
     paired_rows.append(dict(
         student="interaction (S2 minus S1)", diff_Q2_minus_Q1=inter,
         ci95=1.96 * inter_se, better_with_Q2=-1, n=len(a),
