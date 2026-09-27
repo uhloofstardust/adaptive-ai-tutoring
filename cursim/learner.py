@@ -235,9 +235,25 @@ class BKTLearner:
 
 # What the UI and the experiments pick from. Add a class here and it
 # shows up everywhere; nothing else needs editing.
+# (class, description, extra constructor kwargs). A learner whose only
+# difference is a flag gets its own name here rather than a hidden option,
+# so experiments and the interface can refer to it directly.
 LEARNERS = {
-    "bkt": (BKTLearner, "Plain BKT student: known/unknown coin per concept, "
-                        "no forgetting, no difficulty, no prerequisite effect"),
-    "continuous": (Learner, "Original cursim student: continuous mastery, "
-                            "difficulty, prerequisites, time decay"),
+    "bkt": (BKTLearner,
+            "S1. Plain BKT student: a known/unknown coin per concept, no "
+            "forgetting, no difficulty, and prerequisites do not affect "
+            "learning at all", {}),
+    "bkt_prereq": (BKTLearner,
+                   "S2. Same, but a concept learns at pT_low until every "
+                   "prerequisite is truly known, so order starts to matter",
+                   {"prereq_gated_pT": True}),
+    "continuous": (Learner,
+                   "Original cursim student: continuous mastery, difficulty, "
+                   "prerequisites, time decay", {}),
 }
+
+
+def learner_kwargs(name: str) -> dict:
+    """Extra constructor arguments for a registered learner."""
+    entry = LEARNERS[name]
+    return dict(entry[2]) if len(entry) > 2 else {}

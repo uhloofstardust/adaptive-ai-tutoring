@@ -17,7 +17,8 @@ import pandas as pd
 
 from cursim.curriculum import build_curriculum
 from cursim.params import BKT_PARAMS
-from cursim.sanity import calibration, detection, trace_table
+from cursim.sanity import (calibration, detection, mismatch,
+                           param_sweep, trace_table, two_by_two)
 
 OUT = "sanity_outputs"
 os.makedirs(OUT, exist_ok=True)
@@ -25,8 +26,15 @@ cur = build_curriculum()
 
 
 def dump(name, out):
-    for tn, rows in out["tables"].items():
-        pd.DataFrame(rows).to_csv(f"{OUT}/{name}.csv", index=False)
+    tables = out["tables"]
+    for tn, rows in tables.items():
+        if len(tables) == 1:
+            stem = name
+        elif tn.startswith(name):            # avoid mismatch_mismatch_one
+            stem = tn
+        else:
+            stem = f"{name}_{tn}"
+        pd.DataFrame(rows).to_csv(f"{OUT}/{stem}.csv", index=False)
     for fn, fig in out["figures"].items():
         fig.savefig(f"{OUT}/{name}.png", dpi=170, bbox_inches="tight",
                     facecolor=fig.get_facecolor())
@@ -40,6 +48,12 @@ c1_big = calibration(n_learners=400, n_steps=120, cur=cur)   # the noise check
 dump("check1_calibration_400learners", c1_big)
 c2 = detection(n_learners=30, n_steps=120, cur=cur)
 dump("check2_detection", c2)
+x22 = two_by_two(cur=cur)
+dump("two_by_two", x22)
+psw = param_sweep(cur=cur)
+dump("param_sweep", psw)
+mm = mismatch(cur=cur)
+dump("mismatch", mm)
 
 # ---------------------------------------------------------------- trace
 tr = trace_table(n_steps=20, threshold=0.9, seed=4242, cur=cur)
@@ -137,5 +151,33 @@ with open(f"{OUT}/summary.md", "w") as f:
             "- 'Unresolved': learned but not declared when the run ended. Every one is "
             "either learned in the last 50 questions or never reached by the ZPD.\n")
     f.write(f"\n**Trace.** {tr['summary']} See `trace_20.md` and `trace_20.png`.\n")
+
+    f.write("\n## The 2x2: does the question-selection rule matter?\n\n")
+    f.write(x22["summary"] + "\n\n")
+    f.write("| student | scheduler | concepts truly known | asked outside the ZPD |\n"
+            "|---|---|---:|---:|\n")
+    for r in x22["tables"]["two_by_two"]:
+        f.write(f"| {r['student']} | {r['scheduler']} | "
+                f"{r['learned_mean']:.2f} / {r['n_concepts']} | "
+                f"{r['asked_outside_zpd']:.1f} |\n")
+    f.write("\n| contrast | Q2 minus Q1 | 95% CI | favours |\n|---|---:|---:|---|\n")
+    for r in x22["tables"]["paired"]:
+        f.write(f"| {r['student']} | {r['diff_Q2_minus_Q1']:+.2f} | "
+                f"+/-{r['ci95']:.2f} | {r['favours']} |\n")
+
+    f.write("\n## Parameter sweep\n\n" + psw["summary"] + "\n")
+    f.write("\n## Tutor / student mismatch\n\n" + mm["summary"] + "\n\n")
+    f.write("| tutor's p_G | error | calibration gap | false alarms | delay |\n"
+            "|---:|---:|---:|---:|---:|\n")
+    for r in mm["tables"]["mismatch_one"]:
+        f.write(f"| {r['tutor_value']:.2f} | {r['error']:+.2f} | "
+                f"{r['calib_gap']:+.3f} | {r['false_alarm_rate']:.1%} | "
+                f"{r['delay_on_concept_mean']:.1f} |\n")
+    f.write("\n| population spread | calibration gap | false alarms | delay |\n"
+            "|---:|---:|---:|---:|\n")
+    for r in mm["tables"]["mismatch_population"]:
+        f.write(f"| +/-{r['spread']:.2f} | {r['calib_gap']:+.3f} | "
+                f"{r['false_alarm_rate']:.1%} | "
+                f"{r['delay_on_concept_mean']:.1f} |\n")
 
 print("wrote", sorted(os.listdir(OUT)))

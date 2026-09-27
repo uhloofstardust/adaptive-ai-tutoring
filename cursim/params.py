@@ -19,3 +19,5 @@ with open(_PATH) as _f:
 
 BKT_PARAMS = dict(_BLOB["bkt"])
 DEFAULTS = dict(_BLOB["defaults"])
+# named student models used by the 2x2 experiment
+STUDENT_MODELS = {k: dict(v) for k, v in _BLOB.get("student_models", {}).items()}

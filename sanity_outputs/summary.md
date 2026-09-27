@@ -36,3 +36,43 @@ Noise check at 4x the learners: 48000 (belief, truth) pairs from 400 learners x 
 - 'Unresolved': learned but not declared when the run ended. Every one is either learned in the last 50 questions or never reached by the ZPD.
 
 **Trace.** 20 questions, seed 4242, threshold 0.9. The student learned 1 concept(s) during these steps. See `trace_20.md` and `trace_20.png`.
+
+## The 2x2: does the question-selection rule matter?
+
+60 learners x 40 questions on abstract, 8 concepts. S1: Q2 minus Q1 = -0.38 [-0.70, -0.07] (favours Q1). S2: +1.18 [+0.68, +1.68] (favours Q2). Interaction +1.57 [+0.98, +2.16]: the sign of the scheduler effect flips with the student model. Note the budget matters: at a budget long enough for everything to be learned anyway, every cell saturates and no scheduler can differ.
+
+| student | scheduler | concepts truly known | asked outside the ZPD |
+|---|---|---:|---:|
+| S1 | Q1 | 6.22 / 8 | 26.3 |
+| S1 | Q2 | 5.83 / 8 | 0.0 |
+| S2 | Q1 | 4.47 / 8 | 27.6 |
+| S2 | Q2 | 5.65 / 8 | 0.0 |
+
+| contrast | Q2 minus Q1 | 95% CI | favours |
+|---|---:|---:|---|
+| S1 | -0.38 | +/-0.31 | Q1 |
+| S2 | +1.18 | +/-0.50 | Q2 |
+| interaction (S2 minus S1) | +1.57 | +/-0.59 | - |
+
+## Parameter sweep
+
+19 cells, 30 learners each. With the tutor correctly specified the calibration gap stays near zero everywhere: largest |gap| is 0.024 at p_S=0.3. Guessing (p_G) is what drives false alarms; the learn rate (p_T) mostly moves how long detection takes.
+
+## Tutor / student mismatch
+
+(a) One student, tutor's p_G swept: the calibration gap is +0.004 when the tutor is right and -0.128 at its worst (p_G=0.05, error -0.20). (b) A population with spread +/-0.15 and one fixed tutor: gap -0.037, false alarms 11.7% against 6.2% when every student matches the tutor exactly.
+
+| tutor's p_G | error | calibration gap | false alarms | delay |
+|---:|---:|---:|---:|---:|
+| 0.05 | -0.20 | -0.128 | 30.0% | 1.9 |
+| 0.15 | -0.10 | -0.051 | 16.6% | 2.7 |
+| 0.25 | +0.00 | +0.004 | 6.2% | 3.3 |
+| 0.35 | +0.10 | +0.039 | 2.5% | 4.6 |
+| 0.45 | +0.20 | +0.070 | 0.6% | 5.5 |
+
+| population spread | calibration gap | false alarms | delay |
+|---:|---:|---:|---:|
+| +/-0.00 | +0.004 | 6.2% | 3.3 |
+| +/-0.05 | -0.009 | 7.5% | 3.3 |
+| +/-0.10 | -0.030 | 9.9% | 3.4 |
+| +/-0.15 | -0.037 | 11.7% | 3.4 |

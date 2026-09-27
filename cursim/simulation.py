@@ -13,7 +13,8 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
 from .curriculum import Curriculum
-from .learner import Learner, LearnerProfile, PROFILES, SimConfig, LEARNERS
+from .learner import (Learner, BKTLearner, LearnerProfile, PROFILES,
+                      SimConfig, LEARNERS, learner_kwargs)
 from .mastery import make_model
 from .schedulers import SCHEDULERS, zpd
 
@@ -26,7 +27,12 @@ class RunSpec:
     learner: str = "continuous"          # key into LEARNERS
     threshold: Optional[float] = None    # mastery threshold for the tutor
     prereq_gated_pT: bool = False        # BKT student only: prereq-gated p(T)
-    bkt_params: Optional[dict] = None    # override params.BKT_PARAMS for BOTH sides
+    bkt_params: Optional[dict] = None    # override for BOTH sides at once
+    # ...or set the two sides apart, which is what a misspecification
+    # study needs. Either overrides bkt_params on its own side.
+    student_params: Optional[dict] = None
+    tutor_params: Optional[dict] = None
+    pT_low: Optional[float] = None       # S2 only: p(T) while prereqs unmet
     profile: str = "average"
     learner_forgets: bool = True
     model_forget_per_day: float = 0.10
@@ -65,11 +71,16 @@ def run_one(cur: Curriculum, spec: RunSpec, seed: int,
     """
     cfg = cfg or SimConfig()
     profile: LearnerProfile = PROFILES[spec.profile]
-    LearnerCls = LEARNERS[spec.learner][0]
-    if spec.learner == "bkt":
+    LearnerCls, _, *rest = LEARNERS[spec.learner]
+    if LearnerCls is BKTLearner:
+        kw = learner_kwargs(spec.learner)
+        if spec.prereq_gated_pT:
+            kw["prereq_gated_pT"] = True
+        if spec.pT_low is not None:
+            kw["pT_low"] = spec.pT_low
         learner = LearnerCls(cur, profile, seed=seed, cfg=cfg,
-                             prereq_gated_pT=spec.prereq_gated_pT,
-                             params=spec.bkt_params)
+                             params=spec.student_params or spec.bkt_params,
+                             **kw)
     else:
         learner = LearnerCls(cur, profile, seed=seed, cfg=cfg,
                              forgetting=spec.learner_forgets)
@@ -78,8 +89,9 @@ def run_one(cur: Curriculum, spec: RunSpec, seed: int,
         mkw["forget_per_day"] = spec.model_forget_per_day
     if spec.threshold is not None:
         mkw["threshold"] = spec.threshold
-    if spec.bkt_params:
-        mkw.update(spec.bkt_params)
+    tp = spec.tutor_params or spec.bkt_params
+    if tp:
+        mkw.update(tp)
     model = make_model(spec.mastery_model, cur.ids(), **mkw)
     sched = SCHEDULERS[spec.scheduler]()
     # separate stream so the learner's randomness does not shift when

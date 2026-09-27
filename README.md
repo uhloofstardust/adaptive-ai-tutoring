@@ -38,7 +38,7 @@ watching a single run unfold. `main` keeps the original simulator untouched.
 ```
 streamlit run app.py         # step or play through a run; run the checks
 python3 make_sanity.py       # every plot and table -> sanity_outputs/
-python3 test_sanity.py       # 21 checks on the plain-BKT setup
+python3 test_sanity.py       # 29 checks on the plain-BKT setup
 python3 test_simulator.py    # the original 55 checks
 ```
 
@@ -73,6 +73,20 @@ the original. The older experiment scripts are pinned to `"language"`.
 | `viewer/viewer.html` | the viewer: curriculum graph, belief charts, transport |
 | `viewer/vendor/` | Chart.js, vendored so it works with no network |
 | `app.py` | the interface. Everything selectable comes from a registry or from `data/` |
+
+### The experiments
+
+| Name | What it asks |
+|---|---|
+| `check1_calibration` | when the tutor believes p, is the student known with frequency p? |
+| `check2_detection` | how long until the tutor notices, and how often does it declare too early? |
+| `s1s2_x_q1q2` | the 2x2: does the question-selection rule matter, and does that depend on the student model? |
+| `param_sweep` | what does each BKT parameter actually do, with the tutor correctly specified? |
+| `mismatch` | the tutor's assumed parameters differ from the student's real ones |
+| `trace_20_steps` | one run, 20 rows, every column |
+
+`docs/simulator.tex` (and its PDF) is the written description: the models,
+the update rules, what is measured against what, and what has been established.
 
 ### The dry run
 

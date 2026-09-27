@@ -62,6 +62,30 @@ def _pick_question(cur, cid, rng, target_difficulty=None,
     return rng.choice(near)
 
 
+class UniformUnmasteredScheduler(Scheduler):
+    """Q1: uniform over every concept the tutor does not yet believe
+    mastered, whether or not its prerequisites are ready.
+
+    The contrast with uniform_zpd (Q2) is the whole point: Q2 refuses to
+    ask a concept until its prerequisites are believed mastered, Q1 will
+    ask anything still outstanding. Against a student for whom
+    prerequisites do not matter the two are interchangeable; against one
+    who cannot learn a concept before its prerequisites, Q1 wastes
+    questions on concepts that cannot yet be learned.
+
+    Note this is NOT the same as `random`, which also re-asks concepts
+    already believed mastered.
+    """
+    name = "uniform_unmastered"
+
+    def select(self, cur, model, now_h, rng, last_qid):
+        eligible = [cid for cid in cur.ids()
+                    if not model.is_mastered(cid, now_h)]
+        if not eligible:
+            eligible = cur.ids()
+        return _pick_question(cur, rng.choice(eligible), rng, last_qid=last_qid)
+
+
 class RandomScheduler(Scheduler):
     name = "random"
 
@@ -291,7 +315,8 @@ class UCBScheduler(Scheduler):
 
 
 SCHEDULERS = {
-    "uniform_zpd": CurriculumTutorScheduler,     # the same class, by its plain name
+    "uniform_zpd": CurriculumTutorScheduler,     # Q2: only prerequisite-ready concepts
+    "uniform_unmastered": UniformUnmasteredScheduler,   # Q1: anything not yet mastered
     "random": RandomScheduler,
     "curriculum_tutor": CurriculumTutorScheduler,
     "continuous": ContinuousScheduler,
