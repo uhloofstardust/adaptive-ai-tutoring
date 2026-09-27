@@ -39,7 +39,7 @@ Noise check at 4x the learners: 48000 (belief, truth) pairs from 400 learners x 
 
 ## The 2x2: does the question-selection rule matter?
 
-60 learners x 40 questions on abstract, 8 concepts. S1: Q2 minus Q1 = -0.38 [-0.70, -0.07] (favours Q1). S2: +1.18 [+0.68, +1.68] (favours Q2). Interaction +1.57 [+0.98, +2.16]: the sign of the scheduler effect flips with the student model. Note the budget matters: at a budget long enough for everything to be learned anyway, every cell saturates and no scheduler can differ.
+60 learners x 40 questions on abstract, 8 concepts. S1: Q2 minus Q1 = -0.38 [-0.70, -0.07] (favours Q1). S2: +1.18 [+0.68, +1.68] (favours Q2). Interaction +1.57 [+1.16, +1.97]: the sign of the scheduler effect flips with the student model. Note the budget matters: at a budget long enough for everything to be learned anyway, every cell saturates and no scheduler can differ.
 
 | student | scheduler | concepts truly known | asked outside the ZPD |
 |---|---|---:|---:|
@@ -52,7 +52,7 @@ Noise check at 4x the learners: 48000 (belief, truth) pairs from 400 learners x 
 |---|---:|---:|---|
 | S1 | -0.38 | +/-0.31 | Q1 |
 | S2 | +1.18 | +/-0.50 | Q2 |
-| interaction (S2 minus S1) | +1.57 | +/-0.59 | - |
+| interaction (S2 minus S1) | +1.57 | +/-0.40 | - |
 
 ## Parameter sweep
 
