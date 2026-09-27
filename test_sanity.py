@@ -103,7 +103,7 @@ print("6c. partial parameter override merges with the shared defaults")
 r = run_one(cur, spec(bkt_params={"p_T": 0.5}), seed=9, keep_trace=True)
 check(len(r["trace"]) == 300, "run with a partial bkt_params dict does not crash")
 
-print("7. the 20-step trace has every column the mail asks for")
+print("7. the 20-step trace has every required column")
 out = trace_table(n_steps=20, cur=cur)
 cols = set(out["tables"]["trace"][0])
 need = {"step", "zpd", "asked", "answer", "true_before", "true_after",

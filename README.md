@@ -30,26 +30,57 @@ so those strategies can be compared before any human pilot.
 **Current state:** all modules described in `simulator_expln.md` Part 8
 are present. `test_simulator.py` passes all 55 checks.
 
-## The `plain-bkt` branch: sanity checks and the viewer
+## The `plain-bkt` branch
 
-This branch adds a plain BKT student, the two sanity checks from Surya's
-Sep 2026 mail, and a small UI. `main` keeps the original simulator untouched.
+Adds a plain BKT student, the two sanity checks, and an interface for
+watching a single run unfold. `main` keeps the original simulator untouched.
 
 ```
-streamlit run app.py         # step through one run; run the checks; save results
-python3 make_sanity.py       # every artifact for the meeting -> sanity_outputs/
-python3 test_sanity.py       # 16 checks on the plain-BKT setup
+streamlit run app.py         # step or play through a run; run the checks
+python3 make_sanity.py       # every plot and table -> sanity_outputs/
+python3 test_sanity.py       # 21 checks on the plain-BKT setup
+python3 test_simulator.py    # the original 55 checks
 ```
+
+### Curricula are data
+
+Every curriculum lives in `data/` as JSON, so adding one is a new file and
+never a code edit. Anything named `curriculum_<name>.json` is loadable by
+`<name>` and appears in the interface automatically.
+
+| File | What it is |
+|---|---|
+| `data/curriculum_abstract.json` | 8 concepts, the default. Subject-free: ids are `<tier letter><index>`, so `A1` has no prerequisites and `D1` is the capstone. A symmetric 2-3-2-1 diamond, small enough that the ZPD stays readable |
+| `data/curriculum_language.json` | the original 40-concept graph, frozen, so the earlier experiments and their committed results stay reproducible |
+| `data/params.json` | the shared BKT parameters and the interface defaults |
+
+`build_curriculum()` loads the default; `build_curriculum("language")` loads
+the original. The older experiment scripts are pinned to `"language"`.
+
+### Code
 
 | File | What it adds |
 |---|---|
-| `cursim/params.py` | the one place the shared BKT parameters live |
+| `cursim/params.py` | reads the shared BKT parameters from `data/params.json` |
+| `cursim/curriculum.py` | loads any curriculum from `data/`, plus a tier layout for drawing |
 | `cursim/learner.py` | `BKTLearner` and the `LEARNERS` registry |
-| `cursim/mastery.py` | `"bkt"` model kind and the `MASTERY_MODELS` registry |
-| `cursim/schedulers.py` | `zpd()` helper so the run loop can log the ZPD |
+| `cursim/mastery.py` | the `"bkt"` model and the `MASTERY_MODELS` registry |
+| `cursim/schedulers.py` | `zpd()` helper so the run loop can record the ZPD |
 | `cursim/simulation.py` | `learner`, `threshold`, `bkt_params` on `RunSpec`; `keep_trace` |
-| `cursim/sanity.py` | check 1, check 2, the trace table; the `EXPERIMENTS` registry |
-| `app.py` | the viewer. Dropdowns come from the registries; nothing to edit for a new method |
+| `cursim/sanity.py` | check 1, check 2, the trace, and the `EXPERIMENTS` registry |
+| `cursim/viewer_data.py` | packages one run into the JSON the viewer plays |
+| `cursim/viewer.py` | renders the viewer as one self-contained HTML string |
+| `viewer/viewer.html` | the viewer: curriculum graph, belief charts, transport |
+| `viewer/vendor/` | Chart.js, vendored so it works with no network |
+| `app.py` | the interface. Everything selectable comes from a registry or from `data/` |
+
+### The dry run
+
+Press Run, then Play or drag the slider. The graph shows every concept
+coloured by what the tutor believes, with the concept being asked filled
+solid and a ring on the ones the student truly knows. Beside it, one small
+chart per concept, all advancing together, so you never have to wait for a
+concept to come round again to see it move. Chips choose which charts to show.
 
 ## Running it
 

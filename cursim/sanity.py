@@ -1,4 +1,4 @@
-"""Sanity checks on the tutor code (Surya's mail, Sep 2026).
+"""Sanity checks on the tutor code.
 
 Plain BKT student, BKT tutor with the same parameters, uniform random
 over the ZPD. Because the tutor has the true model, both checks have a
@@ -28,15 +28,24 @@ from .curriculum import build_curriculum
 from .params import BKT_PARAMS
 from .simulation import RunSpec, run_one
 
-INK, ACCENT, GREY, GOOD = "#1f2937", "#b5541c", "#9aa0a6", "#2f855a"
-plt.rcParams.update({"font.size": 10, "axes.spines.top": False,
-                     "axes.spines.right": False, "figure.dpi": 130})
+# same palette as the interface, so a saved figure and the screen agree
+INK, ACCENT, GREY, GOOD = "#1b2230", "#3f6ae0", "#8b94a7", "#1f9d6b"
+plt.rcParams.update({
+    "font.size": 10, "figure.dpi": 130,
+    "font.family": "sans-serif",
+    "font.sans-serif": ["Helvetica Neue", "Helvetica", "Arial", "DejaVu Sans"],
+    "axes.spines.top": False, "axes.spines.right": False,
+    "axes.edgecolor": "#c9d0dd", "axes.labelcolor": INK,
+    "text.color": INK, "xtick.color": GREY, "ytick.color": GREY,
+    "figure.facecolor": "white", "axes.facecolor": "white",
+    "grid.color": "#e3e7ef",
+})
 
 
 def sanity_spec(threshold=0.9, n_steps=400, scheduler="uniform_zpd",
                 mastery_model="bkt", learner="bkt", prereq_gated_pT=False,
                 bkt_params=None):
-    """The configuration the mail asks for. One flat session: the BKT
+    """The reference sanity configuration. One flat session: the BKT
     student has no time dynamics, so sessions and gaps are irrelevant."""
     p = bkt_params or BKT_PARAMS
     if p["p_L0"] >= threshold:
@@ -63,7 +72,7 @@ def _population(cur, spec, n_learners, seed0=4242):
 
 
 # ---------------------------------------------------------------- check 1
-def calibration(n_learners=50, n_steps=400, threshold=0.9, n_bins=10,
+def calibration(n_learners=50, n_steps=120, threshold=0.9, n_bins=10,
                 seed0=4242, cur=None, **run_kw):
     """Every time the tutor updates a belief, record (belief, true state)
     for that concept, then bin by belief. Both are read at the same
@@ -94,10 +103,11 @@ def calibration(n_learners=50, n_steps=400, threshold=0.9, n_bins=10,
     es = [r["ci95"] for r in rows if r["n"]]
     ax.errorbar(xs, ys, yerr=es, fmt="o-", color=ACCENT, capsize=3, lw=1.6,
                 label="tutor")
-    for r in rows:
-        if r["n"]:
-            ax.annotate(f"n={r['n']}", (r["mean_belief"], -0.06), ha="center",
-                        fontsize=7, color=GREY, annotation_clip=False)
+    # bin counts sit on two alternating rows so neighbouring labels
+    # never collide when bins are close together
+    for i, r in enumerate([x for x in rows if x["n"]]):
+        ax.annotate(f"n={r['n']}", (r["mean_belief"], -0.055 - 0.05 * (i % 2)),
+                    ha="center", fontsize=7, color=GREY, annotation_clip=False)
     ax.set_xlim(0, 1); ax.set_ylim(-0.02, 1.02)
     ax.set_xlabel("tutor's belief that the concept is known (bin mean)")
     ax.set_ylabel("fraction of those moments where it truly is")
@@ -164,7 +174,7 @@ def _per_concept(run, threshold):
     return out
 
 
-def detection(n_learners=30, n_steps=400,
+def detection(n_learners=30, n_steps=120,
               thresholds=(0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99),
               seed0=4242, cur=None, **run_kw):
     """One population per threshold, because the threshold also decides
@@ -291,12 +301,12 @@ EXPERIMENTS = {
         calibration,
         "Check 1. Is the tutor's belief correct? Bin every belief and see "
         "how often the student truly knows the concept.",
-        dict(n_learners=50, n_steps=400, threshold=0.9)),
+        dict(n_learners=50, n_steps=120, threshold=0.9)),
     "check2_detection": (
         detection,
         "Check 2. Detection delay and false-alarm rate as a function of "
         "the mastery threshold.",
-        dict(n_learners=30, n_steps=400)),
+        dict(n_learners=30, n_steps=120)),
     "trace_20_steps": (
         trace_table,
         "Step-by-step trace of one short run: ZPD, question, answer, true "

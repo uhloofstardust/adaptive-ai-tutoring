@@ -18,7 +18,7 @@ import math
 import sys
 import traceback
 
-from cursim.curriculum import (Curriculum, build_curriculum, SPEC, WORDS)
+from cursim.curriculum import Curriculum, build_curriculum
 from cursim.learner import Learner, LearnerProfile, PROFILES, SimConfig
 from cursim.mastery import (BinaryMastery, ContinuousMastery, make_model)
 from cursim.schedulers import SCHEDULERS, AdaptiveReviewScheduler
@@ -49,7 +49,7 @@ def group(title):
     print("-" * len(title))
 
 
-CUR = build_curriculum()
+CUR = build_curriculum("language")
 CFG = SimConfig()
 
 
@@ -129,8 +129,8 @@ def test_curriculum():
     check("question ids are unique", t_unique_ids)
 
     def t_deterministic():
-        a = build_curriculum(seed=11)
-        b = build_curriculum(seed=11)
+        a = build_curriculum("language")
+        b = build_curriculum("language")
         da = [q.difficulty for q in a.all_questions()]
         db = [q.difficulty for q in b.all_questions()]
         assert da == db, "same seed produced different curricula"
@@ -482,8 +482,14 @@ def test_schedulers():
           t_no_immediate_repeat)
 
     def t_schedulers_differ():
-        vals = {}
-        for name in SCHEDULERS:
+        # one name per distinct class: SCHEDULERS also carries aliases
+        # (uniform_zpd is curriculum_tutor by its plain name), and an
+        # alias is not a different strategy.
+        seen, vals = set(), {}
+        for name, cls in SCHEDULERS.items():
+            if cls in seen:
+                continue
+            seen.add(cls)
             r = run_one(CUR, RunSpec(scheduler=name,
                                      mastery_model="continuous",
                                      n_sessions=6,
@@ -491,7 +497,7 @@ def test_schedulers():
             vals[name] = round(r["final_mastery"], 6)
         assert len(set(vals.values())) == len(vals), vals
         return "  ".join(f"{k} {v:.3f}" for k, v in vals.items())
-    check("the four schedulers produce different outcomes",
+    check("distinct scheduler classes produce different outcomes",
           t_schedulers_differ)
 
 

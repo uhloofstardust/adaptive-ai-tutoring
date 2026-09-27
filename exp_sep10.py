@@ -31,7 +31,7 @@ def ci(vals):
 
 
 def main():
-    cur = build_curriculum()
+    cur = build_curriculum("language")
     res, rows = {}, []
     for label, sch, mm in ARMS:
         r = run_condition(cur, RunSpec(scheduler=sch, mastery_model=mm,

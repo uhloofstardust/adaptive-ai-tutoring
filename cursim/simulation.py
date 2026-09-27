@@ -25,7 +25,7 @@ class RunSpec:
     mastery_model: str = "binary"
     learner: str = "continuous"          # key into LEARNERS
     threshold: Optional[float] = None    # mastery threshold for the tutor
-    prereq_gated_pT: bool = False        # BKT student only: next step in the mail
+    prereq_gated_pT: bool = False        # BKT student only: prereq-gated p(T)
     bkt_params: Optional[dict] = None    # override params.BKT_PARAMS for BOTH sides
     profile: str = "average"
     learner_forgets: bool = True
