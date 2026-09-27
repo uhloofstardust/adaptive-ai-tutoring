@@ -10,5 +10,18 @@
   "threshold": 0.9,
   "n_steps": 60,
   "seed": 4242
+ },
+ "student_models": {
+  "S1": {
+   "label": "S1: prerequisites do not affect learning",
+   "p_T": 0.2,
+   "prereq_gated": false
+  },
+  "S2": {
+   "label": "S2: p(T) drops until prerequisites are mastered",
+   "p_T": 0.2,
+   "pT_low": 0.05,
+   "prereq_gated": true
+  }
  }
 }

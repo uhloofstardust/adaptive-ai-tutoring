@@ -1,0 +1,285 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,array}
+\usepackage[colorlinks=true,linkcolor=black,urlcolor=blue!55!black]{hyperref}
+\usepackage{parskip}
+\setlength{\parskip}{6pt}
+\newcommand{\code}[1]{\texttt{\small #1}}
+
+\title{\vspace{-1.2cm}\textbf{A simulator for adaptive tutoring}\\[3pt]
+\large Student models, knowledge tracing, question selection, and what we
+can and cannot measure with them}
+\date{\small 27 September 2026}
+\author{}
+
+\begin{document}
+\maketitle
+\vspace{-1.1cm}
+\noindent\rule{\textwidth}{0.4pt}
+
+\section*{1. What the simulator is for}
+
+A tutoring system has to choose the next question without being able to see
+what the student knows. To study that choice we need a student whose
+knowledge we \emph{can} see, so that any claim about the tutor can be checked
+against the truth rather than against another estimate. Everything here is
+built around that one idea: the simulator owns a hidden state, the tutor
+never sees it, and every measurement compares the two.
+
+The simulator has three replaceable parts, and keeping them separate is what
+makes the measurements interpretable.
+
+\begin{center}
+\small
+\begin{tabular}{@{}llp{7.4cm}@{}}
+\toprule
+\textbf{Part} & \textbf{Sees the truth?} & \textbf{Question it answers}\\
+\midrule
+Student model & it \emph{is} the truth & what does the learner actually know, and how does that change?\\
+Knowledge tracing & no & what does the tutor believe, given only right and wrong answers?\\
+Question selection & no & given that belief, what should be asked next?\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Because they are separate, one can be varied with the others held fixed. That
+is the only way to attribute an effect: if the student and the tracer are
+fixed and only the scheduler changes, any difference is the scheduler's.
+
+\section*{2. The curriculum}
+
+A curriculum is a directed acyclic graph of concepts. Each concept carries a
+tier (its depth), a list of prerequisites, and a bank of practice questions.
+Curricula are data, stored as JSON, so a new one is a new file rather than a
+code change.
+
+The default graph is deliberately abstract and small: eight concepts named by
+tier, \code{A1, A2} at the top with no prerequisites, then \code{B1, B2, B3},
+then \code{C1, C2}, and \code{D1} as the single capstone. A name states its
+own depth. The shape is a symmetric diamond, and two properties of it matter.
+The zone of proximal development starts at exactly two concepts, small enough
+to read at a glance; and \code{B2} is a prerequisite of both \code{C1} and
+\code{C2}, so a single weak concept visibly blocks two downstream. A
+40-concept language curriculum is kept alongside it so that earlier results
+stay reproducible.
+
+\section*{3. The student models}
+
+\subsection*{3.1 The plain BKT student}
+
+Each concept is a hidden coin: known, or not. Four parameters govern it.
+
+\begin{center}
+\small
+\begin{tabular}{@{}cll@{}}
+\toprule
+ & \textbf{Meaning} & \textbf{Default}\\
+\midrule
+$p(L_0)$ & probability the concept is known before any question & 0.15\\
+$p(T)$   & probability an unknown concept becomes known at an attempt & 0.12\\
+$p(G)$   & probability of a correct answer while it is unknown & 0.25\\
+$p(S)$   & probability of a wrong answer while it is known & 0.10\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+At each attempt on concept $c$, with $K_c\in\{0,1\}$ the hidden state:
+\begin{equation}
+\Pr(\text{correct}) =
+\begin{cases}
+1-p(S), & K_c = 1,\\
+p(G),   & K_c = 0,
+\end{cases}
+\qquad\text{then}\qquad
+K_c \leftarrow 1 \ \text{ with probability } p(T) \text{ if } K_c = 0 .
+\end{equation}
+
+\textbf{The student answers from the state it was in, and only then
+transitions.} A learning event therefore shows up on the \emph{next} question,
+not the one that caused it, which is why a student can be seen learning a
+concept on a question they got wrong. This ordering is not cosmetic: it is the
+ordering the tutor's update assumes, and getting it backwards silently breaks
+calibration.
+
+There is no forgetting, no question difficulty, and by default no effect of
+prerequisites on learning. That is the point. It is the simplest student for
+which the tutor's arithmetic has a known right answer.
+
+\subsection*{3.2 Two student models: S1 and S2}
+
+\begin{description}
+\item[S1] Prerequisites do not affect learning. A concept is learned at
+$p(T)=0.2$ whenever it is asked, whatever else the student knows.
+\item[S2] A concept is learned at $p(T)=0.2$ once \emph{all} of its
+prerequisites are truly known, and at $p(T)=0.05$ otherwise.
+\end{description}
+
+S2 is the smallest change that makes the order of questions matter. Under S1
+a question is worth the same whenever it is asked, so no scheduler can beat
+any other by more than noise; under S2 a question asked too early is worth a
+quarter as much.
+
+\subsection*{3.3 The continuous student}
+
+The original student is also still available: mastery is a real number in
+$[0,1]$, questions carry difficulty, prerequisites gate the learning rate
+continuously, and knowledge decays with elapsed time. It is the right model
+for studying forgetting and spaced practice, and the wrong one for checking
+the tutor's arithmetic, because it has no binary truth to compare a
+probability against.
+
+\section*{4. Knowledge tracing}
+
+The tutor keeps one number per concept: $b_c$, its belief that the student
+knows $c$. It sees only right and wrong answers. After an observation $X$ it
+applies Bayes' rule and then the learning transition:
+\begin{equation}
+b^{+} =
+\begin{cases}
+\dfrac{b\,(1-p(S))}{b\,(1-p(S)) + (1-b)\,p(G)}, & X = \text{correct},\\[14pt]
+\dfrac{b\,p(S)}{b\,p(S) + (1-b)\,(1-p(G))}, & X = \text{wrong},
+\end{cases}
+\qquad
+b_c \leftarrow b^{+} + (1-b^{+})\,p(T).
+\end{equation}
+
+\textbf{Timing.} The belief written by this update is the belief about the
+state the student is in \emph{going into the next question}, because the
+transition has been applied. The student's hidden state after its own
+transition refers to the same instant. Any comparison of belief against truth
+must use that pairing; reading the state before the transition instead shifts
+everything by one step and makes a correct tracer look badly calibrated. This
+is the single easiest way to produce a convincing but wrong result, so it is
+stated here and enforced in the tests.
+
+Because the tutor's parameters can be set independently of the student's, the
+tutor can be made deliberately wrong, which is what Section 7 exploits.
+
+\section*{5. Question selection}
+
+The zone of proximal development is the set of concepts the tutor believes are
+worth teaching now:
+\begin{equation}
+\mathrm{ZPD}(t) = \{\,c : b_c < \theta \ \wedge\ b_p \ge \theta \ \ \forall p
+\in \mathrm{prereq}(c)\,\},
+\end{equation}
+for a mastery threshold $\theta$. Note that it is defined entirely on
+\emph{beliefs}: the tutor has no access to the student's real state.
+
+Two rules are compared.
+
+\begin{description}
+\item[Q2, \code{uniform\_zpd}] uniform over the ZPD. A concept is never asked
+until its prerequisites are believed mastered.
+\item[Q1, \code{uniform\_unmastered}] uniform over every concept not yet
+believed mastered, ready or not.
+\end{description}
+
+Both are deliberately free of any bandit. The comparison is about
+prerequisite gating alone.
+
+\section*{6. What is measured, and against what}
+
+Every metric reads the student's hidden state, never the tutor's belief.
+
+\begin{description}
+\item[Calibration.] Bin every belief the tutor has ever held; within a bin,
+what fraction of the time was the student truly in the known state? A correct
+tracer lies on the diagonal.
+\item[Detection delay.] We know the exact step at which each concept was
+learned. How many further questions \emph{on that concept} pass before the
+tutor declares it mastered?
+\item[False alarm rate.] Of all the declarations the tutor made, what share
+came before the student had actually learned the concept?
+\item[Concepts truly known.] How many concepts the student really knows at the
+end. This is the only metric that can compare schedulers, because it owes
+nothing to what any tutor believes.
+\end{description}
+
+Every comparison is paired: the same seeds are used in every arm, so learner
+$i$ is the same simulated person throughout and differences are read
+within-learner rather than between groups.
+
+\section*{7. What the simulator has been used to establish}
+
+\textbf{The tracer is correct.} On the plain BKT student with a correctly
+specified tutor, mean belief is 0.61 against a true known-fraction of 0.62
+over 40{,}000 observations; at four times the sample every bin sits within
+0.03 of the diagonal. Sweeping each parameter in turn over 19 settings leaves
+the largest calibration gap at 0.024, so calibration is not an artefact of one
+parameter choice.
+
+\textbf{The two checks agree with each other.} If beliefs are calibrated, the
+false-alarm rate at threshold $\theta$ must equal one minus the mean belief at
+the moment of declaration. Measured and predicted agree at every threshold.
+Two quantities computed by different routes landing on the same number is
+stronger evidence than either alone.
+
+\textbf{The scheduler only matters if the student model says it can.} Crossing
+S1 and S2 with Q1 and Q2, 60 learners, 40 questions:
+
+\begin{center}
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+ & \textbf{Q1} & \textbf{Q2} & \textbf{Q2 $-$ Q1} & \textbf{95\% CI}\\
+\midrule
+S1 & 6.22 & 5.83 & $-0.38$ & $\pm 0.31$\\
+S2 & 4.47 & 5.65 & $+1.18$ & $\pm 0.50$\\
+\midrule
+\multicolumn{3}{@{}l}{interaction (S2 $-$ S1)} & $+1.57$ & $\pm 0.59$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Concepts truly known, out of eight. The \emph{sign} of the scheduler
+effect flips with the student model, and the interaction is well clear of
+zero. Against S2 the prerequisite-respecting rule is worth about one extra
+concept; against S1 it is mildly harmful, because when prerequisites do not
+gate learning the ZPD restriction is pure overhead and Q1 gets to work on all
+eight concepts at once. The prediction going in was that the scheduler would
+be invisible under S1; it is in fact slightly counterproductive, which is a
+sharper result and the same lesson.
+
+\textbf{Budget decides whether any of this is visible.} At 120 questions on
+eight concepts every cell reaches 7.7 of 8 and no scheduler can differ from
+another. A comparison of question-selection rules is only meaningful below
+saturation, and the saturation point has to be reported alongside any result.
+
+\textbf{Misspecification degrades gracefully but not harmlessly.} When the
+tutor's assumed $p(G)$ is swept while the student stays fixed, the calibration
+gap is $+0.004$ at the truth and reaches $-0.128$ when the tutor underestimates
+guessing by 0.20; false alarms move from 6\% to 30\% across that range. With a
+population of students whose parameters are spread uniformly by $\pm 0.15$ and
+a single fixed tutor, the gap is $-0.037$ and false alarms roughly double, from
+6.2\% to 11.7\%. A single tutor model stays usable across a varied population,
+at a measurable cost.
+
+\section*{8. Limitations}
+
+The plain BKT student has no forgetting, so nothing here speaks to retention or
+spaced practice; the continuous student exists for that and is not used in any
+of the checks above. All results are on one curriculum of eight concepts.
+Populations are 30 to 60 learners, enough for the reported intervals and not
+for fine distinctions. The tutor's $p(T)$ against S2 is held constant even
+though the student's varies with its prerequisites, so the tutor is mildly
+misspecified there by construction; whether it should instead gate $p(T)$ on
+its own belief about the prerequisites is open. And every number is a statement
+about this model, not about people: no result here has been checked against a
+real learner.
+
+\vspace{6pt}
+\noindent\rule{\textwidth}{0.4pt}
+\vspace{2pt}
+
+\noindent
+\footnotesize
+\textbf{Reproducing.} \code{python3 make\_sanity.py} regenerates every figure
+and table quoted above into \code{sanity\_outputs/}; \code{python3
+test\_sanity.py} and \code{python3 test\_simulator.py} run 29 and 55 checks
+respectively, including the exactness checks that pin the update ordering
+(with $p(G)=p(S)=0$ a correct answer must come from a known concept; adding
+$p(T)=1$ forces the tutor's belief to equal the truth at every step). Seeds are
+fixed throughout.
+
+\end{document}
