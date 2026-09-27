@@ -18,7 +18,8 @@ import pandas as pd
 from cursim.curriculum import build_curriculum
 from cursim.params import BKT_PARAMS
 from cursim.sanity import (calibration, detection, mismatch,
-                           param_sweep, trace_table, two_by_two)
+                           param_sweep, restriction_only,
+                           trace_table, two_by_two)
 
 OUT = "sanity_outputs"
 os.makedirs(OUT, exist_ok=True)
@@ -30,8 +31,8 @@ def dump(name, out):
     for tn, rows in tables.items():
         if len(tables) == 1:
             stem = name
-        elif tn.startswith(name):            # avoid mismatch_mismatch_one
-            stem = tn
+        elif tn.startswith(name) or name.startswith(tn):
+            stem = name if name.startswith(tn) else tn
         else:
             stem = f"{name}_{tn}"
         pd.DataFrame(rows).to_csv(f"{OUT}/{stem}.csv", index=False)
@@ -50,6 +51,11 @@ c2 = detection(n_learners=30, n_steps=120, cur=cur)
 dump("check2_detection", c2)
 x22 = two_by_two(cur=cur)
 dump("two_by_two", x22)
+# a second budget, so the saturation claim has a source
+x22b = two_by_two(n_steps=120, cur=cur)
+dump("two_by_two_120", x22b)
+ro = restriction_only(cur=cur)
+dump("restriction_only", ro)
 psw = param_sweep(cur=cur)
 dump("param_sweep", psw)
 mm = mismatch(cur=cur)
@@ -164,6 +170,19 @@ with open(f"{OUT}/summary.md", "w") as f:
     for r in x22["tables"]["paired"]:
         f.write(f"| {r['student']} | {r['diff_Q2_minus_Q1']:+.2f} | "
                 f"+/-{r['ci95']:.2f} | {r['favours']} |\n")
+
+    f.write("\n### The restriction alone\n\n" + ro["summary"] + "\n\n")
+    f.write("| student | unrestricted | restricted | restriction effect | 95% CI |\n"
+            "|---|---:|---:|---:|---:|\n")
+    for r in ro["tables"]["restriction_only"]:
+        f.write(f"| {r['student']} | {r['unrestricted']:.3f} | "
+                f"{r['restricted']:.3f} | {r['restriction_effect']:+.3f} | "
+                f"+/-{r['ci95']:.3f} |\n")
+    f.write("\n### At a longer budget\n\n" + x22b["summary"] + "\n\n")
+    f.write("| student | scheduler | concepts truly known |\n|---|---|---:|\n")
+    for r in x22b["tables"]["two_by_two"]:
+        f.write(f"| {r['student']} | {r['scheduler']} | "
+                f"{r['learned_mean']:.2f} / {r['n_concepts']} |\n")
 
     f.write("\n## Parameter sweep\n\n" + psw["summary"] + "\n")
     f.write("\n## Tutor / student mismatch\n\n" + mm["summary"] + "\n\n")

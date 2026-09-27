@@ -26,6 +26,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 from .curriculum import build_curriculum
+from .learner import BKTLearner, learner_kwargs
+from .schedulers import _pick_question
 from .params import BKT_PARAMS, STUDENT_MODELS
 from .simulation import RunSpec, run_one
 
@@ -77,6 +79,9 @@ def _population(cur, spec, n_learners, seed0=4242):
 # ---------------------------------------------------------------- check 1
 def calibration(n_learners=50, n_steps=120, threshold=0.9, n_bins=10,
                 seed0=4242, cur=None, **run_kw):
+    if n_learners < 1 or n_steps < 1:
+        raise ValueError("calibration needs at least one learner and one "
+                         "question.")
     """Every time the tutor updates a belief, record (belief, true state)
     for that concept, then bin by belief. Both are read at the same
     instant: after the tutor's update and after the student's transition,
@@ -136,8 +141,19 @@ def calibration(n_learners=50, n_steps=120, threshold=0.9, n_bins=10,
 # ---------------------------------------------------------------- check 2
 def _per_concept(run, threshold):
     """For one learner: per concept, when it was truly learned and when the
-    tutor first declared it (belief after update >= threshold)."""
+    tutor first declared it (belief after update >= threshold).
+
+    Requires a student that records learned_step, i.e. a BKT one. The
+    continuous student has no binary moment of learning, so there is
+    nothing for a detection delay to be measured from.
+    """
     trace, learned = run["trace"], run["learned_step"]
+    if not learned:
+        raise ValueError(
+            "detection needs a student that records the step at which each "
+            "concept was learned. The 'continuous' student has no such "
+            "moment: its mastery is a real number that never flips. Use "
+            "learner='bkt' or 'bkt_prereq'.")
     first_declared: Dict[str, Optional[int]] = {c: None for c in learned}
     belief_at: Dict[str, Optional[float]] = {c: None for c in learned}
     asked_at: Dict[str, List[int]] = {c: [] for c in learned}
@@ -309,17 +325,16 @@ def _spec_2x2(student, scheduler, n_steps, threshold, sm):
     tutor cannot see prerequisites. That is deliberate and stated: a
     tutor has no access to the student's hidden state.
     """
-    params = dict(BKT_PARAMS, p_T=sm["p_T"])
+    params = dict(BKT_PARAMS)
     return RunSpec(scheduler=scheduler, mastery_model="bkt",
                    learner="bkt_prereq" if sm["prereq_gated"] else "bkt",
-                   pT_low=sm.get("pT_low"),
                    threshold=threshold,
                    student_params=params, tutor_params=params,
                    n_sessions=1, questions_per_session=n_steps,
                    gap_hours=0.0, retention_days=0.0, label=student)
 
 
-def two_by_two(n_learners=60, n_steps=40, threshold=0.9, seed0=4242,
+def two_by_two(n_learners=400, n_steps=40, threshold=0.9, seed0=4242,
                cur=None, **_):
     """Two student models by two question-selection rules.
 
@@ -336,6 +351,12 @@ def two_by_two(n_learners=60, n_steps=40, threshold=0.9, seed0=4242,
     Scored on concepts the student TRULY knows at the end, which is the
     student's own state and owes nothing to what the tutor believes.
     """
+    if n_learners < 2:
+        raise ValueError("two_by_two needs at least 2 learners to report an "
+                         "interval; got %d." % n_learners)
+    if n_steps < 1:
+        raise ValueError("two_by_two needs at least 1 question; got %d."
+                         % n_steps)
     cur = cur or build_curriculum()
     n_c = len(cur.concepts)
     rows, cells = [], {}
@@ -411,9 +432,16 @@ def two_by_two(n_learners=60, n_steps=40, threshold=0.9, seed0=4242,
     fig.tight_layout()
 
     s1, s2, ix = paired_rows[0], paired_rows[1], paired_rows[2]
-    verdict = ("the sign of the scheduler effect flips with the student model"
-               if ix["scheduler_matters"] and s2["diff_Q2_minus_Q1"] > 0
-               else "no interaction detected at this budget")
+    # read the verdict off the two marginals, so it can never assert a
+    # sign flip the table denies, nor deny an interaction the table reports
+    if not ix["scheduler_matters"]:
+        verdict = "no interaction detected at this budget"
+    elif {s1["favours"], s2["favours"]} == {"Q1", "Q2"}:
+        verdict = "the sign of the scheduler effect flips with the student model"
+    else:
+        verdict = ("the size, not the sign, of the scheduler effect depends on "
+                   f"the student (S1 favours {s1['favours']}, "
+                   f"S2 favours {s2['favours']})")
     summary = (
         f"{n_learners} learners x {n_steps} questions on {cur.name}, "
         f"{n_c} concepts. S1: Q2 minus Q1 = {s1['diff_Q2_minus_Q1']:+.2f} "
@@ -446,8 +474,12 @@ def _detect_stats(runs, threshold):
 
 
 def _calib_gap(runs):
-    """Overall mean belief minus the fraction truly known. Robust to the
-    bin-dependence problem, so it is the number to compare across cells."""
+    """Overall mean belief and fraction truly known, pooled over all pairs.
+
+    The gap (truth minus belief) is a SIGNED pooled average, so it is a
+    bias diagnostic, not a calibration summary: opposite-signed bins can
+    cancel. `calibration()` is where per-bin behaviour is checked.
+    """
     pairs = [(t["belief_after"], float(t["true_after"]))
              for r in runs for t in r["trace"]]
     if not pairs:
@@ -457,8 +489,31 @@ def _calib_gap(runs):
     return mb, mt
 
 
+def _gap_ci(runs, n_boot=400, seed=7):
+    """95% interval on the pooled gap, resampling LEARNERS rather than
+    pairs, because the pairs within one learner are not independent."""
+    per = []
+    for r in runs:
+        b = [t["belief_after"] for t in r["trace"]]
+        y = [float(t["true_after"]) for t in r["trace"]]
+        if b:
+            per.append((sum(y) - sum(b), len(b)))
+    if len(per) < 2:
+        return float("nan")
+    rng = random.Random(seed)
+    boots = []
+    for _ in range(n_boot):
+        pick = [per[rng.randrange(len(per))] for _ in per]
+        num = sum(a for a, _ in pick)
+        den = sum(n for _, n in pick)
+        boots.append(num / den if den else float("nan"))
+    boots.sort()
+    lo, hi = boots[int(.025 * len(boots))], boots[int(.975 * len(boots)) - 1]
+    return (hi - lo) / 2
+
+
 def param_sweep(n_learners=30, n_steps=120, threshold=0.9, seed0=4242,
-                cur=None, **_):
+                cur=None, **run_kw):
     """Vary one BKT parameter at a time, with the tutor kept correctly
     specified (student and tutor move together), and watch what happens
     to detection delay and the false-alarm rate.
@@ -475,7 +530,7 @@ def param_sweep(n_learners=30, n_steps=120, threshold=0.9, seed0=4242,
     for pname, vals in grids.items():
         for v in vals:
             pr = dict(BKT_PARAMS, **{pname: v})
-            spec = sanity_spec(threshold=threshold, n_steps=n_steps)
+            spec = _spec_from(threshold, n_steps, run_kw)
             spec.student_params = pr
             spec.tutor_params = pr
             runs = _population(cur, spec, n_learners, seed0)
@@ -502,19 +557,33 @@ def param_sweep(n_learners=30, n_steps=120, threshold=0.9, seed0=4242,
     fig.tight_layout()
 
     worst = max(rows, key=lambda r: abs(r["calib_gap"]))
-    summary = (f"{len(rows)} cells, {n_learners} learners each. With the tutor "
-               f"correctly specified the calibration gap stays near zero "
-               f"everywhere: largest |gap| is {abs(worst['calib_gap']):.3f} at "
-               f"{worst['parameter']}={worst['value']}. Guessing (p_G) is what "
-               f"drives false alarms; the learn rate (p_T) mostly moves how "
-               f"long detection takes.")
+    span = {}
+    for pname in grids:
+        fa = [r["false_alarm_rate"] for r in rows if r["parameter"] == pname]
+        dl = [r["delay_on_concept_mean"] for r in rows if r["parameter"] == pname]
+        span[pname] = (max(fa) - min(fa), max(dl) - min(dl))
+    fa_rank = sorted(span, key=lambda k: -span[k][0])
+    dl_rank = sorted(span, key=lambda k: -span[k][1])
+    summary = (
+        f"{len(rows)} cells, {n_learners} learners each, all sharing one seed "
+        f"block. Every cell here is correctly specified (student and tutor get "
+        f"the same values), so the pooled gap measures estimator noise, not "
+        f"calibration: it stays within {abs(worst['calib_gap']):.3f} "
+        f"everywhere, which says the estimator is unbiased across parameter "
+        f"settings rather than that the tutor is calibrated. Range of the "
+        f"false-alarm rate across each grid: " +
+        ", ".join(f"{k} {span[k][0]:.3f}" for k in fa_rank) +
+        ". Range of the on-concept delay: " +
+        ", ".join(f"{k} {span[k][1]:.2f}" for k in dl_rank) +
+        f". So {fa_rank[0]} is the strongest lever on both, and the effects do "
+        f"not separate cleanly by metric.")
     return {"tables": {"param_sweep": rows}, "figures": {"param_sweep": fig},
             "summary": summary}
 
 
 # ================================================ tutor/student mismatch
-def mismatch(n_learners=40, n_steps=120, threshold=0.9, seed0=4242,
-             vary="p_G", cur=None, **_):
+def mismatch(n_learners=200, n_steps=120, threshold=0.9, seed0=4242,
+             vary="p_G", cur=None, **run_kw):
     """The tutor's assumed parameters differ from the student's real ones.
 
     (a) one student: the student is fixed at the true values and the
@@ -535,7 +604,7 @@ def mismatch(n_learners=40, n_steps=120, threshold=0.9, seed0=4242,
             "p_S": [0.02, 0.05, 0.10, 0.20, 0.30],
             "p_T": [0.05, 0.10, 0.20, 0.30, 0.40]}[vary]
     for v in grid:
-        spec = sanity_spec(threshold=threshold, n_steps=n_steps)
+        spec = _spec_from(threshold, n_steps, run_kw)
         spec.student_params = truth
         spec.tutor_params = dict(truth, **{vary: v})
         runs = _population(cur, spec, n_learners, seed0)
@@ -544,7 +613,8 @@ def mismatch(n_learners=40, n_steps=120, threshold=0.9, seed0=4242,
                          tutor_value=v, student_value=truth[vary],
                          error=v - truth[vary],
                          calib_mean_belief=mb, calib_frac_known=mt,
-                         calib_gap=mt - mb, **_detect_stats(runs, threshold)))
+                         calib_gap=mt - mb, calib_gap_ci95=_gap_ci(runs),
+                         **_detect_stats(runs, threshold)))
 
     # ---- (b) a population of students, one fixed tutor
     pop_rows = []
@@ -555,14 +625,15 @@ def mismatch(n_learners=40, n_steps=120, threshold=0.9, seed0=4242,
             sp = dict(truth)
             for k in ("p_G", "p_S", "p_T"):
                 sp[k] = min(0.45, max(0.02, truth[k] + r.uniform(-spread, spread)))
-            spec = sanity_spec(threshold=threshold, n_steps=n_steps)
+            spec = _spec_from(threshold, n_steps, run_kw)
             spec.student_params = sp
             spec.tutor_params = truth          # one model for everybody
             runs.append(run_one(cur, spec, seed=seed0 + i, keep_trace=True))
         mb, mt = _calib_gap(runs)
         pop_rows.append(dict(arm="population", spread=spread,
                              calib_mean_belief=mb, calib_frac_known=mt,
-                             calib_gap=mt - mb, **_detect_stats(runs, threshold)))
+                             calib_gap=mt - mb, calib_gap_ci95=_gap_ci(runs),
+                             **_detect_stats(runs, threshold)))
 
     fig, (a1, a2) = plt.subplots(1, 2, figsize=(9.6, 3.6))
     a1.axhline(0, ls="--", lw=1, color=GREY)
@@ -593,17 +664,84 @@ def mismatch(n_learners=40, n_steps=120, threshold=0.9, seed0=4242,
     worst = max(rows, key=lambda r: abs(r["calib_gap"]))
     widest = pop_rows[-1]
     summary = (
-        f"(a) One student, tutor's {vary} swept: the calibration gap is "
-        f"{at_truth['calib_gap']:+.3f} when the tutor is right and "
-        f"{worst['calib_gap']:+.3f} at its worst "
-        f"({vary}={worst['tutor_value']}, error {worst['error']:+.2f}). "
-        f"(b) A population with spread +/-{widest['spread']:.2f} and one fixed "
-        f"tutor: gap {widest['calib_gap']:+.3f}, false alarms "
+        f"(a) One student, tutor's {vary} swept, {n_learners} learners: the "
+        f"pooled gap is {at_truth['calib_gap']:+.3f} "
+        f"+/-{at_truth['calib_gap_ci95']:.3f} when the tutor is right and "
+        f"{worst['calib_gap']:+.3f} +/-{worst['calib_gap_ci95']:.3f} at its "
+        f"worst ({vary}={worst['tutor_value']}, error {worst['error']:+.2f}). "
+        f"(b) A population with spread +/-{widest['spread']:.2f} against one "
+        f"fixed tutor: gap {widest['calib_gap']:+.3f} "
+        f"+/-{widest['calib_gap_ci95']:.3f}, false alarms "
         f"{widest['false_alarm_rate']:.1%} against "
-        f"{pop_rows[0]['false_alarm_rate']:.1%} when every student matches "
-        f"the tutor exactly.")
+        f"{pop_rows[0]['false_alarm_rate']:.1%} when every student matches the "
+        f"tutor exactly. The spread rows share a seed block, so they are a "
+        f"paired trend rather than four independent estimates.")
     return {"tables": {"mismatch_one": rows, "mismatch_population": pop_rows},
             "figures": {"mismatch": fig}, "summary": summary}
+
+
+
+# ======================== separating the restriction from the belief lag
+def _oracle_run(cur, gated_student, restrict, seed, n_steps, rng_off=77777):
+    """One run whose scheduler gates on the student's TRUE state.
+
+    Not a real tutor: no tutor can see this. It exists to isolate the
+    prerequisite RESTRICTION from the cost of gating on a belief that
+    lags the truth, which the real Q1/Q2 pair confounds.
+    """
+    kw = learner_kwargs("bkt_prereq" if gated_student else "bkt")
+    kw.pop("params", None)
+    L = BKTLearner(cur, seed=seed, **kw)
+    rng = random.Random(seed + rng_off)
+    ids = cur.ids()
+    for _ in range(n_steps):
+        elig = [c for c in ids if not L.known[c]]
+        if restrict:
+            elig = [c for c in elig
+                    if all(L.known[p] for p in cur.concepts[c].prereqs)]
+        if not elig:
+            elig = ids
+        L.answer(_pick_question(cur, rng.choice(elig), rng), 0.0)
+    return sum(L.known.values())
+
+
+def restriction_only(n_learners=400, n_steps=40, seed0=4242, cur=None, **_):
+    """Is the prerequisite restriction itself worth anything?
+
+    Q1 and Q2 differ in two ways at once: Q2 restricts to
+    prerequisite-ready concepts, AND it decides readiness from a belief
+    that lags the truth. This runs the matched pair where both arms gate
+    on the student's true state, so only the restriction differs.
+
+    Reading it: a difference of zero for S1 means the restriction costs
+    nothing there, and whatever the real Q1/Q2 comparison shows for S1
+    is therefore the price of the lag, not of the restriction.
+    """
+    cur = cur or build_curriculum()
+    rows = []
+    for label, gated in (("S1", False), ("S2", True)):
+        a = [_oracle_run(cur, gated, False, seed0 + i, n_steps)
+             for i in range(n_learners)]
+        b = [_oracle_run(cur, gated, True, seed0 + i, n_steps)
+             for i in range(n_learners)]
+        d = [y - x for x, y in zip(a, b)]
+        se = st.stdev(d) / math.sqrt(len(d)) if len(d) > 1 else 0.0
+        rows.append(dict(student=label, n_learners=n_learners,
+                         n_steps=n_steps,
+                         unrestricted=st.mean(a), restricted=st.mean(b),
+                         restriction_effect=st.mean(d), ci95=1.96 * se))
+    s1, s2 = rows
+    summary = (
+        f"Both arms gate on the student's true state, so only the "
+        f"prerequisite restriction differs. S1: {s1['restriction_effect']:+.3f} "
+        f"+/-{s1['ci95']:.3f}. S2: {s2['restriction_effect']:+.3f} "
+        f"+/-{s2['ci95']:.3f}. The restriction itself is worth nothing to a "
+        f"student whose learning does not depend on prerequisites, and a lot "
+        f"to one whose does. Any effect the real Q1/Q2 pair shows for S1 is "
+        f"therefore the cost of gating on a belief that lags the truth, not "
+        f"the cost of the restriction.")
+    return {"tables": {"restriction_only": rows}, "figures": {},
+            "summary": summary}
 
 
 # ---------------------------------------------------------------- registry
@@ -635,6 +773,12 @@ EXPERIMENTS = {
         "ones: one student with the assumption swept, then a population "
         "of students against one fixed tutor.",
         dict(n_learners=40, n_steps=120, threshold=0.9)),
+    "restriction_only": (
+        restriction_only,
+        "Separates the prerequisite restriction from the cost of gating "
+        "on a belief that lags the truth, by running both arms against "
+        "the student's true state.",
+        dict(n_learners=400, n_steps=40)),
     "trace_20_steps": (
         trace_table,
         "Step-by-step trace of one short run: ZPD, question, answer, true "

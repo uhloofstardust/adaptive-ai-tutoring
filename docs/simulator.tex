@@ -169,8 +169,10 @@ for a mastery threshold $\theta$. Note that it is defined entirely on
 Two rules are compared.
 
 \begin{description}
-\item[Q2, \code{uniform\_zpd}] uniform over the ZPD. A concept is never asked
-until its prerequisites are believed mastered.
+\item[Q2, \code{uniform\_zpd}] uniform over the ZPD, so a concept is not asked
+until its prerequisites are believed mastered. When nothing is
+prerequisite-ready, which in this graph means everything is believed mastered,
+it falls back to revisiting any concept.
 \item[Q1, \code{uniform\_unmastered}] uniform over every concept not yet
 believed mastered, ready or not.
 \end{description}
@@ -197,17 +199,23 @@ nothing to what any tutor believes.
 \end{description}
 
 Every comparison is paired: the same seeds are used in every arm, so learner
-$i$ is the same simulated person throughout and differences are read
-within-learner rather than between groups.
+$i$ starts from the same hidden state in every arm and differences are read
+within-learner rather than between groups. The pairing is on that shared
+starting state, not on every coin thereafter: once two schedulers ask
+different concepts the learners' random draws diverge, so the pairing buys
+correlation rather than identity.
 
 \section*{7. What the simulator has been used to establish}
 
 \textbf{The tracer is correct.} On the plain BKT student with a correctly
-specified tutor, mean belief is 0.61 against a true known-fraction of 0.62
-over 40{,}000 observations; at four times the sample every bin sits within
-0.03 of the diagonal. Sweeping each parameter in turn over 19 settings leaves
-the largest calibration gap at 0.024, so calibration is not an artefact of one
-parameter choice.
+specified tutor, pooled mean belief is 0.771 against a true known-fraction of
+0.773 over 12{,}000 observations (100 learners, 120 questions each). At four
+times the learners, 48{,}000 pairs, every bin holding at least 500
+observations sits within 0.026 of the diagonal. Sweeping each of the four
+parameters in turn over 19 settings leaves the pooled gap within 0.011
+throughout. That last sweep keeps the tutor correctly specified in every cell,
+so it shows the estimator is unbiased across parameter settings; it is not by
+itself evidence that a \emph{mis}specified tutor would be caught.
 
 \textbf{The two checks agree with each other.} If beliefs are calibrated, the
 false-alarm rate at threshold $\theta$ must equal one minus the mean belief at
@@ -216,7 +224,8 @@ Two quantities computed by different routes landing on the same number is
 stronger evidence than either alone.
 
 \textbf{The scheduler only matters if the student model says it can.} Crossing
-S1 and S2 with Q1 and Q2, 60 learners, 40 questions:
+S1 and S2 with Q1 and Q2, 400 learners, 40 questions, scored on concepts the
+student truly knows out of eight:
 
 \begin{center}
 \small
@@ -224,49 +233,85 @@ S1 and S2 with Q1 and Q2, 60 learners, 40 questions:
 \toprule
  & \textbf{Q1} & \textbf{Q2} & \textbf{Q2 $-$ Q1} & \textbf{95\% CI}\\
 \midrule
-S1 & 6.22 & 5.83 & $-0.38$ & $\pm 0.31$\\
-S2 & 4.47 & 5.65 & $+1.18$ & $\pm 0.50$\\
+S1 & 6.15 & 6.00 & $-0.15$ & $\pm 0.14$\\
+S2 & 4.39 & 5.86 & $+1.47$ & $\pm 0.18$\\
 \midrule
-\multicolumn{3}{@{}l}{interaction (S2 $-$ S1)} & $+1.57$ & $\pm 0.40$\\
+\multicolumn{3}{@{}l}{interaction (S2 $-$ S1)} & $+1.62$ & $\pm 0.17$\\
 \bottomrule
 \end{tabular}
 \end{center}
 
-\noindent Concepts truly known, out of eight. The \emph{sign} of the scheduler
-effect flips with the student model, and the interaction is well clear of
-zero. Because seed $i$ is the same simulated person in all four cells, that interval is the paired one: the two per-student differences are correlated ($r=+0.59$), so treating them as independent would overstate the uncertainty. Against S2 the prerequisite-respecting rule is worth about one extra
-concept; against S1 it is mildly harmful, because when prerequisites do not
-gate learning the ZPD restriction is pure overhead and Q1 gets to work on all
-eight concepts at once. The prediction going in was that the scheduler would
-be invisible under S1; it is in fact slightly counterproductive, which is a
-sharper result and the same lesson.
+\noindent The interaction is far from zero: the scheduler is worth about one
+and a half concepts to S2 and nothing useful to S1. Because seed $i$ is the
+same simulated person in all four cells, that interval is the paired one; the
+two per-student differences are correlated ($r=+0.59$), so treating them as
+independent would overstate the uncertainty. The S1 figure is small and, with
+three contrasts in the table, marginal: it should be read as ``at most a
+slight cost'', not as an established effect.
 
-\textbf{Budget decides whether any of this is visible.} At 120 questions on
-eight concepts every cell reaches 7.7 of 8 and no scheduler can differ from
-another. A comparison of question-selection rules is only meaningful below
-saturation, and the saturation point has to be reported alongside any result.
+\textbf{What the restriction is actually worth.} Q1 and Q2 differ in two ways
+at once, and separating them changes the story. Running a matched pair in
+which \emph{both} arms gate on the student's true state, so that only the
+prerequisite restriction differs:
 
-\textbf{Misspecification degrades gracefully but not harmlessly.} When the
-tutor's assumed $p(G)$ is swept while the student stays fixed, the calibration
-gap is $+0.004$ at the truth and reaches $-0.128$ when the tutor underestimates
-guessing by 0.20; false alarms move from 6\% to 30\% across that range. With a
-population of students whose parameters are spread uniformly by $\pm 0.15$ and
-a single fixed tutor, the gap is $-0.037$ and false alarms roughly double, from
-6.2\% to 11.7\%. A single tutor model stays usable across a varied population,
-at a measurable cost.
+\begin{center}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+ & \textbf{unrestricted} & \textbf{restricted} & \textbf{effect}\\
+\midrule
+S1 & 7.480 & 7.480 & $0.000 \pm 0.000$\\
+S2 & 5.513 & 7.480 & $+1.968 \pm 0.167$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Under S1 the restriction is \emph{exactly} neutral: identical for
+all 400 learners, not merely close. So the small negative figure in the table
+above is not the cost of restricting to prerequisite-ready concepts. It is the
+cost of deciding readiness from a \emph{belief that lags the truth}: Q2
+withholds concepts the student is in fact already able to learn. The
+whiteboard prediction that the restriction would be invisible under S1 was
+right about the restriction; what it did not anticipate is the separate price
+of gating on an estimate.
+
+\textbf{Budget decides whether any of this is visible.} At 120 questions the
+cells reach 7.99, 7.99, 7.68 and 7.90 of eight. The S1 effect is gone
+($-0.003 \pm 0.015$), but the S2 effect is still there and still positive
+($+0.212 \pm 0.094$). So a longer budget shrinks the contrast towards the
+ceiling rather than abolishing it, and any comparison of question-selection
+rules has to report the budget it was measured at.
+
+\textbf{Misspecification degrades gracefully but not harmlessly.} Sweeping the
+tutor's assumed $p(G)$ against a fixed student, 200 learners, with intervals
+bootstrapped over learners: the pooled gap is $+0.002 \pm 0.006$ at the truth
+and $-0.063 \pm 0.008$ when the tutor underestimates guessing by 0.20, while
+false alarms move from 4.6\% to 17.1\%. With a population whose parameters are
+spread uniformly by $\pm 0.15$ and a single fixed tutor, the gap is
+$-0.017 \pm 0.014$ and false alarms rise from 4.6\% to 7.5\%. A single tutor
+model stays usable across a varied population, at a measurable cost. Note the
+pooled gap is a signed average, so it is a bias diagnostic: opposite-signed
+bins can cancel, and per-bin behaviour is what Section 6's calibration check
+looks at.
 
 \section*{8. Limitations}
 
 The plain BKT student has no forgetting, so nothing here speaks to retention or
-spaced practice; the continuous student exists for that and is not used in any
-of the checks above. All results are on one curriculum of eight concepts.
-Populations are 30 to 60 learners, enough for the reported intervals and not
-for fine distinctions. The tutor's $p(T)$ against S2 is held constant even
-though the student's varies with its prerequisites, so the tutor is mildly
-misspecified there by construction; whether it should instead gate $p(T)$ on
-its own belief about the prerequisites is open. And every number is a statement
-about this model, not about people: no result here has been checked against a
-real learner.
+spaced practice; the continuous student exists for that and is used in none of
+the checks above. All results are on one curriculum of eight concepts, though
+the interaction also reproduces on the 40-concept one. Every population in this
+document derives from a single base seed, so the intervals describe sampling
+within one seed block rather than across independent replications. Per-bin
+calibration intervals are nominal: successive observations on one concept are
+dependent, because the belief after one attempt is the belief before the next,
+so the pooled comparison is the robust one. The threshold $\theta = 0.9$ is
+shared between the tracer and the scheduler, which means it sets both when a
+concept is declared and when its dependants become available, and it is not
+swept. The tutor's $p(T)$ against S2 is held constant even though the student's
+varies with its prerequisites, so the tutor is mildly misspecified there by
+construction; whether it should instead gate $p(T)$ on its own belief about the
+prerequisites is open. And every number is a statement about this model, not
+about people: no result here has been checked against a real learner.
 
 \vspace{6pt}
 \noindent\rule{\textwidth}{0.4pt}

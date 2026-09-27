@@ -73,11 +73,12 @@ def run_one(cur: Curriculum, spec: RunSpec, seed: int,
     profile: LearnerProfile = PROFILES[spec.profile]
     LearnerCls, _, *rest = LEARNERS[spec.learner]
     if LearnerCls is BKTLearner:
-        kw = learner_kwargs(spec.learner)
+        kw = learner_kwargs(spec.learner)      # what the registry says
         if spec.prereq_gated_pT:
             kw["prereq_gated_pT"] = True
-        if spec.pT_low is not None:
+        if spec.pT_low is not None:             # the spec may override it
             kw["pT_low"] = spec.pT_low
+        kw.pop("params", None)
         learner = LearnerCls(cur, profile, seed=seed, cfg=cfg,
                              params=spec.student_params or spec.bkt_params,
                              **kw)

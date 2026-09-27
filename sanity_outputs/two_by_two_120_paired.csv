@@ -1,0 +1,4 @@
+student,diff_Q2_minus_Q1,ci95,better_with_Q2,n,favours,scheduler_matters
+S1,-0.0025,0.014716365159534875,4,400,neither,False
+S2,0.2125,0.09372358107286985,65,400,Q2,True
+interaction (S2 minus S1),0.215,0.0927649094272863,-1,400,-,True
