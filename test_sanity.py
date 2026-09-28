@@ -238,14 +238,22 @@ for key in {(r["student"], r["scheduler"]) for r in rows}:
           f"{key[0]}/{key[1]}: the curve never goes down")
 
 print("17. the curve reproduces the 2x2 verdict in questions, not counts")
-mc2 = mastery_curve(n_learners=200, n_steps=300, cur=cur)
+mc2 = mastery_curve(n_learners=400, n_steps=300, cur=cur)
 pr = {r["student"]: r for r in mc2["tables"]["paired"]}
-check(pr["S1"]["favours"] == "neither",
+check(not pr["S1"]["sign_resolved"]
+      and pr["S1"]["favours"] == "unresolved at this n",
       f"S1: Q2 minus Q1 is {pr['S1']['diff_Q2_minus_Q1']:+.1f} "
-      f"+/-{pr['S1']['ci95']:.1f} questions, no winner")
-check(pr["S2"]["favours"] == "Q2",
-      f"S2: Q2 saves {-pr['S2']['diff_Q2_minus_Q1']:.1f} "
-      f"+/-{pr['S2']['ci95']:.1f} questions")
+      f"+/-{pr['S1']['ci95']:.1f} questions, sign not resolved here")
+# and the label must not be mistaken for "no effect": across six
+# independent 400-learner blocks this contrast came out +1.09, a small
+# COST to Q2, which is the direction two_by_two already reports
+check("not that the effect is zero" in mc2["summary"],
+      "...and the summary says unresolved does not mean zero")
+check(pr["S2"]["sign_resolved"] and pr["S2"]["favours"] == "Q2",
+      f"S2: Q2 reaches full mastery {-pr['S2']['diff_Q2_minus_Q1']:.1f} "
+      f"+/-{pr['S2']['ci95']:.1f} questions sooner")
+check(pr["S2"]["median_diff_Q2_minus_Q1"] != pr["S2"]["diff_Q2_minus_Q1"],
+      "mean and median paired differences are reported separately")
 
 # a median over finishers only is honest ONLY when nearly all finished
 qa = mc2["tables"]["questions_to_all"]
@@ -287,9 +295,13 @@ check(oracle["false_alarm_rate"] == at_truth["false_alarm_rate"],
       "...and declares mastery at exactly the same moments")
 
 # and the verdict row must then say the oracle buys nothing at all
-v0 = tc0["tables"]["verdict"][0]
-check(v0["oracle_buys"] <= 0.0 + 1e-12,
-      f"at zero spread the oracle buys {v0['oracle_buys']:+.4f}, i.e. nothing")
+# compare against the AT-TRUTH arm, which is the one the oracle must
+# equal by construction; the "best" arm is whichever minimised Brier on
+# this run and need not be the same arm at a tiny n
+at_t = next(r for r in r0 if r["tutor_arm"] == "fixed"
+            and abs(r["tutor_value"] - BP["p_S"]) < 1e-12)
+check(oracle["brier"] == at_t["brier"] and oracle["mae"] == at_t["mae"],
+      "at zero spread the oracle scores identically to the tutor at the truth")
 
 print("20. tutor_choice keeps the arms paired and refuses bad input")
 tc = tutor_choice(n_learners=12, n_steps=40, vary=("p_S",),
@@ -310,5 +322,80 @@ for bad in (dict(n_learners=1), dict(vary=("p_nonsense",))):
     except ValueError:
         pass
 check(True, "tutor_choice refuses n_learners<2 and an unknown parameter")
+
+print("21. the interval compares the two arms, not each arm to itself")
+from cursim.sanity import _gap_ci_paired
+
+# identical arms: every bootstrap draw differences to exactly zero
+A = [(0.7, 10), (-1.3, 12), (0.2, 9), (2.1, 11), (-0.4, 10), (1.0, 13)]
+check(_gap_ci_paired(A, list(A)) == 0.0,
+      "two identical arms get a paired interval of exactly zero")
+
+# a rigid shift in every learner is a difference with no spread, so the
+# paired interval collapses even though each arm alone varies a lot
+B = [(a + 0.5 * n, n) for a, n in A]
+check(_gap_ci_paired(A, B) < 1e-12,
+      "a constant per-pair shift gives a paired interval of zero too")
+check(_gap_ci_paired(A, A[:3]) != _gap_ci_paired(A, A[:3]),
+      "mismatched arm lengths give nan rather than a wrong number")
+
+# and on the real thing: at zero spread the two arms ARE the same tutor,
+# so the interval on their difference must be exactly zero
+tcz = tutor_choice(n_learners=120, n_steps=120, vary=("p_S",),
+                   spreads=(0.0,), cur=cur)
+vz = tcz["tables"]["verdict"][0]
+check(vz["best_fixed_value"] == vz["at_truth_value"],
+      "at zero spread the selected tutor is the one at the truth")
+check(vz["ci95"] == 0.0 and vz["brier_ci95"] == 0.0,
+      "...so the paired interval against the oracle is exactly zero")
+check(vz["ci95_marginal"] > 0.0,
+      f"...while each arm's own interval is still +/-{vz['ci95_marginal']:.3f}, "
+      f"which is why the marginal one is the wrong comparison")
+
+print("22. the signed gap cancels, which is why it is not the score")
+from cursim.sanity import _gap_contrib, _loss_contrib, _pooled
+
+# One tutor, badly wrong about both concepts in opposite directions:
+# certain of one it does not know, dismissive of one it does.
+cancelling = [{"trace": [{"belief_after": 0.9, "true_after": False},
+                         {"belief_after": 0.1, "true_after": True}]}]
+check(abs(_pooled(_gap_contrib(cancelling))) < 1e-12,
+      "the pooled signed gap scores a maximally wrong tutor as perfect")
+check(abs(_pooled(_loss_contrib(cancelling, "abs")) - 0.9) < 1e-12,
+      "...while mean |belief - truth| correctly calls it 0.9 off per pair")
+check(abs(_pooled(_loss_contrib(cancelling, "sq")) - 0.81) < 1e-12,
+      "...and Brier calls it 0.81")
+
+# this is not a contrived edge case: it is what a fixed tutor facing a
+# symmetric spread of students does, over- and under-shooting in equal
+# measure, so the signed gap is blind to exactly what adapting fixes
+tc = tutor_choice(n_learners=40, n_steps=40, vary=("p_S",),
+                  spreads=(0.15,), cur=cur)
+fixed = [r for r in tc["tables"]["tutor_choice"] if r["tutor_arm"] == "fixed"]
+v = tc["tables"]["verdict"][0]
+check(v["best_fixed_value"] == min(fixed, key=lambda r: r["brier"])["tutor_value"],
+      "the best fixed tutor is the one that minimises Brier")
+check(all(r["mae"] > abs(r["calib_gap"]) for r in fixed),
+      "every fixed arm's per-pair error exceeds its signed gap, as it must")
+check("cancels" in tc["summary"] and "improper" in tc["summary"]
+      and "no equivalence margin" in tc["summary"],
+      "the summary names both rejected scores and the missing margin")
+
+# Brier is proper, so at the study's horizon it recovers the true
+# parameter; MAE is not, and at a SHORT horizon it picks the wrong one.
+# That is why the score was changed, and why the short horizon is
+# called out as a limit rather than quietly used.
+zf = [r for r in tcz["tables"]["tutor_choice"] if r["tutor_arm"] == "fixed"]
+check(abs(min(zf, key=lambda r: r["brier"])["tutor_value"] - BP["p_S"]) < 1e-12,
+      "at 120 questions, with every student at the truth, Brier picks it")
+
+short = tutor_choice(n_learners=120, n_steps=40, vary=("p_S",),
+                     spreads=(0.0,), cur=cur)
+sf = [r for r in short["tables"]["tutor_choice"] if r["tutor_arm"] == "fixed"]
+check(abs(min(sf, key=lambda r: r["mae"])["tutor_value"] - BP["p_S"]) > 1e-12,
+      "at 40 questions MAE picks the wrong p_S, so it is a diagnostic only")
+check("nearly flat" in tutor_choice.__doc__
+      and "Do not read this study at" in tutor_choice.__doc__,
+      "the docstring states the short-horizon limit rather than hiding it")
 
 print(f"\nALL {passed} CHECKS PASSED")

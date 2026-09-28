@@ -210,10 +210,13 @@ side is implemented yet; it is a few lines once chosen.
 
 ## 8. What we did not do, and limits
 
-- One curriculum (the 40-concept language graph). The addition graph from the
-  CurriculumTutor paper is not built.
+- Two curricula ship: the 8-concept abstract default and the 40-concept language
+  graph these tables came from. The addition graph from the CurriculumTutor paper
+  is not built.
 - Check 2 uses 30 learners per threshold. Enough for the shape; not for error bars.
-- 400 questions per run, which is where "unresolved at end" comes from.
+- 400 questions per run, which is where "unresolved at end" comes from. On the
+  8-concept default at 120 questions nothing is left unresolved at any threshold,
+  and `mastery_curve` shows every arm reaching all 8 concepts inside 300.
 - The `binary` and `bkt_forget` tutors in the dropdown use their own parameters
   (`binary` has p(T)=0.06); the sidebar says so when you pick them. The mail's checks
   are for `bkt` / `bkt`.
