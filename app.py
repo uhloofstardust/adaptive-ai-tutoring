@@ -145,14 +145,6 @@ with st.sidebar:
     n_steps = st.number_input("Questions in the run", 5, 2000,
                               int(DEFAULTS["n_steps"]), 5)
     seed = st.number_input("Seed", 0, 10**6, int(DEFAULTS["seed"]), 1)
-    prereq_pT = False
-    if learner == "bkt":
-        prereq_pT = st.checkbox(
-            "p(T) depends on prerequisites", False,
-            help="Off = prerequisites do not affect learning at all. "
-                 "On = a concept learns slower until its prerequisites are "
-                 "truly known.")
-
     st.markdown("---")
     st.markdown("**Shared BKT parameters**")
     st.caption(", ".join(f"{k} = {v}" for k, v in BKT_PARAMS.items()))
@@ -172,14 +164,14 @@ tab_run, tab_exp = st.tabs(["Dry run", "Experiments"])
 with tab_run:
     cfg = dict(curriculum=cur_name, learner=learner, mastery_model=model,
                scheduler=sched, threshold=threshold, n_steps=int(n_steps),
-               seed=int(seed), prereq_gated_pT=prereq_pT)
+               seed=int(seed))
     key = json.dumps(cfg, sort_keys=True)
 
     c1, c2 = st.columns([1, 5])
     if c1.button("Run", type="primary", use_container_width=True) or \
             "run" not in st.session_state:
         spec = RunSpec(scheduler=sched, mastery_model=model, learner=learner,
-                       threshold=threshold, prereq_gated_pT=prereq_pT,
+                       threshold=threshold,
                        n_sessions=1, questions_per_session=int(n_steps),
                        gap_hours=0.0, retention_days=0.0)
         st.session_state["run"] = run_one(cur, spec, seed=int(seed),
@@ -240,10 +232,13 @@ with tab_exp:
                 elif isinstance(v, float):
                     params[k] = st.number_input(k, value=v, step=0.01,
                                                 format="%.2f")
+                elif isinstance(v, (list, tuple)):
+                    # a sequence of choices becomes a dropdown; the first
+                    # entry is the default
+                    params[k] = st.selectbox(k, list(v))
                 else:
                     params[k] = v
-        params.update(scheduler=sched, mastery_model=model, learner=learner,
-                      prereq_gated_pT=prereq_pT)
+        params.update(scheduler=sched, mastery_model=model, learner=learner)
         st.caption(f"Runs on `{cur_name}` with student = `{learner}`, "
                    f"tutor = `{model}`, scheduler = `{sched}`. The checks "
                    f"assume `bkt` / `bkt` / `uniform_zpd`; with the "

@@ -17,7 +17,7 @@ import pandas as pd
 
 from cursim.curriculum import build_curriculum
 from cursim.params import BKT_PARAMS
-from cursim.sanity import (calibration, detection, mismatch,
+from cursim.sanity import (calibration, detection, mastery_curve, mismatch,
                            param_sweep, restriction_only,
                            trace_table, two_by_two)
 
@@ -56,9 +56,11 @@ x22b = two_by_two(n_steps=120, cur=cur)
 dump("two_by_two_120", x22b)
 ro = restriction_only(cur=cur)
 dump("restriction_only", ro)
+mc = mastery_curve(cur=cur)
+dump("mastery_curve", mc)
 psw = param_sweep(cur=cur)
 dump("param_sweep", psw)
-mm = mismatch(cur=cur)
+mm = mismatch(cur=cur, vary=("p_G", "p_S", "p_T"))
 dump("mismatch", mm)
 
 # ---------------------------------------------------------------- trace
@@ -184,13 +186,34 @@ with open(f"{OUT}/summary.md", "w") as f:
         f.write(f"| {r['student']} | {r['scheduler']} | "
                 f"{r['learned_mean']:.2f} / {r['n_concepts']} |\n")
 
+    f.write("\n## Concepts mastered over time\n\n" + mc["summary"] + "\n\n")
+    f.write("| student | scheduler | known after the budget | reached all | "
+            "median questions to all | never finished |\n"
+            "|---|---|---:|---:|---:|---:|\n")
+    for r in mc["tables"]["questions_to_all"]:
+        med = ("n/a" if r["median_questions_to_all"] != r["median_questions_to_all"]
+               else f"{r['median_questions_to_all']:.0f}")
+        f.write(f"| {r['student']} | {r['scheduler']} | "
+                f"{r['final_mean_known']:.2f} / {r['n_concepts']} | "
+                f"{r['frac_reached_all']:.0%} | {med} | "
+                f"{r['n_censored']}/{r['n_learners']} |\n")
+    f.write("\n| student | Q2 minus Q1, questions to full mastery | 95% CI | "
+            "faster with Q2 | favours |\n|---|---:|---:|---:|---|\n")
+    for r in mc["tables"]["paired"]:
+        f.write(f"| {r['student']} | {r['diff_Q2_minus_Q1']:+.1f} | "
+                f"+/-{r['ci95']:.1f} | {r['faster_with_Q2']}/{r['n_paired']} | "
+                f"{r['favours']} |\n")
+    f.write("\nSeed i is the same learner in both arms, so these are paired "
+            "differences rather than two independent estimates.\n")
+
     f.write("\n## Parameter sweep\n\n" + psw["summary"] + "\n")
     f.write("\n## Tutor / student mismatch\n\n" + mm["summary"] + "\n\n")
-    f.write("| tutor's p_G | error | calibration gap | false alarms | delay |\n"
-            "|---:|---:|---:|---:|---:|\n")
+    f.write("| parameter | tutor's value | error | calibration gap | "
+            "false alarms | delay |\n|---|---:|---:|---:|---:|---:|\n")
     for r in mm["tables"]["mismatch_one"]:
-        f.write(f"| {r['tutor_value']:.2f} | {r['error']:+.2f} | "
-                f"{r['calib_gap']:+.3f} | {r['false_alarm_rate']:.1%} | "
+        f.write(f"| {r['parameter']} | {r['tutor_value']:.2f} | "
+                f"{r['error']:+.2f} | {r['calib_gap']:+.3f} | "
+                f"{r['false_alarm_rate']:.1%} | "
                 f"{r['delay_on_concept_mean']:.1f} |\n")
     f.write("\n| population spread | calibration gap | false alarms | delay |\n"
             "|---:|---:|---:|---:|\n")

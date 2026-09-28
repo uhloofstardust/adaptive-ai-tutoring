@@ -73,21 +73,49 @@ Both arms gate on the student's true state, so only the prerequisite restriction
 | S2 | Q1 | 7.68 / 8 |
 | S2 | Q2 | 7.90 / 8 |
 
+## Concepts mastered over time
+
+200 learners per cell, 300 questions. S1 needs a median 55 questions under Q1 and 54 under Q2, paired difference -0.5 +/-3.2 questions (favours neither); S2 needs a median 82 questions under Q1 and 55 under Q2, paired difference -24.4 +/-6.5 questions (favours Q2). Every arm gets every learner to all 8 concepts inside 300 questions, at a median of 54 (S1/Q2) to 82 (S2/Q1).
+
+| student | scheduler | known after the budget | reached all | median questions to all | never finished |
+|---|---|---:|---:|---:|---:|
+| S1 | Q1 | 8.00 / 8 | 100% | 55 | 0/200 |
+| S1 | Q2 | 8.00 / 8 | 100% | 54 | 0/200 |
+| S2 | Q1 | 8.00 / 8 | 100% | 82 | 0/200 |
+| S2 | Q2 | 8.00 / 8 | 100% | 55 | 0/200 |
+
+| student | Q2 minus Q1, questions to full mastery | 95% CI | faster with Q2 | favours |
+|---|---:|---:|---:|---|
+| S1 | -0.5 | +/-3.2 | 98/200 | neither |
+| S2 | -24.4 | +/-6.5 | 147/200 | Q2 |
+
+Seed i is the same learner in both arms, so these are paired differences rather than two independent estimates.
+
 ## Parameter sweep
 
 19 cells, 30 learners each, all sharing one seed block. Every cell here is correctly specified (student and tutor get the same values), so the pooled gap measures estimator noise, not calibration: it stays within 0.011 everywhere, which says the estimator is unbiased across parameter settings rather than that the tutor is calibrated. Range of the false-alarm rate across each grid: p_G 0.092, p_T 0.082, p_S 0.046, p_L0 0.025. Range of the on-concept delay: p_T 2.45, p_G 1.64, p_S 0.78, p_L0 0.71. So p_G is the strongest lever on both, and the effects do not separate cleanly by metric.
 
 ## Tutor / student mismatch
 
-(a) One student, tutor's p_G swept, 200 learners: the pooled gap is +0.002 +/-0.006 when the tutor is right and -0.063 +/-0.008 at its worst (p_G=0.05, error -0.20). (b) A population with spread +/-0.15 against one fixed tutor: gap -0.017 +/-0.014, false alarms 7.5% against 4.6% when every student matches the tutor exactly. The spread rows share a seed block, so they are a paired trend rather than four independent estimates.
+(a) One student, 200 learners, the tutor's assumption swept one parameter at a time. p_G: gap +0.002 +/-0.006 when the tutor is right, -0.063 +/-0.008 at its worst (p_G=0.05, error -0.20); p_S: gap +0.002 +/-0.006 when the tutor is right, -0.037 +/-0.008 at its worst (p_S=0.3, error +0.20); p_T: gap +0.002 +/-0.006 when the tutor is right, +0.133 +/-0.005 at its worst (p_T=0.05, error -0.15). (b) A population with spread +/-0.15 against one fixed tutor: gap -0.017 +/-0.014, false alarms 7.5% against 4.6% when every student matches the tutor exactly. The spread rows share a seed block, so they are a paired trend rather than four independent estimates.
 
-| tutor's p_G | error | calibration gap | false alarms | delay |
-|---:|---:|---:|---:|---:|
-| 0.05 | -0.20 | -0.063 | 17.1% | 1.8 |
-| 0.15 | -0.10 | -0.025 | 12.4% | 2.1 |
-| 0.25 | +0.00 | +0.002 | 4.6% | 3.1 |
-| 0.35 | +0.10 | +0.023 | 2.9% | 3.3 |
-| 0.45 | +0.20 | +0.049 | 1.2% | 4.3 |
+| parameter | tutor's value | error | calibration gap | false alarms | delay |
+|---|---:|---:|---:|---:|---:|
+| p_G | 0.05 | -0.20 | -0.063 | 17.1% | 1.8 |
+| p_G | 0.15 | -0.10 | -0.025 | 12.4% | 2.1 |
+| p_G | 0.25 | +0.00 | +0.002 | 4.6% | 3.1 |
+| p_G | 0.35 | +0.10 | +0.023 | 2.9% | 3.3 |
+| p_G | 0.45 | +0.20 | +0.049 | 1.2% | 4.3 |
+| p_S | 0.02 | -0.08 | +0.029 | 2.9% | 3.3 |
+| p_S | 0.05 | -0.05 | +0.015 | 4.4% | 3.1 |
+| p_S | 0.10 | +0.00 | +0.002 | 4.6% | 3.1 |
+| p_S | 0.20 | +0.10 | -0.023 | 6.4% | 2.9 |
+| p_S | 0.30 | +0.20 | -0.037 | 7.0% | 2.8 |
+| p_T | 0.05 | -0.15 | +0.133 | 1.3% | 4.3 |
+| p_T | 0.10 | -0.10 | +0.073 | 2.9% | 3.4 |
+| p_T | 0.20 | +0.00 | +0.002 | 4.6% | 3.1 |
+| p_T | 0.30 | +0.10 | -0.053 | 10.6% | 2.3 |
+| p_T | 0.40 | +0.20 | -0.094 | 15.6% | 1.9 |
 
 | population spread | calibration gap | false alarms | delay |
 |---:|---:|---:|---:|

@@ -12,3 +12,6 @@ runs/
 # experiments produced, and should be readable without running anything.
 # Regenerate with `python run_experiments.py`; commit the result if it
 # changes, so the committed numbers and the code never disagree.
+
+# run logs: stdout only, regenerable
+logs/

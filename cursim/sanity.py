@@ -589,7 +589,9 @@ def mismatch(n_learners=200, n_steps=120, threshold=0.9, seed0=4242,
     (a) one student: the student is fixed at the true values and the
         tutor's assumption for `vary` is swept. The tutor is wrong by a
         known amount, so the calibration gap should grow with the error
-        and vanish at the truth.
+        and vanish at the truth. `vary` is one parameter name or a
+        sequence of them; each is swept in turn and tagged in the
+        `parameter` column.
     (b) many students: every learner draws their own true parameters
         from a spread, while the tutor uses one fixed set. This is the
         realistic case, and the question is whether a single tutor model
@@ -600,21 +602,27 @@ def mismatch(n_learners=200, n_steps=120, threshold=0.9, seed0=4242,
     rows = []
 
     # ---- (a) one true student, tutor's assumption swept
-    grid = {"p_G": [0.05, 0.15, 0.25, 0.35, 0.45],
-            "p_S": [0.02, 0.05, 0.10, 0.20, 0.30],
-            "p_T": [0.05, 0.10, 0.20, 0.30, 0.40]}[vary]
-    for v in grid:
-        spec = _spec_from(threshold, n_steps, run_kw)
-        spec.student_params = truth
-        spec.tutor_params = dict(truth, **{vary: v})
-        runs = _population(cur, spec, n_learners, seed0)
-        mb, mt = _calib_gap(runs)
-        rows.append(dict(arm="one student", parameter=vary,
-                         tutor_value=v, student_value=truth[vary],
-                         error=v - truth[vary],
-                         calib_mean_belief=mb, calib_frac_known=mt,
-                         calib_gap=mt - mb, calib_gap_ci95=_gap_ci(runs),
-                         **_detect_stats(runs, threshold)))
+    GRIDS = {"p_G": [0.05, 0.15, 0.25, 0.35, 0.45],
+             "p_S": [0.02, 0.05, 0.10, 0.20, 0.30],
+             "p_T": [0.05, 0.10, 0.20, 0.30, 0.40]}
+    varies = [vary] if isinstance(vary, str) else list(vary)
+    bad = [v for v in varies if v not in GRIDS]
+    if bad:
+        raise ValueError(f"mismatch(vary=...) accepts {sorted(GRIDS)}, "
+                         f"got {bad}")
+    for name in varies:
+        for v in GRIDS[name]:
+            spec = _spec_from(threshold, n_steps, run_kw)
+            spec.student_params = truth
+            spec.tutor_params = dict(truth, **{name: v})
+            runs = _population(cur, spec, n_learners, seed0)
+            mb, mt = _calib_gap(runs)
+            rows.append(dict(arm="one student", parameter=name,
+                             tutor_value=v, student_value=truth[name],
+                             error=v - truth[name],
+                             calib_mean_belief=mb, calib_frac_known=mt,
+                             calib_gap=mt - mb, calib_gap_ci95=_gap_ci(runs),
+                             **_detect_stats(runs, threshold)))
 
     # ---- (b) a population of students, one fixed tutor
     pop_rows = []
@@ -637,15 +645,24 @@ def mismatch(n_learners=200, n_steps=120, threshold=0.9, seed0=4242,
 
     fig, (a1, a2) = plt.subplots(1, 2, figsize=(9.6, 3.6))
     a1.axhline(0, ls="--", lw=1, color=GREY)
-    a1.plot([r["error"] for r in rows], [r["calib_gap"] for r in rows],
-            "o-", color=ACCENT, lw=1.7, label="calibration gap")
-    a1.plot([r["error"] for r in rows], [r["false_alarm_rate"] for r in rows],
-            "s--", color=GOOD, lw=1.4, label="false alarm rate")
+    # one colour per swept parameter; solid = calibration gap, dashed =
+    # false alarms, so a reader compares parameters by colour and metric
+    # by line style rather than by reading the legend twice.
+    pal = (ACCENT, GOOD, "#e2a03f")
+    for i, name in enumerate(varies):
+        sub = [r for r in rows if r["parameter"] == name]
+        col = pal[i % len(pal)]
+        a1.plot([r["error"] for r in sub], [r["calib_gap"] for r in sub],
+                "o-", color=col, lw=1.7, label=f"{name}: calibration gap")
+        a1.plot([r["error"] for r in sub],
+                [r["false_alarm_rate"] for r in sub],
+                "s--", color=col, lw=1.4, label=f"{name}: false alarms")
     a1.axvline(0, ls=":", lw=1, color=GREY)
-    a1.set_xlabel(f"tutor's {vary} minus the student's true {vary}")
+    a1.set_xlabel("tutor's assumed value minus the student's true value")
     a1.set_ylabel("rate")
     a1.set_title("One student, tutor's assumption swept", fontsize=10.5)
-    a1.legend(frameon=False, fontsize=8.5)
+    a1.legend(frameon=False, fontsize=7.5,
+              ncol=2 if len(varies) > 1 else 1)
 
     a2.axhline(0, ls="--", lw=1, color=GREY)
     a2.plot([r["spread"] for r in pop_rows],
@@ -660,15 +677,21 @@ def mismatch(n_learners=200, n_steps=120, threshold=0.9, seed0=4242,
     a2.legend(frameon=False, fontsize=8.5)
     fig.tight_layout()
 
-    at_truth = min(rows, key=lambda r: abs(r["error"]))
-    worst = max(rows, key=lambda r: abs(r["calib_gap"]))
+    parts = []
+    for name in varies:
+        sub = [r for r in rows if r["parameter"] == name]
+        at_truth = min(sub, key=lambda r: abs(r["error"]))
+        worst = max(sub, key=lambda r: abs(r["calib_gap"]))
+        parts.append(
+            f"{name}: gap {at_truth['calib_gap']:+.3f} "
+            f"+/-{at_truth['calib_gap_ci95']:.3f} when the tutor is right, "
+            f"{worst['calib_gap']:+.3f} +/-{worst['calib_gap_ci95']:.3f} at "
+            f"its worst ({name}={worst['tutor_value']}, error "
+            f"{worst['error']:+.2f})")
     widest = pop_rows[-1]
     summary = (
-        f"(a) One student, tutor's {vary} swept, {n_learners} learners: the "
-        f"pooled gap is {at_truth['calib_gap']:+.3f} "
-        f"+/-{at_truth['calib_gap_ci95']:.3f} when the tutor is right and "
-        f"{worst['calib_gap']:+.3f} +/-{worst['calib_gap_ci95']:.3f} at its "
-        f"worst ({vary}={worst['tutor_value']}, error {worst['error']:+.2f}). "
+        f"(a) One student, {n_learners} learners, the tutor's assumption "
+        f"swept one parameter at a time. " + "; ".join(parts) + ". "
         f"(b) A population with spread +/-{widest['spread']:.2f} against one "
         f"fixed tutor: gap {widest['calib_gap']:+.3f} "
         f"+/-{widest['calib_gap_ci95']:.3f}, false alarms "
@@ -679,6 +702,171 @@ def mismatch(n_learners=200, n_steps=120, threshold=0.9, seed0=4242,
     return {"tables": {"mismatch_one": rows, "mismatch_population": pop_rows},
             "figures": {"mismatch": fig}, "summary": summary}
 
+
+
+# ================================ concepts mastered as a function of time
+def mastery_curve(n_learners=200, n_steps=300, threshold=0.9, seed0=4242,
+                  cur=None, **_):
+    """Concepts the student TRULY knows, against questions asked.
+
+    The 2x2's four cells plotted over time instead of collapsed to a
+    single end-of-run number. Two questions are answered at once:
+
+      (1) how the arms separate as the budget grows, which is the
+          better/worse pair the whiteboard sketches;
+      (2) how many questions are enough for a learner to know every
+          concept, reported as a median over learners with the
+          non-finishers counted rather than dropped.
+
+    Read off `learned_step`, which records the step each concept
+    became known (0 if known before the first question, None if never).
+    That is the student's own hidden state, so the curve owes nothing
+    to what the tutor believes.
+    """
+    if n_learners < 2:
+        raise ValueError("mastery_curve needs at least 2 learners to report "
+                         "an interval; got %d." % n_learners)
+    if n_steps < 1:
+        raise ValueError("mastery_curve needs at least 1 question; got %d."
+                         % n_steps)
+    cur = cur or build_curriculum()
+    n_c = len(cur.concepts)
+    rows, done_rows, curves, finishes = [], [], {}, {}
+
+    for sname, sm in STUDENT_MODELS.items():
+        for qname, sched in (("Q1", "uniform_unmastered"),
+                             ("Q2", "uniform_zpd")):
+            spec = _spec_2x2(sname, sched, n_steps, threshold, sm)
+            runs = _population(cur, spec, n_learners, seed0)
+
+            # per learner: concepts known at each step, and the step at
+            # which the last one landed (None if they never finished)
+            per_learner, finish = [], []
+            for r in runs:
+                ls = r["learned_step"]
+                steps = [v for v in ls.values() if v is not None]
+                counts = [sum(1 for v in steps if v <= t)
+                          for t in range(n_steps + 1)]
+                per_learner.append(counts)
+                finish.append(max(steps) if len(steps) == n_c else None)
+
+            mean_curve, ci_curve, allknown = [], [], []
+            for t in range(n_steps + 1):
+                col = [c[t] for c in per_learner]
+                m = st.mean(col)
+                sd = st.stdev(col) if len(col) > 1 else 0.0
+                mean_curve.append(m)
+                ci_curve.append(1.96 * sd / math.sqrt(len(col)))
+                allknown.append(sum(1 for v in col if v >= n_c) / len(col))
+                rows.append(dict(student=sname, scheduler=qname,
+                                 sched_key=sched, step=t,
+                                 mean_known=m, ci95=ci_curve[-1],
+                                 frac_all_known=allknown[-1],
+                                 n_concepts=n_c, n_learners=n_learners))
+            curves[(sname, qname)] = (mean_curve, ci_curve, allknown)
+            finishes[(sname, qname)] = finish
+
+            reached = [f for f in finish if f is not None]
+            done_rows.append(dict(
+                student=sname, scheduler=qname, n_learners=n_learners,
+                n_steps=n_steps, n_concepts=n_c,
+                frac_reached_all=len(reached) / len(finish),
+                median_questions_to_all=(st.median(reached) if reached
+                                         else float("nan")),
+                mean_questions_to_all=(st.mean(reached) if reached
+                                       else float("nan")),
+                n_censored=len(finish) - len(reached),
+                final_mean_known=mean_curve[-1]))
+
+    # ------------------------------------------------------------ figure
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(9.8, 3.7))
+    style = {("S1", "Q1"): (ACCENT, "--"), ("S1", "Q2"): (ACCENT, "-"),
+             ("S2", "Q1"): ("#e2a03f", "--"), ("S2", "Q2"): ("#e2a03f", "-")}
+    xs = list(range(n_steps + 1))
+    for key, (mean_curve, ci_curve, allknown) in curves.items():
+        col, ls = style.get(key, (GREY, "-"))
+        lab = f"{key[0]} / {key[1]}"
+        a1.plot(xs, mean_curve, ls, color=col, lw=1.8, label=lab)
+        a1.fill_between(xs, [m - c for m, c in zip(mean_curve, ci_curve)],
+                        [m + c for m, c in zip(mean_curve, ci_curve)],
+                        color=col, alpha=0.13, lw=0)
+        a2.plot(xs, allknown, ls, color=col, lw=1.8, label=lab)
+    a1.axhline(n_c, ls=":", lw=1, color=GREY)
+    a1.set_xlabel("questions asked")
+    a1.set_ylabel("concepts truly known")
+    a1.set_title(f"Mastery over time (of {n_c}, shaded = 95% CI)",
+                 fontsize=10.5)
+    a1.legend(frameon=False, fontsize=8.5, loc="lower right")
+    a2.set_ylim(-0.03, 1.03)
+    a2.set_xlabel("questions asked")
+    a2.set_ylabel("fraction of learners knowing every concept")
+    a2.set_title("How many learners have finished", fontsize=10.5)
+    a2.legend(frameon=False, fontsize=8.5, loc="upper left")
+    fig.tight_layout()
+
+    # ------------------------------ paired contrast: Q2 minus Q1, by learner
+    paired = []
+    for sname in STUDENT_MODELS:
+        a, b = finishes[(sname, "Q1")], finishes[(sname, "Q2")]
+        # seed i is the SAME learner in both arms, so pair before differencing
+        d = [y - x for x, y in zip(a, b) if x is not None and y is not None]
+        if len(d) > 1:
+            m = st.mean(d)
+            ci = 1.96 * st.stdev(d) / math.sqrt(len(d))
+        else:
+            m, ci = float("nan"), float("nan")
+        paired.append(dict(student=sname, diff_Q2_minus_Q1=m, ci95=ci,
+                           n_paired=len(d), n_dropped=len(a) - len(d),
+                           faster_with_Q2=sum(1 for v in d if v < 0),
+                           favours=("Q2" if m + ci < 0 else
+                                    "Q1" if m - ci > 0 else "neither")))
+
+    # ----------------------------------------------------------- summary
+    def cell(sname, qname):
+        return next(r for r in done_rows
+                    if r["student"] == sname and r["scheduler"] == qname)
+
+    bits = []
+    for sname in STUDENT_MODELS:
+        q1, q2 = cell(sname, "Q1"), cell(sname, "Q2")
+        pr = next(x for x in paired if x["student"] == sname)
+        if q1["n_censored"] or q2["n_censored"]:
+            bits.append(
+                f"{sname}: {q1['final_mean_known']:.2f} known under Q1 vs "
+                f"{q2['final_mean_known']:.2f} under Q2 after {n_steps} "
+                f"questions ({q1['frac_reached_all']:.0%} vs "
+                f"{q2['frac_reached_all']:.0%} of learners reached all {n_c})")
+        else:
+            bits.append(
+                f"{sname} needs a median {q1['median_questions_to_all']:.0f} "
+                f"questions under Q1 and "
+                f"{q2['median_questions_to_all']:.0f} under Q2, paired "
+                f"difference {pr['diff_Q2_minus_Q1']:+.1f} "
+                f"+/-{pr['ci95']:.1f} questions (favours {pr['favours']})")
+    # A median over finishers only is biased whenever many learners did
+    # not finish, so quote it only when nearly everyone did, and say so
+    # plainly otherwise rather than reporting a number built on a tail.
+    worst_cens = max(r["n_censored"] for r in done_rows) / n_learners
+    if worst_cens <= 0.05:
+        fastest = min(done_rows, key=lambda r: r["median_questions_to_all"])
+        slowest = max(done_rows, key=lambda r: r["median_questions_to_all"])
+        tail = (f" Every arm gets every learner to all {n_c} concepts inside "
+                f"{n_steps} questions, at a median of "
+                f"{fastest['median_questions_to_all']:.0f} "
+                f"({fastest['student']}/{fastest['scheduler']}) to "
+                f"{slowest['median_questions_to_all']:.0f} "
+                f"({slowest['student']}/{slowest['scheduler']}).")
+    else:
+        tail = (f" No median to full mastery is quoted: up to "
+                f"{worst_cens:.0%} of learners in some arm never reach all "
+                f"{n_c} concepts inside {n_steps} questions, so a median "
+                f"over the finishers would describe the fast tail only.")
+    summary = (f"{n_learners} learners per cell, {n_steps} questions. "
+               + "; ".join(bits) + "." + tail)
+
+    return {"tables": {"mastery_curve": rows, "questions_to_all": done_rows,
+                       "paired": paired},
+            "figures": {"mastery_curve": fig}, "summary": summary}
 
 
 # ======================== separating the restriction from the belief lag
@@ -762,6 +950,11 @@ EXPERIMENTS = {
         "prerequisite-gated) by two question-selection rules (anything "
         "unmastered / prerequisite-ready only).",
         dict(n_learners=60, n_steps=40, threshold=0.9)),
+    "mastery_curve": (
+        mastery_curve,
+        "Concepts truly known against questions asked, for all four 2x2 "
+        "cells, plus how many questions are enough to know every concept.",
+        dict(n_learners=200, n_steps=300, threshold=0.9)),
     "param_sweep": (
         param_sweep,
         "Vary one BKT parameter at a time with the tutor correctly "
@@ -772,7 +965,8 @@ EXPERIMENTS = {
         "The tutor's assumed parameters differ from the student's real "
         "ones: one student with the assumption swept, then a population "
         "of students against one fixed tutor.",
-        dict(n_learners=40, n_steps=120, threshold=0.9)),
+        dict(n_learners=40, n_steps=120, threshold=0.9,
+             vary=("p_G", "p_S", "p_T"))),
     "restriction_only": (
         restriction_only,
         "Separates the prerequisite restriction from the cost of gating "
