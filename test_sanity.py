@@ -209,4 +209,63 @@ for bad_kw in (dict(n_learners=1), dict(n_learners=0), dict(n_steps=0)):
         pass
 check(True, "two_by_two refuses n_learners<2 and n_steps<1")
 
+print("16. the mastery curve agrees with the 2x2 it summarises")
+import matplotlib
+matplotlib.use("Agg")
+from cursim.sanity import mastery_curve
+
+NL, NS = 40, 40
+mc = mastery_curve(n_learners=NL, n_steps=NS, cur=cur)
+rows = mc["tables"]["mastery_curve"]
+
+# the curve counts learned_step<=t; two_by_two counts the truth dict at the
+# last trace row. Different code paths, same quantity, so they must agree.
+x22 = two_by_two(n_learners=NL, n_steps=NS, cur=cur)
+end = {(r["student"], r["scheduler"]): r["mean_known"]
+       for r in rows if r["step"] == NS}
+for r in x22["tables"]["two_by_two"]:
+    a, b = end[(r["student"], r["scheduler"])], r["learned_mean"]
+    check(abs(a - b) < 1e-9,
+          f"{r['student']}/{r['scheduler']}: curve endpoint {a:.4f} "
+          f"matches the 2x2's {b:.4f}")
+
+# BKT has no forgetting, so a learner's known-count can never fall
+for key in {(r["student"], r["scheduler"]) for r in rows}:
+    seq = [r["mean_known"] for r in sorted(
+        (r for r in rows if (r["student"], r["scheduler"]) == key),
+        key=lambda r: r["step"])]
+    check(all(y >= x for x, y in zip(seq, seq[1:])),
+          f"{key[0]}/{key[1]}: the curve never goes down")
+
+print("17. the curve reproduces the 2x2 verdict in questions, not counts")
+mc2 = mastery_curve(n_learners=200, n_steps=300, cur=cur)
+pr = {r["student"]: r for r in mc2["tables"]["paired"]}
+check(pr["S1"]["favours"] == "neither",
+      f"S1: Q2 minus Q1 is {pr['S1']['diff_Q2_minus_Q1']:+.1f} "
+      f"+/-{pr['S1']['ci95']:.1f} questions, no winner")
+check(pr["S2"]["favours"] == "Q2",
+      f"S2: Q2 saves {-pr['S2']['diff_Q2_minus_Q1']:.1f} "
+      f"+/-{pr['S2']['ci95']:.1f} questions")
+
+# a median over finishers only is honest ONLY when nearly all finished
+qa = mc2["tables"]["questions_to_all"]
+check(all(r["n_censored"] == 0 for r in qa),
+      "at 300 questions every learner in every arm reaches all 8 concepts")
+check(("No median" in mc2["summary"]) == any(
+          r["n_censored"] / r["n_learners"] > 0.05 for r in qa),
+      "the summary quotes a median only when almost nobody was censored")
+
+short = mastery_curve(n_learners=20, n_steps=20, cur=cur)
+check("No median" in short["summary"],
+      "at a budget too short to finish, it refuses to quote a median")
+
+print("18. mastery_curve refuses degenerate inputs")
+for bad_kw in (dict(n_learners=1), dict(n_steps=0)):
+    try:
+        mastery_curve(cur=cur, **bad_kw)
+        check(False, f"mastery_curve should refuse {bad_kw}")
+    except ValueError:
+        pass
+check(True, "mastery_curve refuses n_learners<2 and n_steps<1")
+
 print(f"\nALL {passed} CHECKS PASSED")

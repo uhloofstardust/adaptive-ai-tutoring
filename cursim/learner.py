@@ -170,17 +170,26 @@ class BKTLearner:
 
     prereq_gated_pT is the ONE hook for the prerequisite-based
     student model: when on, a concept whose prerequisites are not
-    all truly known learns with pT_low instead of p_T. Off by default.
+    all truly known learns with pT_low instead of p_T. Off by default,
+    and turned on by selecting the `bkt_prereq` entry in LEARNERS
+    rather than by setting the flag by hand. pT_low defaults to S2's
+    value in data/params.json, so there is exactly one S2 in the repo.
     """
 
     def __init__(self, curriculum: Curriculum, profile=None, seed: int = 0,
                  cfg=None, forgetting: bool = False, params=None,
-                 prereq_gated_pT: bool = False, pT_low: float = 0.02):
+                 prereq_gated_pT: bool = False,
+                 pT_low: Optional[float] = None):
         self.cur = curriculum
         self.p = {**BKT_PARAMS, **(params or {})}
         self.cfg = cfg or SimConfig()
         self.rng = random.Random(seed)
-        self.prereq_gated_pT, self.pT_low = prereq_gated_pT, pT_low
+        self.prereq_gated_pT = prereq_gated_pT
+        # S2's slow rate lives in data/params.json. Reading it here means
+        # every path that switches gating on gets the SAME student; passing
+        # pT_low explicitly is a deliberate override, not a second S2.
+        self.pT_low = (STUDENT_MODELS["S2"]["pT_low"] if pT_low is None
+                       else pT_low)
         self.step = 0
         self.known: Dict[str, bool] = {}
         self.learned_step: Dict[str, Optional[int]] = {}

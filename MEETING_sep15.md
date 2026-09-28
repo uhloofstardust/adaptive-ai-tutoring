@@ -14,7 +14,7 @@ Everything below runs from three commands:
 ```
 streamlit run app.py        # the viewer
 python3 make_sanity.py      # every plot and table below -> sanity_outputs/
-python3 test_sanity.py      # 21 checks; the original 55 still pass too
+python3 test_sanity.py      # 49 checks; the original 55 still pass too
 ```
 
 ---
@@ -196,7 +196,8 @@ To confirm, not to relitigate:
 "Give each concept its own p(T), depending on whether prerequisites are learned."
 
 The student side is already there behind one flag: `prereq_gated_pT=True` on
-`BKTLearner` uses `p(T)` when all prerequisites are truly known and `pT_low` (0.02)
+`BKTLearner` uses `p(T)` when all prerequisites are truly known and `pT_low` (0.05,
+read from `data/params.json`)
 otherwise. Off for everything above; the checkbox is in the sidebar.
 
 The question it raises: **what does the tutor use?** The student's p(T) depends on the
