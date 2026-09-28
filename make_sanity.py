@@ -18,8 +18,8 @@ import pandas as pd
 from cursim.curriculum import build_curriculum
 from cursim.params import BKT_PARAMS
 from cursim.sanity import (calibration, detection, mastery_curve, mismatch,
-                           param_sweep, restriction_only,
-                           trace_table, two_by_two)
+                           param_sweep, restriction_only, trace_table,
+                           tutor_choice, two_by_two)
 
 OUT = "sanity_outputs"
 os.makedirs(OUT, exist_ok=True)
@@ -62,6 +62,8 @@ psw = param_sweep(cur=cur)
 dump("param_sweep", psw)
 mm = mismatch(cur=cur, vary=("p_G", "p_S", "p_T"))
 dump("mismatch", mm)
+tc = tutor_choice(cur=cur, vary=("p_S", "p_G"))
+dump("tutor_choice", tc)
 
 # ---------------------------------------------------------------- trace
 tr = trace_table(n_steps=20, threshold=0.9, seed=4242, cur=cur)
@@ -205,6 +207,21 @@ with open(f"{OUT}/summary.md", "w") as f:
                 f"{r['favours']} |\n")
     f.write("\nSeed i is the same learner in both arms, so these are paired "
             "differences rather than two independent estimates.\n")
+
+    f.write("\n## What should the tutor assume?\n\n" + tc["summary"] + "\n\n")
+    f.write("| students vary in | spread | best fixed tutor | its |gap| | "
+            "tutor at the truth | oracle tutor | oracle buys | 95% CI |\n"
+            "|---|---:|---:|---:|---:|---:|---:|---:|\n")
+    for r in tc["tables"]["verdict"]:
+        f.write(f"| {r['parameter']} | +/-{r['spread']:.2f} | "
+                f"{r['best_fixed_value']:.2f} | {r['best_fixed_abs_gap']:.3f} | "
+                f"{r['at_truth_abs_gap']:.3f} | {r['oracle_abs_gap']:.3f} | "
+                f"{r['oracle_buys']:+.3f} | +/-{r['ci95']:.3f} |\n")
+    f.write("\nThe best fixed value is chosen by minimising the gap on the "
+            "same run that reports it, so it is optimistic; the column "
+            "beside it, the tutor sitting at the true centre, is the "
+            "honest fixed choice. The oracle sees each student's own "
+            "parameters and cannot be built.\n")
 
     f.write("\n## Parameter sweep\n\n" + psw["summary"] + "\n")
     f.write("\n## Tutor / student mismatch\n\n" + mm["summary"] + "\n\n")

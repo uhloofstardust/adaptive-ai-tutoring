@@ -268,4 +268,47 @@ for bad_kw in (dict(n_learners=1), dict(n_steps=0)):
         pass
 check(True, "mastery_curve refuses n_learners<2 and n_steps<1")
 
+print("19. the oracle tutor collapses onto the fixed one when it must")
+from cursim.sanity import tutor_choice
+from cursim.params import BKT_PARAMS as BP
+
+# At zero spread every student sits exactly at the truth, so a tutor handed
+# each student's own parameters IS the fixed tutor at the true value. Same
+# students, same seeds, so the two arms must agree exactly, not just closely.
+tc0 = tutor_choice(n_learners=12, n_steps=40, vary=("p_S",),
+                   spreads=(0.0,), cur=cur)
+r0 = tc0["tables"]["tutor_choice"]
+oracle = next(r for r in r0 if r["tutor_arm"] == "oracle")
+at_truth = next(r for r in r0 if r["tutor_arm"] == "fixed"
+                and abs(r["tutor_value"] - BP["p_S"]) < 1e-12)
+check(oracle["calib_gap"] == at_truth["calib_gap"],
+      "at zero spread the oracle equals the tutor at the truth, exactly")
+check(oracle["false_alarm_rate"] == at_truth["false_alarm_rate"],
+      "...and declares mastery at exactly the same moments")
+
+# and the verdict row must then say the oracle buys nothing at all
+v0 = tc0["tables"]["verdict"][0]
+check(v0["oracle_buys"] <= 0.0 + 1e-12,
+      f"at zero spread the oracle buys {v0['oracle_buys']:+.4f}, i.e. nothing")
+
+print("20. tutor_choice keeps the arms paired and refuses bad input")
+tc = tutor_choice(n_learners=12, n_steps=40, vary=("p_S",),
+                  spreads=(0.10,), cur=cur)
+rows = tc["tables"]["tutor_choice"]
+check(len({r["tutor_arm"] for r in rows}) == 2
+      and sum(1 for r in rows if r["tutor_arm"] == "oracle") == 1,
+      "one oracle arm beside the fixed grid")
+check(all(r["abs_calib_gap"] == abs(r["calib_gap"]) for r in rows),
+      "abs_calib_gap really is the absolute calibration gap")
+check("upper bound" in tc["summary"] and "not a proposal" in tc["summary"],
+      "the summary says plainly that the oracle cannot be built")
+
+for bad in (dict(n_learners=1), dict(vary=("p_nonsense",))):
+    try:
+        tutor_choice(cur=cur, n_steps=10, **bad)
+        check(False, f"tutor_choice should refuse {bad}")
+    except ValueError:
+        pass
+check(True, "tutor_choice refuses n_learners<2 and an unknown parameter")
+
 print(f"\nALL {passed} CHECKS PASSED")

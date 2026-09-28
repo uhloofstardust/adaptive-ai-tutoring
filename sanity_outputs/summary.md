@@ -91,6 +91,21 @@ Both arms gate on the student's true state, so only the prerequisite restriction
 
 Seed i is the same learner in both arms, so these are paired differences rather than two independent estimates.
 
+## What should the tutor assume?
+
+60 learners per cell, 120 questions, the same students in every arm so the arms are paired. p_S at spread +/-0.15: the best single fixed tutor (p_S=0.10) leaves |gap| 0.004, the oracle tutor 0.004, so knowing every student's own p_S buys no more than 0.000 (+/-0.013); p_G at spread +/-0.15: the best single fixed tutor (p_G=0.25) leaves |gap| 0.004, the oracle tutor 0.001, so knowing every student's own p_G buys no more than 0.003 (+/-0.013). The oracle is an upper bound on adapting, not a proposal: no tutor can see a student's parameters.
+
+| students vary in | spread | best fixed tutor | its |gap| | tutor at the truth | oracle tutor | oracle buys | 95% CI |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| p_S | +/-0.05 | 0.10 | 0.002 | 0.002 | 0.000 | +0.002 | +/-0.011 |
+| p_S | +/-0.10 | 0.10 | 0.003 | 0.003 | 0.004 | -0.001 | +/-0.012 |
+| p_S | +/-0.15 | 0.10 | 0.004 | 0.004 | 0.004 | -0.000 | +/-0.013 |
+| p_G | +/-0.05 | 0.25 | 0.001 | 0.001 | 0.000 | +0.001 | +/-0.013 |
+| p_G | +/-0.10 | 0.25 | 0.002 | 0.002 | 0.005 | -0.004 | +/-0.013 |
+| p_G | +/-0.15 | 0.25 | 0.004 | 0.004 | 0.001 | +0.003 | +/-0.013 |
+
+The best fixed value is chosen by minimising the gap on the same run that reports it, so it is optimistic; the column beside it, the tutor sitting at the true centre, is the honest fixed choice. The oracle sees each student's own parameters and cannot be built.
+
 ## Parameter sweep
 
 19 cells, 30 learners each, all sharing one seed block. Every cell here is correctly specified (student and tutor get the same values), so the pooled gap measures estimator noise, not calibration: it stays within 0.011 everywhere, which says the estimator is unbiased across parameter settings rather than that the tutor is calibrated. Range of the false-alarm rate across each grid: p_G 0.092, p_T 0.082, p_S 0.046, p_L0 0.025. Range of the on-concept delay: p_T 2.45, p_G 1.64, p_S 0.78, p_L0 0.71. So p_G is the strongest lever on both, and the effects do not separate cleanly by metric.

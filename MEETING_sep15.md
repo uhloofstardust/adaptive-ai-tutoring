@@ -14,7 +14,7 @@ Everything below runs from three commands:
 ```
 streamlit run app.py        # the viewer
 python3 make_sanity.py      # every plot and table below -> sanity_outputs/
-python3 test_sanity.py      # 49 checks; the original 55 still pass too
+python3 test_sanity.py      # 56 checks; the original 55 still pass too
 ```
 
 ---
