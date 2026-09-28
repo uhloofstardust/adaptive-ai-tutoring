@@ -407,10 +407,22 @@ def two_by_two(n_learners=400, n_steps=40, threshold=0.9, seed0=4242,
     inter = st.mean(per_seed)
     inter_se = (st.stdev(per_seed) / math.sqrt(len(per_seed))
                 if len(per_seed) > 1 else 0.0)
+    # Emit the correlation and the interval the unpaired formula WOULD
+    # have given, so the claim that pairing matters here is checkable
+    # from the CSV instead of being asserted in prose.
+    if len(a) > 1:
+        ma, mb = st.mean(a), st.mean(b)
+        cov = sum((x - ma) * (y - mb) for x, y in zip(a, b)) / (len(a) - 1)
+        sa, sb = st.stdev(a), st.stdev(b)
+        corr = cov / (sa * sb) if sa and sb else float("nan")
+        unpaired_se = math.sqrt(sa ** 2 / len(a) + sb ** 2 / len(b))
+    else:
+        corr, unpaired_se = float("nan"), 0.0
     paired_rows.append(dict(
         student="interaction (S2 minus S1)", diff_Q2_minus_Q1=inter,
         ci95=1.96 * inter_se, better_with_Q2=-1, n=len(a),
-        favours="-", scheduler_matters=bool(abs(inter) > 1.96 * inter_se)))
+        favours="-", scheduler_matters=bool(abs(inter) > 1.96 * inter_se),
+        corr_S1_S2=corr, ci95_if_unpaired=1.96 * unpaired_se))
 
     fig, ax = plt.subplots(figsize=(5.6, 3.9))
     xs = [0, 1]

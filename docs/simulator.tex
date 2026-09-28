@@ -69,19 +69,7 @@ stay reproducible.
 
 Each concept is a hidden coin: known, or not. Four parameters govern it.
 
-\begin{center}
-\small
-\begin{tabular}{@{}cll@{}}
-\toprule
- & \textbf{Meaning} & \textbf{Default}\\
-\midrule
-$p(L_0)$ & probability the concept is known before any question & 0.15\\
-$p(T)$   & probability an unknown concept becomes known at an attempt & 0.12\\
-$p(G)$   & probability of a correct answer while it is unknown & 0.25\\
-$p(S)$   & probability of a wrong answer while it is known & 0.10\\
-\bottomrule
-\end{tabular}
-\end{center}
+\input{tables/params}
 
 At each attempt on concept $c$, with $K_c\in\{0,1\}$ the hidden state:
 \begin{equation}
@@ -212,7 +200,7 @@ specified tutor, pooled mean belief is 0.771 against a true known-fraction of
 0.773 over 12{,}000 observations (100 learners, 120 questions each). At four
 times the learners, 48{,}000 pairs, every bin holding at least 500
 observations sits within 0.026 of the diagonal. Sweeping each of the four
-parameters in turn over 19 settings leaves the pooled gap within 0.011
+parameters in turn over 19 settings leaves the pooled gap within 0.012
 throughout. That last sweep keeps the tutor correctly specified in every cell,
 so it shows the estimator is unbiased across parameter settings; it is not by
 itself evidence that a \emph{mis}specified tutor would be caught.
@@ -227,44 +215,24 @@ stronger evidence than either alone.
 S1 and S2 with Q1 and Q2, 400 learners, 40 questions, scored on concepts the
 student truly knows out of eight:
 
-\begin{center}
-\small
-\begin{tabular}{@{}lcccc@{}}
-\toprule
- & \textbf{Q1} & \textbf{Q2} & \textbf{Q2 $-$ Q1} & \textbf{95\% CI}\\
-\midrule
-S1 & 6.15 & 6.00 & $-0.15$ & $\pm 0.14$\\
-S2 & 4.39 & 5.86 & $+1.47$ & $\pm 0.18$\\
-\midrule
-\multicolumn{3}{@{}l}{interaction (S2 $-$ S1)} & $+1.62$ & $\pm 0.17$\\
-\bottomrule
-\end{tabular}
-\end{center}
+\input{tables/two_by_two}
 
 \noindent The interaction is far from zero: the scheduler is worth about one
 and a half concepts to S2 and nothing useful to S1. Because seed $i$ is the
 same simulated person in all four cells, that interval is the paired one; the
-two per-student differences are correlated ($r=+0.59$), so treating them as
-independent would overstate the uncertainty. The S1 figure is small and, with
-three contrasts in the table, marginal: it should be read as ``at most a
-slight cost'', not as an established effect.
+two per-student differences are correlated, so treating them as independent
+would overstate the uncertainty: \input{tables/pairing_sentence}
+The S1 figure is small and, with three contrasts in the table, marginal. It
+should be read as at most a slight cost, not as an established effect. A
+separate run at a longer horizon puts the S1 contrast at about one question
+in fifty-five, in the same direction; see \S7.4.
 
 \textbf{What the restriction is actually worth.} Q1 and Q2 differ in two ways
 at once, and separating them changes the story. Running a matched pair in
 which \emph{both} arms gate on the student's true state, so that only the
 prerequisite restriction differs:
 
-\begin{center}
-\small
-\begin{tabular}{@{}lccc@{}}
-\toprule
- & \textbf{unrestricted} & \textbf{restricted} & \textbf{effect}\\
-\midrule
-S1 & 7.480 & 7.480 & $0.000 \pm 0.000$\\
-S2 & 5.513 & 7.480 & $+1.968 \pm 0.167$\\
-\bottomrule
-\end{tabular}
-\end{center}
+\input{tables/restriction_only}
 
 \noindent Under S1 the restriction is \emph{exactly} neutral: identical for
 all 400 learners, not merely close. So the small negative figure in the table
@@ -293,6 +261,69 @@ model stays usable across a varied population, at a measurable cost. Note the
 pooled gap is a signed average, so it is a bias diagnostic: opposite-signed
 bins can cancel, and per-bin behaviour is what Section 6's calibration check
 looks at.
+
+\textbf{The same result, read in questions rather than concepts.}
+Scoring on time to full mastery instead of on concepts known at a fixed
+budget gives the same verdict in a unit that is easier to read. Four
+hundred learners, three hundred questions, the median number of questions
+before a learner truly knows all eight concepts:
+
+\input{tables/mastery_curve}
+
+\noindent Every arm reaches all eight inside the budget, so nothing is
+censored and these are not finisher-only medians. The S2 contrast is
+robust: it is negative in each of six independent four-hundred-learner
+blocks, averaging $-22.3$. The S1 contrast is not resolved by any single
+run, and the label says so rather than calling it zero. Across the same
+six blocks it averages $+1.09$, a small \emph{cost} to Q2 of about one
+question in fifty-five, in the same direction as the $-0.15$ concepts in
+\S7.3. An earlier draft of this document reported the S1 contrast from one
+block as $-0.5 \pm 3.2$ and described it as costless; that had the wrong
+sign. Note also that every arm asks the same fixed number of questions, so
+what differs is time to latent mastery, not effort spent.
+
+\textbf{What a single tutor should assume about a spread of students.}
+If learners differ in one parameter and the tutor must use one value for
+everybody, which value, and how much would a tutor that knew each
+learner's own parameter gain over it? The second question is answerable
+only against an \emph{oracle} arm handed each learner's true parameters.
+No tutor can be built that way; the oracle is an upper bound on adapting,
+not a proposal. Six hundred learners per cell, one hundred and twenty
+questions:
+
+\input{tables/tutor_choice}
+
+\noindent The best single fixed tutor is the one sitting at the true
+centre, at every spread and for both parameters. Adapting to $p(S)$ buys a
+real but small improvement, and only once learners are widely spread:
+about two percent of the score at spread $\pm 0.15$, with nothing
+resolvable at $\pm 0.05$ or $\pm 0.10$. Adapting to $p(G)$ buys nothing
+detectable at any spread tried, and is nominally negative at two of three.
+
+The score is the Brier score, and the choice matters more than it looks.
+The pooled signed calibration gap used elsewhere in this document
+\emph{cancels}: a tutor overconfident about half its learners and
+underconfident about the other half scores zero, and under a symmetric
+spread that is exactly the error adapting would remove, so scoring this
+study on it would make it blind to its own question. Mean absolute error
+does not cancel but is improper, minimised by the median, so while most
+concepts are still unknown it rewards a tutor that simply stays
+pessimistic: with every learner at the truth it prefers $p(S)=0.02$ to the
+true $0.10$. Brier is proper and does recover the true parameter at this
+horizon. Both rejected scores are kept in the CSV as diagnostics. An
+earlier draft scored this study on the signed gap at sixty learners and
+concluded that adapting buys nothing; that conclusion was an artifact of
+the score and the sample size.
+
+\textbf{A caution about reading parameter sensitivity.} A concept is
+declared mastered when the belief crosses $\theta$, which takes an integer
+number $k$ of consecutive correct answers. Over the swept grids $k$ runs
+$2,2,3,3,4$ for $p(G)$, $3,3,3,3,3$ for $p(S)$ and $3,3,3,3,2$ for $p(T)$.
+$p(S)$ never crosses a regime boundary at all, so its apparent
+insensitivity for premature declarations is partly a property of the grid
+rather than of the parameter. Sensitivity comparisons across parameters
+here are closer to counting threshold crossings than to derivatives, and
+should be expected to move with $\theta$ or with $p(L_0)$.
 
 \section*{8. Limitations}
 
