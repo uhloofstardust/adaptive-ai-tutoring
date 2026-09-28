@@ -18,8 +18,8 @@ import pandas as pd
 from cursim.curriculum import build_curriculum
 from cursim.params import BKT_PARAMS
 from cursim.sanity import (calibration, detection, mastery_curve, mismatch,
-                           param_sweep, restriction_only, trace_table,
-                           tutor_choice, two_by_two)
+                           param_sweep, restriction_only, seed_blocks,
+                           trace_table, tutor_choice, two_by_two)
 
 OUT = "sanity_outputs"
 os.makedirs(OUT, exist_ok=True)
@@ -58,6 +58,8 @@ ro = restriction_only(cur=cur)
 dump("restriction_only", ro)
 mc = mastery_curve(cur=cur)
 dump("mastery_curve", mc)
+sb = seed_blocks(cur=cur)
+dump("seed_blocks", sb)
 psw = param_sweep(cur=cur)
 dump("param_sweep", psw)
 mm = mismatch(cur=cur, vary=("p_G", "p_S", "p_T"))
@@ -239,6 +241,9 @@ with open(f"{OUT}/summary.md", "w") as f:
             "inside the interval means this run could not resolve one "
             "of that size, not that there is none: no equivalence "
             "margin was set in advance.\n")
+
+    f.write("\n## Does the contrast hold across independent samples?\n\n"
+            + sb["summary"] + "\n")
 
     f.write("\n## Parameter sweep\n\n" + psw["summary"] + "\n")
     f.write("\n## Tutor / student mismatch\n\n" + mm["summary"] + "\n\n")

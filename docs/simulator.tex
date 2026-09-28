@@ -9,7 +9,7 @@
 \title{\vspace{-1.2cm}\textbf{A simulator for adaptive tutoring}\\[3pt]
 \large Student models, knowledge tracing, question selection, and what we
 can and cannot measure with them}
-\date{\small 27 September 2026}
+\date{\small 28 September 2026}
 \author{}
 
 \begin{document}
@@ -103,9 +103,10 @@ prerequisites are truly known, and at $p(T)=0.05$ otherwise.
 \end{description}
 
 S2 is the smallest change that makes the order of questions matter. Under S1
-a question is worth the same whenever it is asked, so no scheduler can beat
-any other by more than noise; under S2 a question asked too early is worth a
-quarter as much.
+a question is worth the same whenever it is asked, so the order can buy
+little; under S2 a question asked too early is worth a quarter as much. The
+S1 effect is not exactly zero, and \S7.4 reports its size and sign; the point
+is that it is small enough that a single run cannot resolve it.
 
 \subsection*{3.3 The continuous student}
 
@@ -198,8 +199,7 @@ correlation rather than identity.
 \textbf{The tracer is correct.} On the plain BKT student with a correctly
 specified tutor, pooled mean belief is 0.771 against a true known-fraction of
 0.773 over 12{,}000 observations (100 learners, 120 questions each). At four
-times the learners, 48{,}000 pairs, every bin holding at least 500
-observations sits within 0.026 of the diagonal. Sweeping each of the four
+times the learners, 48{,}000 pairs, \input{tables/calibration_sentence} Sweeping each of the four
 parameters in turn over 19 settings leaves the pooled gap within 0.012
 throughout. That last sweep keeps the tutor correctly specified in every cell,
 so it shows the estimator is unbiased across parameter settings; it is not by
@@ -207,9 +207,10 @@ itself evidence that a \emph{mis}specified tutor would be caught.
 
 \textbf{The two checks agree with each other.} If beliefs are calibrated, the
 false-alarm rate at threshold $\theta$ must equal one minus the mean belief at
-the moment of declaration. Measured and predicted agree at every threshold.
-Two quantities computed by different routes landing on the same number is
-stronger evidence than either alone.
+the moment of declaration. They \input{tables/detection_sentence}
+which is inside sampling error at that many declarations. Two quantities
+computed by different routes landing this close is stronger evidence than
+either alone, though it is agreement within noise rather than identity.
 
 \textbf{The scheduler only matters if the student model says it can.} Crossing
 S1 and S2 with Q1 and Q2, 400 learners, 40 questions, scored on concepts the
@@ -272,15 +273,22 @@ before a learner truly knows all eight concepts:
 
 \noindent Every arm reaches all eight inside the budget, so nothing is
 censored and these are not finisher-only medians. The S2 contrast is
-robust: it is negative in each of six independent four-hundred-learner
-blocks, averaging $-22.3$. The S1 contrast is not resolved by any single
-run, and the label says so rather than calling it zero. Across the same
-six blocks it averages $+1.09$, a small \emph{cost} to Q2 of about one
-question in fifty-five, in the same direction as the $-0.15$ concepts in
-\S7.3. An earlier draft of this document reported the S1 contrast from one
-block as $-0.5 \pm 3.2$ and described it as costless; that had the wrong
-sign. Note also that every arm asks the same fixed number of questions, so
-what differs is time to latent mastery, not effort spent.
+censored and these are not finisher-only medians. A single run reports an
+interval, which says how well that sample pins the number down, not whether
+the sign would survive another sample. Re-running on independent blocks:
+
+\input{tables/blocks_sentence}
+
+\noindent So the S2 contrast is settled and the S1 contrast is not. Six blocks
+put S1 slightly on the costly side of zero, which agrees in direction with the
+concepts-known figure in \S7.3, but the blocks disagree among themselves and
+the across-block interval covers zero. The honest statement is that the S1
+effect is small enough that we cannot give it a sign, not that it is absent.
+An earlier draft read it off one block, found a negative number whose interval
+covered zero, and called it costless; that asserted a sign the data never
+supported, and in the direction the point estimate now contradicts. Note also that every arm asks the same
+fixed number of questions, so what differs is time to latent mastery, not
+effort spent.
 
 \textbf{What a single tutor should assume about a spread of students.}
 If learners differ in one parameter and the tutor must use one value for
@@ -329,8 +337,10 @@ should be expected to move with $\theta$ or with $p(L_0)$.
 
 The plain BKT student has no forgetting, so nothing here speaks to retention or
 spaced practice; the continuous student exists for that and is used in none of
-the checks above. All results are on one curriculum of eight concepts, though
-the interaction also reproduces on the 40-concept one. Every population in this
+the checks above. All results are on one curriculum of eight concepts. The
+40-concept graph ships alongside it and is loadable, but no result in this
+document has been rerun on it, so nothing here should be read as established
+beyond the small graph. Every population in this
 document derives from a single base seed, so the intervals describe sampling
 within one seed block rather than across independent replications. Per-bin
 calibration intervals are nominal: successive observations on one concept are
@@ -351,11 +361,15 @@ about people: no result here has been checked against a real learner.
 \noindent
 \footnotesize
 \textbf{Reproducing.} \code{python3 make\_sanity.py} regenerates every figure
-and table quoted above into \code{sanity\_outputs/}; \code{python3
-test\_sanity.py} and \code{python3 test\_simulator.py} run 56 and 55 checks
-respectively, including the exactness checks that pin the update ordering
-(with $p(G)=p(S)=0$ a correct answer must come from a known concept; adding
-$p(T)=1$ forces the tutor's belief to equal the truth at every step). Seeds are
-fixed throughout.
+and table quoted above into \code{sanity\_outputs/}, and \code{python3
+make\_tables.py} turns those into every table in this document, so no number
+here is typed by hand; \code{python3 make\_tables.py --check} fails if the two
+ever disagree. \code{python3 test\_sanity.py} and \code{python3
+test\_simulator.py} run the two suites, including the exactness checks that pin
+the update ordering (with $p(G)=p(S)=0$ a correct answer must come from a known
+concept; with $p(G)=p(S)=0$, $p(L_0)=0$ and $p(T)=1$ nothing is known before its
+first question and one attempt makes it known with certainty, so the tutor's
+belief equals the truth at every step). Seeds are fixed
+throughout.
 
 \end{document}

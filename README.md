@@ -21,7 +21,7 @@ written from those CSVs rather than typed.
 ```
 streamlit run app.py         # step or play through a single run
 python3 make_sanity.py       # every plot and table -> sanity_outputs/
-python3 test_sanity.py       # 73 checks on the plain-BKT setup
+python3 test_sanity.py       # 92 checks on the plain-BKT setup
 python3 test_simulator.py    # 55 checks on the original simulator
 ```
 
@@ -35,10 +35,24 @@ though it meant no effect.
 
 The central comparison is a 2x2.
 
-| | Q1: ask anything not believed mastered | Q2: ask only prerequisite-ready |
-|---|---|---|
-| **S1** prerequisites do not affect learning | scheduler barely matters | scheduler barely matters |
-| **S2** p(T) drops to `pT_low` until prerequisites are truly known | costly | good |
+Concepts truly known after 40 questions, 400 learners, paired by learner
+(`sanity_outputs/two_by_two_paired.csv`):
+
+| | Q1: ask anything not believed mastered | Q2: ask only prerequisite-ready | Q2 − Q1 |
+|---|---:|---:|---|
+| **S1** prerequisites do not affect learning | 6.15 | 6.00 | −0.15 ± 0.14, slightly favours Q1 |
+| **S2** p(T) drops to `pT_low` until prerequisites are truly known | 4.39 | 5.86 | +1.47 ± 0.18, favours Q2 |
+
+The interaction, +1.62 ± 0.16, is the claim: the scheduler is worth
+about one and a half concepts to S2 and slightly negative to S1.
+
+The S1 cell is deliberately not written as "no effect". It is small and
+budget-dependent: resolved and slightly costly to Q2 at 40 questions,
+indistinguishable from zero at 120, and still unsettled across six
+independent blocks scored on time to full mastery (+0.37 ± 0.57, blocks
+disagreeing in sign). `seed_blocks` is the experiment that checks this,
+and it exists because an earlier draft asserted a sign the data did not
+support.
 
 S2 is selected by choosing the `bkt_prereq` student. There is exactly one
 S2 in the repo and its `pT_low` lives in `data/params.json`, so no code
@@ -62,7 +76,7 @@ available with its size and depth.
 
 ## The experiments
 
-All nine are in the `EXPERIMENTS` registry, so they appear in the
+All ten are in the `EXPERIMENTS` registry, so they appear in the
 interface with their parameters as controls, with no edit to `app.py`.
 
 | Name | What it asks |
@@ -74,6 +88,7 @@ interface with their parameters as controls, with no edit to `app.py`.
 | `param_sweep` | what each BKT parameter does, with the tutor correctly specified |
 | `mismatch` | the tutor's assumed parameters differ from the student's real ones, one parameter at a time or across a population |
 | `tutor_choice` | students differ in one parameter: which single fixed assumption should the tutor use, and how much would a perfectly adapting tutor buy over it? |
+| `seed_blocks` | re-runs the mastery contrast on independent seed blocks, so a sign a single run cannot resolve can still be checked |
 | `restriction_only` | separates the prerequisite restriction from the cost of gating on a belief that lags the truth |
 | `trace_20_steps` | one run, 20 rows, every column |
 
@@ -95,7 +110,12 @@ CSV as diagnostics, because each fails in an instructive way:
   by the median, so while most concepts are still unknown it rewards a
   tutor that simply stays pessimistic.
 - **Brier** is proper, and at the 120-question horizon these studies run
-  at it does recover the true parameter.
+  at it recovers the true parameter for both parameters that were swept,
+  p(S) and p(guess). p(T) is offered by the experiment but is not in the
+  committed run, so nothing here is claimed about it. At a 40-question
+  horizon the Brier curve is nearly flat and does not identify the
+  parameter reliably either, which is why the horizon is stated rather
+  than assumed.
 
 ## Code
 
@@ -107,7 +127,7 @@ CSV as diagnostics, because each fails in an instructive way:
 | `cursim/mastery.py` | what the tutor believes, in `MASTERY_MODELS` (5 entries) |
 | `cursim/schedulers.py` | question selection, in `SCHEDULERS` (10 entries), plus the `zpd()` helper |
 | `cursim/simulation.py` | the run loop, the per-step trace, and the metrics |
-| `cursim/sanity.py` | the nine experiments, their figures, and the `EXPERIMENTS` registry |
+| `cursim/sanity.py` | the ten experiments, their figures, and the `EXPERIMENTS` registry |
 | `cursim/plots.py` | the six figure functions used by `run_experiments.py` |
 | `cursim/viewer_data.py` | packages one run into the JSON the viewer plays |
 | `cursim/viewer.py` | renders the viewer as one self-contained HTML string |

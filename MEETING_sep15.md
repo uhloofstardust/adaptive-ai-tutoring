@@ -1,21 +1,36 @@
 # Meeting notes, 15 September
 
-> **Provenance.** The figures below were produced on the 40-concept
-> curriculum at 400 questions per run. That curriculum is still here as
-> `data/curriculum_language.json`; reproduce these numbers by pointing
-> `make_sanity.py` at `build_curriculum("language")` with `n_steps=400`.
-> The committed `sanity_outputs/` now reflect the 8-concept default
-> instead, so the two do not match by design.
+> ## FROZEN. Do not cite any number below.
+>
+> This is a record of what was said on 15 September, kept because the
+> reasoning and the open questions are still useful. **Its numbers are
+> not.** They came from a configuration the repo no longer runs: the
+> 40-concept curriculum, 400 questions per run, and `p(T) = 0.12`.
+> The current default is the 8-concept curriculum at 120 questions with
+> `p(T) = 0.2`, so almost every figure, table and worked example below
+> is superseded. An audit of this file found roughly forty numbers that
+> no committed artifact now produces.
+>
+> Specific things that have since changed, so nobody rederives them
+> from here: the belief ladder after consecutive correct answers is now
+> 0.15, 0.51, 0.83, 0.96 rather than 0.15, 0.46, 0.79, 0.94; thresholds
+> 0.6 and 0.7 are no longer the same operating point; nothing is left
+> unresolved at the end of a run at any threshold; the calibration bins
+> and the worked trace refer to concepts that do not exist in the
+> current curriculum.
+>
+> **For current numbers use `sanity_outputs/summary.md`**, which is
+> generated, or `docs/simulator.pdf`, whose tables are generated from
+> the same CSVs by `make_tables.py`. This file is not generated and is
+> not kept in step with them on purpose: rewriting a dated record to
+> match later results would make it a worse record, not a better one.
+>
+> Two findings here were later shown to be wrong and are corrected in
+> `docs/simulator.tex` section 7: the claim that the scheduler costs S1
+> nothing, and the claim that a fixed tutor is as good as one that
+> adapts.
 
 Branch: `plain-bkt` on `uhloofstardust/adaptive-ai-tutoring`. `main` is untouched.
-
-Everything below runs from three commands:
-
-```
-streamlit run app.py        # the viewer
-python3 make_sanity.py      # every plot and table below -> sanity_outputs/
-python3 test_sanity.py      # 56 checks; the original 55 still pass too
-```
 
 ---
 

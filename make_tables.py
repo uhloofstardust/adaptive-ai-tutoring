@@ -141,7 +141,70 @@ def t_mastery():
                 "& \\textbf{median diff} & \\textbf{favours}")
 
 
+# -------------------------------------------- claims that were cherry-picked
+def t_calibration_sentence():
+    """The noise-check claim, with the repo's own bin threshold.
+
+    An earlier draft said "every bin holding at least 500 observations
+    sits within 0.026". That cutoff appears in no code and no CSV, and it
+    removes exactly one bin: the worst one. Generating the sentence with
+    the threshold the code actually uses removes the temptation.
+    """
+    MIN_N = 20                      # the threshold summary.md reports at
+    rs = [r for r in rows("check1_calibration_400learners")
+          if r["n"] and int(r["n"]) >= MIN_N]
+    worst = max(abs(float(r["gap"])) for r in rs)
+    n = sum(int(r["n"]) for r in rs)
+    return (f"all {len(rs)} bins holding at least {MIN_N} of the "
+            f"{n:,} observations sit within {worst:.3f} of the diagonal"
+            .replace(",", "{,}") + "\n")
+
+
+def t_detection_sentence():
+    """How closely measured and predicted false alarms actually agree.
+
+    "Agree at every threshold" stated no tolerance. The largest gap is
+    2.5 points, which is inside sampling error at this many declarations
+    but is not zero, so the sentence now carries the number.
+    """
+    rs = rows("check2_detection")
+    gaps = [abs(float(r["false_alarm_rate"])
+                - float(r["predicted_false_alarm_rate"])) for r in rs]
+    nd = min(int(r["n_declared"]) for r in rs)
+    return (f"agree to within {max(gaps) * 100:.1f} percentage points at "
+            f"every one of the {len(rs)} thresholds, on {nd} declarations "
+            f"per threshold" + "\n")
+
+
+def t_blocks_sentence():
+    """The across-block result, which used to be an uncommitted script."""
+    rs = rows("seed_blocks_across_blocks")
+    out = []
+    for r in rs:
+        v, ci = float(r["mean_across_blocks"]), float(r["ci95_across_blocks"])
+        agrees = r["sign_agrees_in_all_blocks"] == "True"
+        word = "sooner under Q2" if v < 0 else "of cost to Q2"
+        if agrees and abs(v) > ci:
+            verdict = ("and every block agrees in sign, so the direction is "
+                       "settled")
+        elif agrees:
+            verdict = ("and every block agrees in sign, though the "
+                       "across-block interval still covers zero")
+        else:
+            verdict = ("but the blocks do not agree in sign, so the "
+                       "direction is still unsettled")
+        out.append(
+            f"{r['student']} averages ${v:+.2f} \\pm {ci:.2f}$ questions "
+            f"{word} over {r['n_blocks']} independent blocks, ranging from "
+            f"${float(r['min_block']):+.2f}$ to ${float(r['max_block']):+.2f}$, "
+            f"{verdict}")
+    return "; ".join(out) + ".\n"
+
+
 TABLES = {
+    "calibration_sentence": t_calibration_sentence,
+    "detection_sentence": t_detection_sentence,
+    "blocks_sentence": t_blocks_sentence,
     "params": t_params,
     "two_by_two": t_two_by_two,
     "pairing_sentence": t_pairing,
