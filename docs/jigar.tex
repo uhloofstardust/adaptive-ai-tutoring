@@ -1,0 +1,186 @@
+\documentclass[11pt]{article}
+\usepackage[margin=2.3cm]{geometry}
+\usepackage{booktabs}
+\usepackage{parskip}
+\setlength{\parskip}{6pt}
+\newcommand{\code}[1]{\texttt{\small #1}}
+\title{\vspace{-1.2cm}\textbf{The tutor's four numbers}\\[3pt]
+\large What they do, and what happens when they are wrong}
+\author{}
+\date{\small 28 September 2026}
+\begin{document}
+\maketitle
+\vspace{-1.0cm}
+\noindent\rule{\textwidth}{0.4pt}
+
+\section*{1. What this part is about}
+
+The tutor in our simulator does not watch the student learn. It only sees
+answers, right or wrong, and from those it keeps a running guess about
+whether each concept is known. That guess is built from four numbers.
+
+This document is about those four numbers. It asks three things in order.
+What does each number actually do? What goes wrong when the tutor's
+numbers do not match the student's? And if students differ from each
+other, what single set of numbers should the tutor use for everybody?
+
+Everything here runs on a small practice curriculum of eight concepts
+arranged in four layers, and every figure comes from a file of results
+that one command regenerates.
+
+\section*{2. The four numbers, in plain words}
+
+\input{tables/params}
+
+\noindent Read them as sentences about a student:
+
+\begin{itemize}\itemsep2pt
+\item $p(L_0)$: some students already know a thing before you teach it.
+\item $p(T)$: each time you ask about something they do not know, there
+is a chance they pick it up.
+\item $p(G)$: someone who does not know it can still answer correctly by
+luck.
+\item $p(S)$: someone who does know it can still slip and get it wrong.
+\end{itemize}
+
+\noindent The last two are why this is hard. A right answer is not proof
+of knowing, and a wrong answer is not proof of not knowing. The tutor has
+to weigh evidence rather than read it off.
+
+Two things matter to a teacher, so those are what we measure. How long
+does the tutor take to notice that a concept has been learned, counted in
+questions asked about that concept. And how often does it announce
+mastery too early, before the student has actually learned it.
+
+\section*{3. What each number does}
+
+Here the student and the tutor use the \emph{same} values, so the tutor is
+not wrong about anything. We just change the numbers and watch.
+
+\input{tables/param_sweep}
+
+\noindent Three of these behave the way common sense says they should.
+
+When learning is faster, $p(T)$ large, the tutor notices sooner and
+announces too early less often. Everything gets easier at once.
+
+When guessing is easier, $p(G)$ large, lucky right answers look like
+knowledge, so the tutor is fooled more often and takes longer to be sure.
+
+When slipping is more likely, $p(S)$ large, a student who does know
+something keeps answering wrongly, so the tutor holds back and takes
+longer.
+
+The fourth, $p(L_0)$, is the odd one. Raising it makes the tutor notice
+faster but also announce too early more often. That is not a contradiction.
+If many students already know things, starting optimistic is usually right
+and occasionally badly wrong.
+
+There is one catch worth stating. The tutor announces mastery when its
+guess passes a bar, and passing that bar takes a whole number of correct
+answers in a row. So these curves are steps, not smooth slopes. A change
+in a parameter that does not move that whole number changes nothing at
+all, and a change that does move it shifts everything at once. That is why
+some of these lines bend the wrong way in places.
+
+\section*{4. When the tutor's numbers are wrong: one student}
+
+Now we keep the student fixed and give the tutor the wrong value on
+purpose, by a known amount, one number at a time. If the tutor's guess is
+honest, its error should be zero when it is right and grow as it is made
+more wrong.
+
+\input{tables/mismatch_one}
+
+\noindent That is what happens. The middle column is near zero for all
+three, which is the check that the machinery is sound.
+
+Beyond that, the three numbers do not matter equally. Being wrong about
+$p(T)$ moves the tutor's belief about twice as much as being wrong about
+either of the others. If you only have time to measure one thing about a
+new group of students, measure how fast they learn.
+
+The more useful finding is about direction. Being wrong about $p(G)$ and
+being wrong about $p(T)$ push announcing-too-early in \emph{opposite}
+ways. A tutor that thinks students guess more than they do becomes
+cautious and announces less. A tutor that thinks students learn faster
+than they do becomes hasty and announces more. So two different mistakes
+can cancel, and a tutor can look well behaved while being wrong about both.
+
+We deliberately do not rank $p(T)$ against $p(G)$ here. We tried, and the
+ranking flipped depending on which side of zero we looked at and which
+random seed we used. It is not a stable result and we are not reporting
+one.
+
+\section*{5. When every student is different}
+
+Real students are not identical. Here each simulated student draws their
+own values, and the tutor uses one set for everybody, sitting at the
+middle of the group.
+
+\input{tables/mismatch_population}
+
+\noindent The first row is the control: everybody matches the tutor.
+Reading down, the tutor gets steadily worse, but slowly. Even when
+students vary quite a lot, the tutor's belief is off by under two points
+and it announces too early on under eight percent of concepts. One model
+for a mixed group is workable, not ideal.
+
+\section*{6. So what should the tutor assume?}
+
+The obvious follow-up: if we cannot give every student their own numbers,
+which single set is best, and how much are we losing by not adapting?
+
+The second half needs something to compare against. So we also run an
+\emph{oracle} tutor that is simply told each student's true values. No
+real tutor can do this. It is there to mark the ceiling: whatever the
+oracle gains is the most that adapting could ever be worth.
+
+\input{tables/tutor_choice}
+
+\noindent Two answers.
+
+The best fixed tutor is always the one sitting at the middle of the group.
+We could not find a value that beat it, at any spread, for either number.
+So there is no clever offset to discover.
+
+And adapting is worth very little. Knowing each student's own $p(S)$ helps
+only when students vary a lot, and then only by about two percent. Knowing
+each student's own $p(G)$ never helped measurably at all.
+
+One honest caveat. ``No measurable difference'' is not the same as ``no
+difference''. We did not set a threshold in advance for how small a gain
+would count as none. All we can say is that if adapting helps, it helps by
+less than this study could see.
+
+We should also say why we score this on the Brier score rather than
+something simpler. We first used the average gap between what the tutor
+believes and what is true, and that was a mistake. A tutor that is too
+confident about half its students and not confident enough about the other
+half scores perfectly on that measure, because the two halves cancel. That
+is exactly the error adapting would fix, so the measure was blind to the
+question being asked. The Brier score does not cancel, and it correctly
+picks out the true value when we feed it one.
+
+\section*{7. What we are not claiming}
+
+All of this is on one small curriculum of eight concepts. Nothing has been
+rerun on the larger one, so none of it is established beyond this graph.
+
+Every number describes a simulated student, not a person. No result here
+has been checked against a real learner.
+
+The bar for announcing mastery is fixed at 0.9 and is not swept, and since
+it is a whole-number-of-correct-answers effect, some of these comparisons
+would move if the bar moved.
+
+\section*{8. Running it again}
+
+\code{python3 make\_sanity.py} reruns every study and writes the result
+files. \code{python3 make\_tables.py} turns those files into every table in
+this document, so no number here is typed by hand.
+The command \code{python3 make\_tables.py -{}-check} fails if the document
+and the results ever drift apart. Seeds are fixed, so a rerun gives the
+same numbers.
+
+\end{document}

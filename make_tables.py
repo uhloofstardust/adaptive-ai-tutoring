@@ -201,7 +201,65 @@ def t_blocks_sentence():
     return "; ".join(out) + ".\n"
 
 
+# ------------------------------------------------ Jigar's parameter studies
+def t_param_sweep():
+    """What each of the four numbers does, student and tutor agreeing."""
+    rs = rows("param_sweep")
+    body = ""
+    label = {"p_L0": "p(L_0)", "p_T": "p(T)", "p_G": "p(G)", "p_S": "p(S)"}
+    for name in ("p_L0", "p_T", "p_G", "p_S"):
+        sub = sorted((r for r in rs if r["parameter"] == name),
+                     key=lambda r: float(r["value"]))
+        lo, hi = sub[0], sub[-1]
+        body += (f"${label[name]}$ & {float(lo['value']):.2f} to "
+                 f"{float(hi['value']):.2f} & "
+                 f"{float(lo['delay_on_concept_mean']):.1f} to "
+                 f"{float(hi['delay_on_concept_mean']):.1f} & "
+                 f"{float(lo['false_alarm_rate']):.3f} to "
+                 f"{float(hi['false_alarm_rate']):.3f}\\\\\n")
+    return wrap(body, "@{}lccc@{}",
+                " & \\textbf{swept over} & \\textbf{questions to notice} "
+                "& \\textbf{declared too early}")
+
+
+def t_mismatch_one():
+    """The tutor is wrong by a known amount, the student is fixed."""
+    rs = [r for r in rows("mismatch_one")]
+    body = ""
+    label = {"p_T": "p(T)", "p_G": "p(G)", "p_S": "p(S)"}
+    for name in ("p_T", "p_G", "p_S"):
+        sub = [r for r in rs if r["parameter"] == name]
+        at = min(sub, key=lambda r: abs(float(r["error"])))
+        worst = max(sub, key=lambda r: abs(float(r["calib_gap"])))
+        body += (f"${label[name]}$ & {float(at['calib_gap']):+.3f} & "
+                 f"{float(worst['tutor_value']):.2f} "
+                 f"({float(worst['error']):+.2f}) & "
+                 f"{float(worst['calib_gap']):+.3f} & "
+                 f"{float(worst['false_alarm_rate']):.3f}\\\\\n")
+    return wrap(body, "@{}lcccc@{}",
+                "\\textbf{tutor wrong about} & \\textbf{gap when right} "
+                "& \\textbf{worst value} & \\textbf{gap there} "
+                "& \\textbf{declared too early}")
+
+
+def t_mismatch_population():
+    """Every student different, one tutor for all of them."""
+    body = ""
+    for r in rows("mismatch_population"):
+        body += (f"$\\pm {float(r['spread']):.2f}$ & "
+                 f"{float(r['calib_gap']):+.3f} & "
+                 f"{float(r['false_alarm_rate']):.3f} & "
+                 f"{float(r['delay_on_concept_mean']):.2f}\\\\\n")
+    return wrap(body, "@{}lccc@{}",
+                "\\textbf{how different the students are} "
+                "& \\textbf{belief gap} & \\textbf{declared too early} "
+                "& \\textbf{questions to notice}")
+
+
 TABLES = {
+    "param_sweep": t_param_sweep,
+    "mismatch_one": t_mismatch_one,
+    "mismatch_population": t_mismatch_population,
     "calibration_sentence": t_calibration_sentence,
     "detection_sentence": t_detection_sentence,
     "blocks_sentence": t_blocks_sentence,
