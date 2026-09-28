@@ -582,6 +582,13 @@ def param_sweep(n_learners=30, n_steps=120, threshold=0.9, seed0=4242,
 
 
 # ================================================ tutor/student mismatch
+# The values each parameter is swept over, shared by the mismatch study
+# and the tutor-choice study so the two are directly comparable.
+PARAM_GRIDS = {"p_G": [0.05, 0.15, 0.25, 0.35, 0.45],
+               "p_S": [0.02, 0.05, 0.10, 0.20, 0.30],
+               "p_T": [0.05, 0.10, 0.20, 0.30, 0.40]}
+
+
 def mismatch(n_learners=200, n_steps=120, threshold=0.9, seed0=4242,
              vary="p_G", cur=None, **run_kw):
     """The tutor's assumed parameters differ from the student's real ones.
@@ -602,9 +609,7 @@ def mismatch(n_learners=200, n_steps=120, threshold=0.9, seed0=4242,
     rows = []
 
     # ---- (a) one true student, tutor's assumption swept
-    GRIDS = {"p_G": [0.05, 0.15, 0.25, 0.35, 0.45],
-             "p_S": [0.02, 0.05, 0.10, 0.20, 0.30],
-             "p_T": [0.05, 0.10, 0.20, 0.30, 0.40]}
+    GRIDS = PARAM_GRIDS
     varies = [vary] if isinstance(vary, str) else list(vary)
     bad = [v for v in varies if v not in GRIDS]
     if bad:
@@ -702,6 +707,142 @@ def mismatch(n_learners=200, n_steps=120, threshold=0.9, seed0=4242,
     return {"tables": {"mismatch_one": rows, "mismatch_population": pop_rows},
             "figures": {"mismatch": fig}, "summary": summary}
 
+
+
+# ============================== what should the one tutor assume?
+def tutor_choice(n_learners=60, n_steps=120, threshold=0.9, seed0=4242,
+                 vary=("p_S", "p_G"), spreads=(0.05, 0.10, 0.15),
+                 cur=None, **run_kw):
+    """Students differ in one parameter. What should the single tutor use?
+
+    The meeting asked this twice: "students have p(S) in a range, should
+    the tutor help?", and "if student parameters are in a certain range,
+    typically p(S) and p(guess), what should the tutor be?"
+
+    For each spread we run a grid of fixed tutor assumptions, plus an
+    ORACLE tutor handed each learner's own true parameters. The oracle
+    is not a proposal: no tutor can see a student's parameters. It is an
+    upper bound, and the only number that makes "should the tutor adapt"
+    answerable, because it says what a perfectly adapting tutor would
+    buy over the best single fixed choice. A small gap means adapting is
+    not worth building.
+
+    Scored on |calibration gap|, the tutor's own honesty, because false
+    alarms alone are gameable: a tutor that never declares mastery has
+    none. False alarms and delay are reported alongside.
+    """
+    if n_learners < 2:
+        raise ValueError("tutor_choice needs at least 2 learners to report "
+                         "an interval; got %d." % n_learners)
+    varies = [vary] if isinstance(vary, str) else list(vary)
+    bad = [v for v in varies if v not in PARAM_GRIDS]
+    if bad:
+        raise ValueError(f"tutor_choice(vary=...) accepts "
+                         f"{sorted(PARAM_GRIDS)}, got {bad}")
+    cur = cur or build_curriculum()
+    truth = dict(BKT_PARAMS)
+    rows = []
+
+    def population(name, spread, tutor_of):
+        """One cell. tutor_of(true_params) picks that learner's tutor."""
+        runs = []
+        for i in range(n_learners):
+            r = random.Random(seed0 + 9000 + i)     # same students in every
+            sp = dict(truth)                        # arm, so arms are paired
+            sp[name] = min(0.45, max(0.02,
+                                     truth[name] + r.uniform(-spread, spread)))
+            spec = _spec_from(threshold, n_steps, run_kw)
+            spec.student_params = sp
+            spec.tutor_params = tutor_of(sp)
+            runs.append(run_one(cur, spec, seed=seed0 + i, keep_trace=True))
+        return runs
+
+    for name in varies:
+        for spread in spreads:
+            arms = [("fixed", v, (lambda v: lambda sp: dict(truth, **{name: v}))(v))
+                    for v in PARAM_GRIDS[name]]
+            arms.append(("oracle", float("nan"), lambda sp: dict(sp)))
+            for arm, value, tutor_of in arms:
+                runs = population(name, spread, tutor_of)
+                mb, mt = _calib_gap(runs)
+                rows.append(dict(
+                    parameter=name, spread=spread, tutor_arm=arm,
+                    tutor_value=value, n_learners=n_learners,
+                    calib_mean_belief=mb, calib_frac_known=mt,
+                    calib_gap=mt - mb, abs_calib_gap=abs(mt - mb),
+                    calib_gap_ci95=_gap_ci(runs),
+                    **_detect_stats(runs, threshold)))
+
+    # -------------------------------------------------- best fixed vs oracle
+    verdict = []
+    for name in varies:
+        for spread in spreads:
+            cell = [r for r in rows
+                    if r["parameter"] == name and r["spread"] == spread]
+            fixed = [r for r in cell if r["tutor_arm"] == "fixed"]
+            oracle = next(r for r in cell if r["tutor_arm"] == "oracle")
+            best = min(fixed, key=lambda r: r["abs_calib_gap"])
+            atruth = min(fixed, key=lambda r: abs(r["tutor_value"]
+                                                  - truth[name]))
+            verdict.append(dict(
+                parameter=name, spread=spread,
+                best_fixed_value=best["tutor_value"],
+                best_fixed_abs_gap=best["abs_calib_gap"],
+                at_truth_value=atruth["tutor_value"],
+                at_truth_abs_gap=atruth["abs_calib_gap"],
+                oracle_abs_gap=oracle["abs_calib_gap"],
+                oracle_buys=best["abs_calib_gap"] - oracle["abs_calib_gap"],
+                ci95=max(best["calib_gap_ci95"], oracle["calib_gap_ci95"]),
+                best_fixed_false_alarm=best["false_alarm_rate"],
+                oracle_false_alarm=oracle["false_alarm_rate"]))
+
+    # ------------------------------------------------------------ figure
+    fig, axes = plt.subplots(1, len(varies), figsize=(4.9 * len(varies), 3.7),
+                             squeeze=False)
+    pal = (ACCENT, GOOD, "#e2a03f", "#d96f6f")
+    for ax, name in zip(axes[0], varies):
+        for j, spread in enumerate(spreads):
+            cell = [r for r in rows if r["parameter"] == name
+                    and r["spread"] == spread]
+            fixed = sorted((r for r in cell if r["tutor_arm"] == "fixed"),
+                           key=lambda r: r["tutor_value"])
+            oracle = next(r for r in cell if r["tutor_arm"] == "oracle")
+            col = pal[j % len(pal)]
+            ax.plot([r["tutor_value"] for r in fixed],
+                    [r["abs_calib_gap"] for r in fixed], "o-", color=col,
+                    lw=1.7, label=f"fixed tutor, spread +/-{spread:.2f}")
+            ax.axhline(oracle["abs_calib_gap"], ls="--", lw=1.2, color=col,
+                       alpha=0.75)
+        ax.axvline(truth[name], ls=":", lw=1, color=GREY)
+        ax.set_xlabel(f"tutor's assumed {name}")
+        ax.set_ylabel("|calibration gap|")
+        ax.set_title(f"Students vary in {name}\n(dashed = oracle tutor)",
+                     fontsize=10)
+        ax.legend(frameon=False, fontsize=7.5)
+    fig.tight_layout()
+
+    # ----------------------------------------------------------- summary
+    bits = []
+    for name in varies:
+        wide = max(spreads)
+        v = next(x for x in verdict
+                 if x["parameter"] == name and x["spread"] == wide)
+        buys = v["oracle_buys"]
+        verdict_word = ("more than" if buys > v["ci95"] else "no more than")
+        bits.append(
+            f"{name} at spread +/-{wide:.2f}: the best single fixed tutor "
+            f"({name}={v['best_fixed_value']:.2f}) leaves |gap| "
+            f"{v['best_fixed_abs_gap']:.3f}, the oracle tutor "
+            f"{v['oracle_abs_gap']:.3f}, so knowing every student's own "
+            f"{name} buys {verdict_word} {abs(buys):.3f} "
+            f"(+/-{v['ci95']:.3f})")
+    summary = (f"{n_learners} learners per cell, {n_steps} questions, the "
+               f"same students in every arm so the arms are paired. "
+               + "; ".join(bits) + ". The oracle is an upper bound on "
+               "adapting, not a proposal: no tutor can see a student's "
+               "parameters.")
+    return {"tables": {"tutor_choice": rows, "verdict": verdict},
+            "figures": {"tutor_choice": fig}, "summary": summary}
 
 
 # ================================ concepts mastered as a function of time
@@ -967,6 +1108,13 @@ EXPERIMENTS = {
         "of students against one fixed tutor.",
         dict(n_learners=40, n_steps=120, threshold=0.9,
              vary=("p_G", "p_S", "p_T"))),
+    "tutor_choice": (
+        tutor_choice,
+        "Students differ in one parameter: which single fixed assumption "
+        "should the tutor use, and how much would a perfectly adapting "
+        "tutor buy over it?",
+        dict(n_learners=60, n_steps=120, threshold=0.9,
+             vary=("p_S", "p_G", "p_T"))),
     "restriction_only": (
         restriction_only,
         "Separates the prerequisite restriction from the cost of gating "
