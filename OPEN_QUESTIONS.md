@@ -57,13 +57,17 @@ questions. If `psup` meant something else, tell us and we will run it.
 **B1. S1's scheduler effect is a small cost, not zero. Report it or bury
 it?**
 
-We previously said Q2 costs S1 nothing. That was wrong. Across six
-independent 400-learner blocks the contrast is **+1.09 questions**, a
-cost of about one question in fifty-five, in the same direction as the
-2x2 already showed. It is real but tiny, and no single run can resolve
-its sign.
+We previously said Q2 costs S1 nothing. That asserted a sign the data
+never supported. Six independent 400-learner blocks put it at **+0.37
++/-0.57 questions**, slightly on the costly side, but the blocks
+disagree among themselves and the interval covers zero. At the shorter
+40-question budget the 2x2 does resolve it, at -0.15 +/-0.14 concepts,
+also favouring Q1.
 
-Report it as a finding with that caveat, or note it once and move on?
+So the effect is small, budget-dependent, and we cannot give it a sign
+at the longer horizon. Report it that way, or note it once and move on?
+We would need far more learners to settle it, and we are not sure it is
+worth the compute.
 
 **B2. Is a two-percent gain worth an adapting tutor?**
 
