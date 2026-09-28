@@ -406,19 +406,32 @@ import make_tables
 # and docs/tables/ is written by make_tables.py from sanity_outputs/.
 # If a committed table has drifted from its CSV, or someone typed a
 # number straight into the tex, this check is what catches it.
+DOCS = ["docs/simulator.tex", "docs/jigar.tex", "docs/sanved.tex"]
 built = make_tables.build()
-tex = open("docs/simulator.tex").read()
+alltex = "".join(open(d).read() for d in DOCS)
 for name, text in sorted(built.items()):
     path = os.path.join("docs", "tables", f"{name}.tex")
     check(os.path.exists(path) and open(path).read() == text,
           f"docs/tables/{name}.tex matches what the CSVs produce")
-    check(f"\\input{{tables/{name}}}" in tex,
-          f"...and the document actually includes it")
+    check(f"\\input{{tables/{name}}}" in alltex,
+          f"...and some document actually includes it")
 
-# and the document must not carry a hand-typed tabular any more
+# and no document may carry a hand-typed results table. simulator.tex has
+# a notation table before section 2 and sanved.tex has two hand-written
+# structural tables (the graph layout and the written-down prediction),
+# neither of which holds a measured number; everything else must be
+# generated.
 import re
-body = re.sub(r"%.*", "", tex)
-check("\\begin{tabular}" not in body.split("\\section*{2.")[-1],
-      "no hand-typed table survives past the notation section")
+tail = re.sub(r"%.*", "", open("docs/simulator.tex").read())
+check("\\begin{tabular}" not in tail.split("\\section*{2.")[-1],
+      "simulator.tex: no hand-typed table past the notation section")
+check("\\begin{tabular}" not in re.sub(r"%.*", "", open("docs/jigar.tex").read()),
+      "jigar.tex: every table is generated, none typed")
+
+# every result quoted in the two short documents must come via \input
+for d in ("docs/jigar.tex", "docs/sanved.tex"):
+    body = re.sub(r"%.*", "", open(d).read())
+    check(body.count("\\input{tables/") >= 3,
+          f"{os.path.basename(d)} draws its numbers from generated tables")
 
 print(f"\nALL {passed} CHECKS PASSED")

@@ -1,0 +1,216 @@
+\documentclass[11pt]{article}
+\usepackage[margin=2.3cm]{geometry}
+\usepackage{booktabs}
+\usepackage{parskip}
+\setlength{\parskip}{6pt}
+\newcommand{\code}[1]{\texttt{\small #1}}
+\title{\vspace{-1.2cm}\textbf{Does the order of questions matter?}\\[3pt]
+\large Two kinds of student, two ways of choosing what to ask next}
+\author{}
+\date{\small 28 September 2026}
+\begin{document}
+\maketitle
+\vspace{-1.0cm}
+\noindent\rule{\textwidth}{0.4pt}
+
+\section*{1. What this part is about}
+
+A tutor has to decide what to ask next. There are many clever ways to
+decide, but before any of them is worth building we should check something
+simpler: \emph{can the order possibly matter at all?}
+
+It turns out that depends entirely on what kind of student you imagine.
+This document sets up two kinds of student and two ways of choosing a
+question, crosses them, and shows that the order is nearly irrelevant for
+one student and clearly important for the other.
+
+That is a useful thing to know early. If we had only tested against the
+first kind of student, every scheduler we ever build would have looked the
+same as every other, and we would have concluded, wrongly, that
+scheduling does not matter.
+
+\section*{2. The curriculum is a graph}
+
+The concepts are not a flat list. Some have to come before others. Our
+practice curriculum has eight concepts in four layers:
+
+\begin{center}
+\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{layer} & \textbf{concepts}\\
+\midrule
+top & \code{A1}, \code{A2} \quad (nothing comes before these)\\
+second & \code{B1} needs \code{A1}; \quad \code{B2} needs \code{A1} and
+\code{A2}; \quad \code{B3} needs \code{A2}\\
+third & \code{C1} needs \code{B1} and \code{B2}; \quad \code{C2} needs
+\code{B2} and \code{B3}\\
+last & \code{D1} needs \code{C1} and \code{C2}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent It is shaped deliberately. \code{B2} sits under both \code{C1}
+and \code{C2}, so one weak concept blocks two later ones, and you can see
+it happen. And only two concepts are open at the start, so the set of
+things worth asking stays small enough to read.
+
+\section*{3. Two kinds of student}
+
+Both students are the same underneath. Each concept is either known or
+not, and each time you ask about something they do not know, there is a
+chance they pick it up. The two differ in one respect only.
+
+\textbf{Student S1 ignores the graph.} Asking about the last concept on
+day one works exactly as well as asking about it at the end. The
+prerequisites are drawn on the page but they do not affect this student.
+
+\textbf{Student S2 respects the graph.} Until the prerequisites are
+genuinely known, this student learns the concept far more slowly: at a
+quarter of the usual rate. Asking too early is not useless, but it is
+close to wasted.
+
+S2 is the smallest change that makes the order of questions mean
+something. Nothing else about the student changes.
+
+\section*{4. Two ways of choosing a question}
+
+\textbf{Q1} picks at random from everything the tutor does not yet believe
+is mastered. It will happily ask about the last concept first.
+
+\textbf{Q2} picks at random from the concepts whose prerequisites the
+tutor \emph{believes} are already mastered. It refuses to jump ahead.
+
+The word ``believes'' is doing real work there. The tutor cannot see what
+the student actually knows, only its own running guess. So Q2 is not
+following the true state of the student; it is following an estimate that
+lags behind.
+
+\section*{5. What we expected, written down first}
+
+Before running anything, the prediction was:
+
+\begin{center}
+\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+ & \textbf{Q1} & \textbf{Q2}\\
+\midrule
+S1 & fine & fine\\
+S2 & bad & fine\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The reasoning: against S1 a question is worth the same whenever
+you ask it, so nothing the scheduler does can help much. Against S2 a
+question asked too early is mostly wasted, so a scheduler that avoids
+asking early should win.
+
+Writing the prediction down first matters. If the scheduler had turned out
+to matter against S1 too, or not to matter against S2, the setup would not
+be able to tell schedulers apart and we would have a bug rather than a
+finding.
+
+\section*{6. What actually happened}
+
+Four hundred simulated students, forty questions each. The same student,
+by seed, appears in all four boxes, so these are fair comparisons rather
+than four separate groups. Scored on concepts the student \emph{truly}
+knows at the end, which is the student's own state and owes nothing to
+what the tutor believes.
+
+\input{tables/two_by_two}
+
+\noindent The prediction holds. Q2 is worth about one and a half concepts
+to S2 and is not worth anything useful to S1.
+
+The bottom line is the real result. It says the \emph{effect of the
+scheduler depends on which student you assume}. That is the claim, not
+either row on its own, and it is why testing a scheduler against only one
+kind of student can be so misleading.
+
+One technical note. Because the same student appears in both columns, the
+two differences move together, and we use that: \input{tables/pairing_sentence}
+
+\section*{7. The same result, in questions instead of concepts}
+
+Counting concepts at a fixed budget is a bit abstract. A more natural
+question is: how many questions before this student knows everything?
+
+\input{tables/mastery_curve}
+
+\noindent S2 gets there about twenty-three questions sooner under Q2,
+which is roughly a third less work. For S1 the two are level.
+
+Every student in every box reaches all eight concepts inside the three
+hundred question budget, so nothing is cut off at the end and these are
+honest medians.
+
+Two cautions. Every box asks the same fixed number of questions, so what
+differs is how quickly the student actually learns, not how much teaching
+was spent. And the mean and the median are not the same number here, so
+both are given rather than one standing in for the other.
+
+\section*{8. Is it the rule, or is it the lag?}
+
+Q1 and Q2 differ in two ways at once, and it is worth separating them.
+Q2 \emph{restricts} what may be asked, and it decides readiness from a
+belief that runs behind the truth. Either could be responsible.
+
+So we ran a matched pair where both sides gate on the student's true state
+and only the restriction differs. No real tutor could do this; it is a
+measurement device.
+
+\input{tables/restriction_only}
+
+\noindent For S1 the restriction is \emph{exactly} neutral. Not close to
+zero, identical, for all four hundred students. That settles it: the small
+negative figure for S1 in the earlier table is not the cost of restricting
+what gets asked. It is the cost of deciding readiness from a belief that
+lags. For S2 the restriction itself is worth about two concepts.
+
+\section*{9. Does it hold if we run it again?}
+
+A single run gives an interval, which tells you how well that one sample
+pins the number down. It does not tell you whether the same answer would
+come back from a fresh sample. For a small effect those are different
+questions, so we reran on six separate groups.
+
+\input{tables/blocks_sentence}
+
+\noindent So the S2 result is settled and the S1 result is not. Six groups
+put S1 slightly on the costly side of zero, but they disagree among
+themselves.
+
+This is worth being blunt about, because an earlier version of this work
+got it wrong. We read S1 off a single group, saw a negative number, and
+wrote that Q2 costs S1 nothing. The interval covered zero, so that was
+asserting a direction the data never supported, and it happens to point
+the opposite way from the estimate we now have. The honest statement is
+that the S1 effect is too small for us to give it a sign.
+
+\section*{10. What we are not claiming}
+
+The effect sizes depend on the budget. At forty questions the scheduler
+gap is large; run long enough for everything to be learned anyway and
+every box saturates and no scheduler can differ from any other. The short
+budget is a deliberate choice, not an accident.
+
+All of this is on one small eight concept curriculum, and nothing has been
+rerun on the larger one.
+
+And S2 is a made up student. It is the simplest thing that makes
+prerequisites bite, chosen for that reason, not because we have evidence
+that real learners behave this way.
+
+\section*{11. Running it again}
+
+\code{python3 make\_sanity.py} reruns every study and writes the result
+files. \code{python3 make\_tables.py} turns those into every table in this
+document, so no number here is typed by hand.
+\code{python3 make\_tables.py -{}-check} fails if the document and the
+results ever drift apart. \code{streamlit run app.py} steps through a single run one question
+at a time, with the graph on screen.
+
+\end{document}

@@ -21,7 +21,7 @@ written from those CSVs rather than typed.
 ```
 streamlit run app.py         # step or play through a single run
 python3 make_sanity.py       # every plot and table -> sanity_outputs/
-python3 test_sanity.py       # 92 checks on the plain-BKT setup
+python3 test_sanity.py       # 101 checks on the plain-BKT setup
 python3 test_simulator.py    # 55 checks on the original simulator
 ```
 
@@ -146,11 +146,19 @@ small chart per concept, all advancing together, so you never have to
 wait for a concept to come round again to see it move. Chips choose which
 charts to show.
 
-## Written description
+## Written descriptions
 
-`docs/simulator.tex` and its PDF describe the models, the update rules,
-what is measured against what, and what the simulator has been used to
-establish. Its tables come from the same CSVs.
+Three documents in `docs/`, all with tables generated from the CSVs by
+`make_tables.py`:
+
+| File | What it covers |
+|---|---|
+| `jigar.tex` / `.pdf` | the tutor's four BKT parameters: what each does, what happens when the tutor's values are wrong for one student and for a mixed group, and which single set a tutor should use |
+| `sanved.tex` / `.pdf` | whether the order of questions matters: the two student models, the two question-selection rules, the 2x2 between them, and the checks that separate the restriction from the belief lag |
+| `simulator.tex` / `.pdf` | the full reference: models, update rules, what is measured against what, and everything established so far |
+
+The first two are short and plain-language. The third is the complete
+version and assumes more.
 
 ## Branches
 
