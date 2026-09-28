@@ -209,19 +209,36 @@ with open(f"{OUT}/summary.md", "w") as f:
             "differences rather than two independent estimates.\n")
 
     f.write("\n## What should the tutor assume?\n\n" + tc["summary"] + "\n\n")
-    f.write("| students vary in | spread | best fixed tutor | its |gap| | "
-            "tutor at the truth | oracle tutor | oracle buys | 95% CI |\n"
-            "|---|---:|---:|---:|---:|---:|---:|---:|\n")
+    f.write("| students vary in | spread | best fixed tutor | its Brier | "
+            "oracle Brier | oracle buys | 95% CI | resolved? |\n"
+            "|---|---:|---:|---:|---:|---:|---:|---|\n")
     for r in tc["tables"]["verdict"]:
+        res = ("yes" if abs(r["oracle_buys_brier"]) > r["brier_ci95"] else "no")
         f.write(f"| {r['parameter']} | +/-{r['spread']:.2f} | "
-                f"{r['best_fixed_value']:.2f} | {r['best_fixed_abs_gap']:.3f} | "
-                f"{r['at_truth_abs_gap']:.3f} | {r['oracle_abs_gap']:.3f} | "
-                f"{r['oracle_buys']:+.3f} | +/-{r['ci95']:.3f} |\n")
-    f.write("\nThe best fixed value is chosen by minimising the gap on the "
-            "same run that reports it, so it is optimistic; the column "
-            "beside it, the tutor sitting at the true centre, is the "
-            "honest fixed choice. The oracle sees each student's own "
-            "parameters and cannot be built.\n")
+                f"{r['best_fixed_value']:.2f} | {r['best_fixed_brier']:.4f} | "
+                f"{r['oracle_brier']:.4f} | {r['oracle_buys_brier']:+.4f} | "
+                f"+/-{r['brier_ci95']:.4f} | {res} |\n")
+    f.write("\nBrier is mean (belief - truth)^2 per pair, a proper "
+            "scoring rule, so it is minimised by the true probability "
+            "and it does recover the true parameter at 40, 120 and 300 "
+            "questions alike. Two other scores are in the CSV and are "
+            "NOT used: the pooled signed calibration gap cancels "
+            "per-student over- and underconfidence, which under a "
+            "symmetric spread is exactly the error adapting removes; "
+            "and mean |belief - truth| is improper, minimised by the "
+            "median, so at 40 questions it prefers a tutor assuming "
+            "p_S=0.02 to the true 0.10. The best fixed value is chosen "
+            "by minimising Brier on the same run that reports it, so it "
+            "is optimistic; the CSV also carries the tutor sitting at "
+            "the true centre. The "
+            "interval is a paired bootstrap on the DIFFERENCE between "
+            "two arms that share their learners; each arm's own "
+            "marginal interval (ci95_marginal) is much wider and "
+            "answers a different question. 'Resolved' means the "
+            "difference is larger than the interval. A difference "
+            "inside the interval means this run could not resolve one "
+            "of that size, not that there is none: no equivalence "
+            "margin was set in advance.\n")
 
     f.write("\n## Parameter sweep\n\n" + psw["summary"] + "\n")
     f.write("\n## Tutor / student mismatch\n\n" + mm["summary"] + "\n\n")

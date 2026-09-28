@@ -1,3 +1,3 @@
-student,diff_Q2_minus_Q1,ci95,n_paired,n_dropped,faster_with_Q2,favours
-S1,-0.505,3.159274733862204,200,0,98,neither
-S2,-24.43,6.469454987864124,200,0,147,Q2
+student,diff_Q2_minus_Q1,ci95,median_diff_Q2_minus_Q1,n_paired,n_dropped,faster_with_Q2,sign_resolved,favours
+S1,0.2675,2.2577205315919704,0.0,400,0,191,False,unresolved at this n
+S2,-22.4275,4.316189863330364,-17.5,400,0,297,True,Q2

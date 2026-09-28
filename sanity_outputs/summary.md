@@ -75,36 +75,36 @@ Both arms gate on the student's true state, so only the prerequisite restriction
 
 ## Concepts mastered over time
 
-200 learners per cell, 300 questions. S1 needs a median 55 questions under Q1 and 54 under Q2, paired difference -0.5 +/-3.2 questions (favours neither); S2 needs a median 82 questions under Q1 and 55 under Q2, paired difference -24.4 +/-6.5 questions (favours Q2). Every arm gets every learner to all 8 concepts inside 300 questions, at a median of 54 (S1/Q2) to 82 (S2/Q1).
+400 learners per cell, 300 questions, paired by shared seed and shared initial known-set. S1 reaches all 8 after a median 54 questions under Q1 and 54 under Q2; paired MEAN difference +0.3 +/-2.3, paired MEDIAN difference +0.0 (unresolved at this n); S2 reaches all 8 after a median 78 questions under Q1 and 55 under Q2; paired MEAN difference -22.4 +/-4.3, paired MEDIAN difference -17.5 (Q2). Every arm gets every learner to all 8 concepts inside 300 questions, at a median of 54 (S1/Q1) to 78 (S2/Q1). Every arm asks the same fixed number of questions, so a difference here is time to latent mastery, not effort saved. The mean and median paired differences are both given because they are not interchangeable, and an interval covering zero means this run cannot resolve the sign, not that the effect is zero: the S1 contrast is a small cost to Q2 that needs far more learners than this to separate, and two_by_two and restriction_only are the places it shows up.
 
 | student | scheduler | known after the budget | reached all | median questions to all | never finished |
 |---|---|---:|---:|---:|---:|
-| S1 | Q1 | 8.00 / 8 | 100% | 55 | 0/200 |
-| S1 | Q2 | 8.00 / 8 | 100% | 54 | 0/200 |
-| S2 | Q1 | 8.00 / 8 | 100% | 82 | 0/200 |
-| S2 | Q2 | 8.00 / 8 | 100% | 55 | 0/200 |
+| S1 | Q1 | 8.00 / 8 | 100% | 54 | 0/400 |
+| S1 | Q2 | 8.00 / 8 | 100% | 54 | 0/400 |
+| S2 | Q1 | 8.00 / 8 | 100% | 78 | 0/400 |
+| S2 | Q2 | 8.00 / 8 | 100% | 55 | 0/400 |
 
 | student | Q2 minus Q1, questions to full mastery | 95% CI | faster with Q2 | favours |
 |---|---:|---:|---:|---|
-| S1 | -0.5 | +/-3.2 | 98/200 | neither |
-| S2 | -24.4 | +/-6.5 | 147/200 | Q2 |
+| S1 | +0.3 | +/-2.3 | 191/400 | unresolved at this n |
+| S2 | -22.4 | +/-4.3 | 297/400 | Q2 |
 
 Seed i is the same learner in both arms, so these are paired differences rather than two independent estimates.
 
 ## What should the tutor assume?
 
-60 learners per cell, 120 questions, the same students in every arm so the arms are paired. p_S at spread +/-0.15: the best single fixed tutor (p_S=0.10) leaves |gap| 0.004, the oracle tutor 0.004, so knowing every student's own p_S buys no more than 0.000 (+/-0.013); p_G at spread +/-0.15: the best single fixed tutor (p_G=0.25) leaves |gap| 0.004, the oracle tutor 0.001, so knowing every student's own p_G buys no more than 0.003 (+/-0.013). The oracle is an upper bound on adapting, not a proposal: no tutor can see a student's parameters.
+600 learners per cell, 120 questions, the same students in every arm so the arms are paired. p_S at spread +/-0.15: best fixed tutor (p_S=0.10) scores Brier 0.0854, the oracle 0.0835, so knowing every student's own p_S buys 0.0019 +/-0.0013 of per-pair error; p_G at spread +/-0.15: best fixed tutor (p_G=0.25) scores Brier 0.0829, the oracle 0.0828, so knowing every student's own p_G changes per-pair error by +0.0001, inside the +/-0.0020 this run can resolve. Scored on the Brier score, which is proper and so is minimised by the true probability. The pooled signed gap cancels per-student over- and underconfidence, exactly the error adapting removes, and mean |belief - truth| is improper and rewards a pessimistic tutor early in a run; both are kept as diagnostics only. The oracle is an upper bound, not a proposal: no tutor can see a student's parameters. An interval covering zero here means this run could not resolve a difference of that size, which is not the same as showing there is none; no equivalence margin was set in advance.
 
-| students vary in | spread | best fixed tutor | its |gap| | tutor at the truth | oracle tutor | oracle buys | 95% CI |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| p_S | +/-0.05 | 0.10 | 0.002 | 0.002 | 0.000 | +0.002 | +/-0.011 |
-| p_S | +/-0.10 | 0.10 | 0.003 | 0.003 | 0.004 | -0.001 | +/-0.012 |
-| p_S | +/-0.15 | 0.10 | 0.004 | 0.004 | 0.004 | -0.000 | +/-0.013 |
-| p_G | +/-0.05 | 0.25 | 0.001 | 0.001 | 0.000 | +0.001 | +/-0.013 |
-| p_G | +/-0.10 | 0.25 | 0.002 | 0.002 | 0.005 | -0.004 | +/-0.013 |
-| p_G | +/-0.15 | 0.25 | 0.004 | 0.004 | 0.001 | +0.003 | +/-0.013 |
+| students vary in | spread | best fixed tutor | its Brier | oracle Brier | oracle buys | 95% CI | resolved? |
+|---|---:|---:|---:|---:|---:|---:|---|
+| p_S | +/-0.05 | 0.10 | 0.0835 | 0.0834 | +0.0002 | +/-0.0005 | no |
+| p_S | +/-0.10 | 0.10 | 0.0836 | 0.0834 | +0.0002 | +/-0.0013 | no |
+| p_S | +/-0.15 | 0.10 | 0.0854 | 0.0835 | +0.0019 | +/-0.0013 | yes |
+| p_G | +/-0.05 | 0.25 | 0.0826 | 0.0832 | -0.0006 | +/-0.0016 | no |
+| p_G | +/-0.10 | 0.25 | 0.0824 | 0.0835 | -0.0011 | +/-0.0018 | no |
+| p_G | +/-0.15 | 0.25 | 0.0829 | 0.0828 | +0.0001 | +/-0.0020 | no |
 
-The best fixed value is chosen by minimising the gap on the same run that reports it, so it is optimistic; the column beside it, the tutor sitting at the true centre, is the honest fixed choice. The oracle sees each student's own parameters and cannot be built.
+Brier is mean (belief - truth)^2 per pair, a proper scoring rule, so it is minimised by the true probability and it does recover the true parameter at 40, 120 and 300 questions alike. Two other scores are in the CSV and are NOT used: the pooled signed calibration gap cancels per-student over- and underconfidence, which under a symmetric spread is exactly the error adapting removes; and mean |belief - truth| is improper, minimised by the median, so at 40 questions it prefers a tutor assuming p_S=0.02 to the true 0.10. The best fixed value is chosen by minimising Brier on the same run that reports it, so it is optimistic; the CSV also carries the tutor sitting at the true centre. The interval is a paired bootstrap on the DIFFERENCE between two arms that share their learners; each arm's own marginal interval (ci95_marginal) is much wider and answers a different question. 'Resolved' means the difference is larger than the interval. A difference inside the interval means this run could not resolve one of that size, not that there is none: no equivalence margin was set in advance.
 
 ## Parameter sweep
 

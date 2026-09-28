@@ -489,15 +489,85 @@ def _calib_gap(runs):
     return mb, mt
 
 
-def _gap_ci(runs, n_boot=400, seed=7):
-    """95% interval on the pooled gap, resampling LEARNERS rather than
-    pairs, because the pairs within one learner are not independent."""
+def _gap_contrib(runs):
+    """Each learner's (sum of truth minus belief, number of pairs).
+
+    The pooled gap is sum(numerators)/sum(denominators) over learners,
+    so these are the units a learner-level bootstrap resamples.
+    """
     per = []
     for r in runs:
         b = [t["belief_after"] for t in r["trace"]]
         y = [float(t["true_after"]) for t in r["trace"]]
-        if b:
-            per.append((sum(y) - sum(b), len(b)))
+        per.append((sum(y) - sum(b), len(b)) if b else (0.0, 0))
+    return per
+
+
+def _loss_contrib(runs, kind="abs"):
+    """Per-learner (summed per-pair loss, number of pairs).
+
+    `_calib_gap` pools a SIGNED difference, so a tutor that is
+    overconfident about half its students and underconfident about the
+    other half scores zero. Under a symmetric spread of students that is
+    exactly what happens, which makes the signed gap blind by
+    construction to the error an adapting tutor would fix. These losses
+    do not cancel:
+
+        "abs" -> mean |belief - truth| over pairs
+        "sq"  -> Brier score, mean (belief - truth)^2 over pairs
+
+    Same (numerator, denominator) shape as `_gap_contrib`, so the same
+    paired bootstrap applies.
+    """
+    per = []
+    for r in runs:
+        d = [t["belief_after"] - float(t["true_after"]) for t in r["trace"]]
+        if kind == "abs":
+            per.append((sum(abs(x) for x in d), len(d)))
+        else:
+            per.append((sum(x * x for x in d), len(d)))
+    return per
+
+
+def _pooled(contrib):
+    num = sum(a for a, _ in contrib)
+    den = sum(n for _, n in contrib)
+    return num / den if den else float("nan")
+
+
+def _gap_ci_paired(contrib_a, contrib_b, n_boot=400, seed=7):
+    """95% interval on the DIFFERENCE between two arms' pooled gaps.
+
+    The two arms are run on the SAME learners, so one bootstrap draw
+    resamples learner indices once and applies them to both arms. Using
+    each arm's own marginal interval instead would throw the pairing
+    away: that interval answers "how well is this arm pinned down",
+    not "do these two arms differ", and for positively correlated arms
+    it is far too wide.
+    """
+    if len(contrib_a) != len(contrib_b) or len(contrib_a) < 2:
+        return float("nan")
+    rng = random.Random(seed)
+    boots = []
+    for _ in range(n_boot):
+        idx = [rng.randrange(len(contrib_a)) for _ in contrib_a]
+        na = sum(contrib_a[i][0] for i in idx)
+        da = sum(contrib_a[i][1] for i in idx)
+        nb = sum(contrib_b[i][0] for i in idx)
+        db = sum(contrib_b[i][1] for i in idx)
+        if da and db:
+            boots.append(na / da - nb / db)
+    if len(boots) < 2:
+        return float("nan")
+    boots.sort()
+    lo, hi = boots[int(.025 * len(boots))], boots[int(.975 * len(boots)) - 1]
+    return (hi - lo) / 2
+
+
+def _gap_ci(runs, n_boot=400, seed=7):
+    """95% interval on the pooled gap, resampling LEARNERS rather than
+    pairs, because the pairs within one learner are not independent."""
+    per = [c for c in _gap_contrib(runs) if c[1]]
     if len(per) < 2:
         return float("nan")
     rng = random.Random(seed)
@@ -710,7 +780,7 @@ def mismatch(n_learners=200, n_steps=120, threshold=0.9, seed0=4242,
 
 
 # ============================== what should the one tutor assume?
-def tutor_choice(n_learners=60, n_steps=120, threshold=0.9, seed0=4242,
+def tutor_choice(n_learners=600, n_steps=120, threshold=0.9, seed0=4242,
                  vary=("p_S", "p_G"), spreads=(0.05, 0.10, 0.15),
                  cur=None, **run_kw):
     """Students differ in one parameter. What should the single tutor use?
@@ -727,9 +797,33 @@ def tutor_choice(n_learners=60, n_steps=120, threshold=0.9, seed0=4242,
     buy over the best single fixed choice. A small gap means adapting is
     not worth building.
 
-    Scored on |calibration gap|, the tutor's own honesty, because false
-    alarms alone are gameable: a tutor that never declares mastery has
-    none. False alarms and delay are reported alongside.
+    Scored on the Brier score, mean (belief - truth)^2 per pair.
+
+    Three candidate scores were tried and two are wrong here:
+
+      pooled signed gap  cancels. A tutor overconfident about half its
+        students and underconfident about the other half scores zero,
+        and under a symmetric spread that is exactly the error adapting
+        removes, so the study would be blind to its own question.
+      mean |belief - truth|  is not a proper scoring rule: it is
+        minimised by the median, so while most concepts are still
+        unknown it rewards a tutor that simply stays pessimistic. At 40
+        questions it picks p_S=0.02 over the true 0.10, at every sample
+        size tried.
+      Brier  is proper, so it is minimised in expectation by the true
+        probability. At this study's horizon of 120 questions it does
+        recover the true parameter, at 120, 300 and 600 learners alike,
+        with a margin of about 0.002. It is the score.
+
+    Horizon matters and is a real limit: at 40 questions the Brier
+    curve is nearly flat (0.1676 at the truth against 0.1677 at
+    p_S=0.02) and the minimum moves with the sample, so neither score
+    identifies the parameter reliably there. Do not read this study at
+    short horizons.
+
+    The other two stay in the table as diagnostics. False alarms alone
+    cannot be the score either: a tutor that never declares mastery has
+    none.
     """
     if n_learners < 2:
         raise ValueError("tutor_choice needs at least 2 learners to report "
@@ -742,6 +836,8 @@ def tutor_choice(n_learners=60, n_steps=120, threshold=0.9, seed0=4242,
     cur = cur or build_curriculum()
     truth = dict(BKT_PARAMS)
     rows = []
+    contrib = {}          # (parameter, spread, arm, value) -> per-learner parts
+    contrib_mae, contrib_brier = {}, {}
 
     def population(name, spread, tutor_of):
         """One cell. tutor_of(true_params) picks that learner's tutor."""
@@ -765,9 +861,15 @@ def tutor_choice(n_learners=60, n_steps=120, threshold=0.9, seed0=4242,
             for arm, value, tutor_of in arms:
                 runs = population(name, spread, tutor_of)
                 mb, mt = _calib_gap(runs)
+                key = (name, spread, arm, value)
+                contrib[key] = _gap_contrib(runs)
+                contrib_mae[key] = _loss_contrib(runs, "abs")
+                contrib_brier[key] = _loss_contrib(runs, "sq")
                 rows.append(dict(
                     parameter=name, spread=spread, tutor_arm=arm,
                     tutor_value=value, n_learners=n_learners,
+                    mae=_pooled(contrib_mae[key]),
+                    brier=_pooled(contrib_brier[key]),
                     calib_mean_belief=mb, calib_frac_known=mt,
                     calib_gap=mt - mb, abs_calib_gap=abs(mt - mb),
                     calib_gap_ci95=_gap_ci(runs),
@@ -781,20 +883,38 @@ def tutor_choice(n_learners=60, n_steps=120, threshold=0.9, seed0=4242,
                     if r["parameter"] == name and r["spread"] == spread]
             fixed = [r for r in cell if r["tutor_arm"] == "fixed"]
             oracle = next(r for r in cell if r["tutor_arm"] == "oracle")
-            best = min(fixed, key=lambda r: r["abs_calib_gap"])
+            # Select on Brier: it is proper, so it is minimised by the
+            # true probability. See the docstring for why the signed
+            # gap and MAE both fail here.
+            best = min(fixed, key=lambda r: r["brier"])
             atruth = min(fixed, key=lambda r: abs(r["tutor_value"]
                                                   - truth[name]))
+            kb = (name, spread, "fixed", best["tutor_value"])
+            ko = (name, spread, "oracle", oracle["tutor_value"])
             verdict.append(dict(
                 parameter=name, spread=spread,
                 best_fixed_value=best["tutor_value"],
-                best_fixed_abs_gap=best["abs_calib_gap"],
+                best_fixed_mae=best["mae"], oracle_mae=oracle["mae"],
+                oracle_buys_mae=best["mae"] - oracle["mae"],
+                mae_ci95=_gap_ci_paired(contrib_mae[kb], contrib_mae[ko]),
+                best_fixed_brier=best["brier"],
+                oracle_brier=oracle["brier"],
+                oracle_buys_brier=best["brier"] - oracle["brier"],
+                brier_ci95=_gap_ci_paired(contrib_brier[kb],
+                                          contrib_brier[ko]),
                 at_truth_value=atruth["tutor_value"],
+                at_truth_mae=atruth["mae"],
+                best_fixed_abs_gap=best["abs_calib_gap"],
                 at_truth_abs_gap=atruth["abs_calib_gap"],
                 oracle_abs_gap=oracle["abs_calib_gap"],
                 oracle_buys=best["abs_calib_gap"] - oracle["abs_calib_gap"],
-                ci95=max(best["calib_gap_ci95"], oracle["calib_gap_ci95"]),
+                ci95=_gap_ci_paired(contrib[kb], contrib[ko]),
+                ci95_marginal=max(best["calib_gap_ci95"],
+                                  oracle["calib_gap_ci95"]),
                 best_fixed_false_alarm=best["false_alarm_rate"],
-                oracle_false_alarm=oracle["false_alarm_rate"]))
+                oracle_false_alarm=oracle["false_alarm_rate"],
+                best_fixed_delay=best["delay_on_concept_mean"],
+                oracle_delay=oracle["delay_on_concept_mean"]))
 
     # ------------------------------------------------------------ figure
     fig, axes = plt.subplots(1, len(varies), figsize=(4.9 * len(varies), 3.7),
@@ -809,13 +929,13 @@ def tutor_choice(n_learners=60, n_steps=120, threshold=0.9, seed0=4242,
             oracle = next(r for r in cell if r["tutor_arm"] == "oracle")
             col = pal[j % len(pal)]
             ax.plot([r["tutor_value"] for r in fixed],
-                    [r["abs_calib_gap"] for r in fixed], "o-", color=col,
+                    [r["brier"] for r in fixed], "o-", color=col,
                     lw=1.7, label=f"fixed tutor, spread +/-{spread:.2f}")
-            ax.axhline(oracle["abs_calib_gap"], ls="--", lw=1.2, color=col,
+            ax.axhline(oracle["brier"], ls="--", lw=1.2, color=col,
                        alpha=0.75)
         ax.axvline(truth[name], ls=":", lw=1, color=GREY)
         ax.set_xlabel(f"tutor's assumed {name}")
-        ax.set_ylabel("|calibration gap|")
+        ax.set_ylabel("Brier score per pair")
         ax.set_title(f"Students vary in {name}\n(dashed = oracle tutor)",
                      fontsize=10)
         ax.legend(frameon=False, fontsize=7.5)
@@ -827,26 +947,40 @@ def tutor_choice(n_learners=60, n_steps=120, threshold=0.9, seed0=4242,
         wide = max(spreads)
         v = next(x for x in verdict
                  if x["parameter"] == name and x["spread"] == wide)
-        buys = v["oracle_buys"]
-        verdict_word = ("more than" if buys > v["ci95"] else "no more than")
+        buys, ci = v["oracle_buys_brier"], v["brier_ci95"]
+        if buys > ci:
+            word = f"buys {buys:.4f} +/-{ci:.4f} of per-pair error"
+        elif buys < -ci:
+            word = (f"COSTS {abs(buys):.4f} +/-{ci:.4f} of per-pair error")
+        else:
+            word = (f"changes per-pair error by {buys:+.4f}, inside the "
+                    f"+/-{ci:.4f} this run can resolve")
         bits.append(
-            f"{name} at spread +/-{wide:.2f}: the best single fixed tutor "
-            f"({name}={v['best_fixed_value']:.2f}) leaves |gap| "
-            f"{v['best_fixed_abs_gap']:.3f}, the oracle tutor "
-            f"{v['oracle_abs_gap']:.3f}, so knowing every student's own "
-            f"{name} buys {verdict_word} {abs(buys):.3f} "
-            f"(+/-{v['ci95']:.3f})")
-    summary = (f"{n_learners} learners per cell, {n_steps} questions, the "
-               f"same students in every arm so the arms are paired. "
-               + "; ".join(bits) + ". The oracle is an upper bound on "
-               "adapting, not a proposal: no tutor can see a student's "
-               "parameters.")
+            f"{name} at spread +/-{wide:.2f}: best fixed tutor "
+            f"({name}={v['best_fixed_value']:.2f}) scores Brier "
+            f"{v['best_fixed_brier']:.4f}, the oracle "
+            f"{v['oracle_brier']:.4f}, so knowing every student's own "
+            f"{name} {word}")
+    summary = (
+        f"{n_learners} learners per cell, {n_steps} questions, the same "
+        f"students in every arm so the arms are paired. " + "; ".join(bits)
+        + ". Scored on the Brier score, which is proper and so is "
+        "minimised by the true probability. The pooled signed gap "
+        "cancels per-student over- and underconfidence, exactly the "
+        "error adapting removes, and mean |belief - truth| is improper "
+        "and rewards a pessimistic tutor early in a run; both are kept "
+        "as diagnostics only. The "
+        "oracle is an upper bound, not a proposal: no tutor can see a "
+        "student's parameters. An interval covering zero here means this "
+        "run could not resolve a difference of that size, which is not "
+        "the same as showing there is none; no equivalence margin was "
+        "set in advance.")
     return {"tables": {"tutor_choice": rows, "verdict": verdict},
             "figures": {"tutor_choice": fig}, "summary": summary}
 
 
 # ================================ concepts mastered as a function of time
-def mastery_curve(n_learners=200, n_steps=300, threshold=0.9, seed0=4242,
+def mastery_curve(n_learners=400, n_steps=300, threshold=0.9, seed0=4242,
                   cur=None, **_):
     """Concepts the student TRULY knows, against questions asked.
 
@@ -956,11 +1090,22 @@ def mastery_curve(n_learners=200, n_steps=300, threshold=0.9, seed0=4242,
             ci = 1.96 * st.stdev(d) / math.sqrt(len(d))
         else:
             m, ci = float("nan"), float("nan")
-        paired.append(dict(student=sname, diff_Q2_minus_Q1=m, ci95=ci,
-                           n_paired=len(d), n_dropped=len(a) - len(d),
-                           faster_with_Q2=sum(1 for v in d if v < 0),
-                           favours=("Q2" if m + ci < 0 else
-                                    "Q1" if m - ci > 0 else "neither")))
+        med = st.median(d) if d else float("nan")
+        resolved = (m + ci < 0) or (m - ci > 0)
+        paired.append(dict(
+            student=sname, diff_Q2_minus_Q1=m, ci95=ci,
+            median_diff_Q2_minus_Q1=med,
+            n_paired=len(d), n_dropped=len(a) - len(d),
+            faster_with_Q2=sum(1 for v in d if v < 0),
+            sign_resolved=resolved,
+            # "unresolved" means this run cannot tell the sign, NOT that
+            # the effect is zero. Reporting it as "neither" once let a
+            # sign-unstable estimate be written up as "costs S1 nothing";
+            # across six independent blocks of 400 the S1 effect is in
+            # fact a small COST, about +1 question, which two_by_two and
+            # restriction_only already implied.
+            favours=("Q2" if m + ci < 0 else "Q1" if m - ci > 0
+                     else "unresolved at this n")))
 
     # ----------------------------------------------------------- summary
     def cell(sname, qname):
@@ -979,11 +1124,13 @@ def mastery_curve(n_learners=200, n_steps=300, threshold=0.9, seed0=4242,
                 f"{q2['frac_reached_all']:.0%} of learners reached all {n_c})")
         else:
             bits.append(
-                f"{sname} needs a median {q1['median_questions_to_all']:.0f} "
-                f"questions under Q1 and "
-                f"{q2['median_questions_to_all']:.0f} under Q2, paired "
-                f"difference {pr['diff_Q2_minus_Q1']:+.1f} "
-                f"+/-{pr['ci95']:.1f} questions (favours {pr['favours']})")
+                f"{sname} reaches all {n_c} after a median "
+                f"{q1['median_questions_to_all']:.0f} questions under Q1 "
+                f"and {q2['median_questions_to_all']:.0f} under Q2; paired "
+                f"MEAN difference {pr['diff_Q2_minus_Q1']:+.1f} "
+                f"+/-{pr['ci95']:.1f}, paired MEDIAN difference "
+                f"{pr['median_diff_Q2_minus_Q1']:+.1f} "
+                f"({pr['favours']})")
     # A median over finishers only is biased whenever many learners did
     # not finish, so quote it only when nearly everyone did, and say so
     # plainly otherwise rather than reporting a number built on a tail.
@@ -1002,8 +1149,18 @@ def mastery_curve(n_learners=200, n_steps=300, threshold=0.9, seed0=4242,
                 f"{worst_cens:.0%} of learners in some arm never reach all "
                 f"{n_c} concepts inside {n_steps} questions, so a median "
                 f"over the finishers would describe the fast tail only.")
-    summary = (f"{n_learners} learners per cell, {n_steps} questions. "
-               + "; ".join(bits) + "." + tail)
+    caveats = (
+        " Every arm asks the same fixed number of questions, so a "
+        "difference here is time to latent mastery, not effort saved. "
+        "The mean and median paired differences are both given because "
+        "they are not interchangeable, and an interval covering zero "
+        "means this run cannot resolve the sign, not that the effect is "
+        "zero: the S1 contrast is a small cost to Q2 that needs far more "
+        "learners than this to separate, and two_by_two and "
+        "restriction_only are the places it shows up.")
+    summary = (f"{n_learners} learners per cell, {n_steps} questions, "
+               f"paired by shared seed and shared initial known-set. "
+               + "; ".join(bits) + "." + tail + caveats)
 
     return {"tables": {"mastery_curve": rows, "questions_to_all": done_rows,
                        "paired": paired},
@@ -1113,7 +1270,7 @@ EXPERIMENTS = {
         "Students differ in one parameter: which single fixed assumption "
         "should the tutor use, and how much would a perfectly adapting "
         "tutor buy over it?",
-        dict(n_learners=60, n_steps=120, threshold=0.9,
+        dict(n_learners=600, n_steps=120, threshold=0.9,
              vary=("p_S", "p_G", "p_T"))),
     "restriction_only": (
         restriction_only,
