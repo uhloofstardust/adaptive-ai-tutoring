@@ -398,4 +398,27 @@ check("nearly flat" in tutor_choice.__doc__
       and "Do not read this study at" in tutor_choice.__doc__,
       "the docstring states the short-horizon limit rather than hiding it")
 
+print("23. no number reaches the document except through a CSV")
+import os
+import make_tables
+
+# Every data table in docs/simulator.tex is \input from docs/tables/,
+# and docs/tables/ is written by make_tables.py from sanity_outputs/.
+# If a committed table has drifted from its CSV, or someone typed a
+# number straight into the tex, this check is what catches it.
+built = make_tables.build()
+tex = open("docs/simulator.tex").read()
+for name, text in sorted(built.items()):
+    path = os.path.join("docs", "tables", f"{name}.tex")
+    check(os.path.exists(path) and open(path).read() == text,
+          f"docs/tables/{name}.tex matches what the CSVs produce")
+    check(f"\\input{{tables/{name}}}" in tex,
+          f"...and the document actually includes it")
+
+# and the document must not carry a hand-typed tabular any more
+import re
+body = re.sub(r"%.*", "", tex)
+check("\\begin{tabular}" not in body.split("\\section*{2.")[-1],
+      "no hand-typed table survives past the notation section")
+
 print(f"\nALL {passed} CHECKS PASSED")

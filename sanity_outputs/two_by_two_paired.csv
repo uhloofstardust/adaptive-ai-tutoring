@@ -1,4 +1,4 @@
-student,diff_Q2_minus_Q1,ci95,better_with_Q2,n,favours,scheduler_matters
-S1,-0.1525,0.13977732730335837,116,400,Q1,True
-S2,1.465,0.1787551358604592,283,400,Q2,True
-interaction (S2 minus S1),1.6175,0.16481095656390315,-1,400,-,True
+student,diff_Q2_minus_Q1,ci95,better_with_Q2,n,favours,scheduler_matters,corr_S1_S2,ci95_if_unpaired
+S1,-0.1525,0.13977732730335837,116,400,Q1,True,,
+S2,1.465,0.1787551358604592,283,400,Q2,True,,
+interaction (S2 minus S1),1.6175,0.16481095656390315,-1,400,-,True,0.48684325333314443,0.22691650408148237

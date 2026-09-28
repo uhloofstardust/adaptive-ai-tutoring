@@ -1,107 +1,138 @@
-# Adaptive AI Tutoring — Marathi→Bengali Curriculum Simulator
+# cursim — a simulator for adaptive tutoring
 
-This repo extends CurriculumTutor (see `CurriculumTutor.pdf`) into a
-simulator for adaptive language tutoring: a fake learner that knows,
-forgets, and guesses, taught by different question-selection strategies,
-so those strategies can be compared before any human pilot.
+A simulated learner who knows, guesses, slips and forgets, taught by
+different question-selection strategies, so those strategies can be
+compared before any human pilot. The curriculum is a graph of concepts
+with prerequisites; the tutor never sees the learner's true state and
+must infer it from answers.
 
-## Read these in order
+The default curriculum is deliberately abstract. Concepts are named by
+tier (`A1`, `B2`, `D1`), not by subject, so nothing in the machinery
+depends on what is being taught.
 
-1. **`simulator_expln.md`** — what the simulator is, how every part of
-   it works, and why each design choice was made. Read this first; it
-   is the reference for everything below.
-2. **`experiment_plans.md`** — the experiments planned on top of the
-   simulator described in (1). Read this second; it assumes the
-   concepts from `simulator_expln.md`.
+## Every number here is checkable
 
-## Code in this repo
-
-| File | Role | Depends on |
-|---|---|---|
-| `cursim/curriculum.py` | Defines the curriculum data model: the concept graph and its question bank (see `simulator_expln.md`, Part 3). No dependency on any other file here. | — |
-| `cursim/learner.py` | The simulated student: hidden continuous mastery, prerequisite-gated learning, exponential forgetting (Part 4). | `curriculum.py` |
-| `cursim/mastery.py` | What the tutor believes: binary-permanent, continuous, continuous-with-forgetting (Part 5). | — |
-| `cursim/schedulers.py` | The four question-selection strategies (Part 6). | `curriculum.py`, `mastery.py` |
-| `cursim/simulation.py` | The run loop, metrics, paired comparison and sign test (Part 7). | all of the above |
-| `cursim/plots.py` | The six figure functions (Part 8.6). | `simulation.py` |
-| `run_experiments.py` | Experiment definitions, `data/results.csv`, and `--selftest`. | all of the above |
-| `test_simulator.py` | Test suite for the simulator (see `simulator_expln.md`, Part 8). | all `cursim` modules |
-
-**Current state:** all modules described in `simulator_expln.md` Part 8
-are present. `test_simulator.py` passes all 55 checks.
-
-## The `plain-bkt` branch
-
-Adds a plain BKT student, the two sanity checks, and an interface for
-watching a single run unfold. `main` keeps the original simulator untouched.
+This repo follows one rule: **no number appears in a document unless a
+committed artifact produces it.** `sanity_outputs/*.csv` is the source of
+truth, `python3 make_sanity.py` regenerates all of it from scratch, and
+the tables in `docs/simulator.tex` and `sanity_outputs/summary.md` are
+written from those CSVs rather than typed.
 
 ```
-streamlit run app.py         # step or play through a run; run the checks
+streamlit run app.py         # step or play through a single run
 python3 make_sanity.py       # every plot and table -> sanity_outputs/
-python3 test_sanity.py       # 35 checks on the plain-BKT setup
-python3 test_simulator.py    # the original 55 checks
+python3 test_sanity.py       # 73 checks on the plain-BKT setup
+python3 test_simulator.py    # 55 checks on the original simulator
 ```
 
-### Curricula are data
+Both suites pass. Several checks are not unit tests but guards on claims
+that turned out to be wrong earlier and would otherwise creep back: that
+a scoring rule which cancels cannot be used to argue two tutors are
+equivalent, and that an interval covering zero is never printed as
+though it meant no effect.
 
-Every curriculum lives in `data/` as JSON, so adding one is a new file and
-never a code edit. Anything named `curriculum_<name>.json` is loadable by
-`<name>` and appears in the interface automatically.
+## The two student models and the two schedulers
+
+The central comparison is a 2x2.
+
+| | Q1: ask anything not believed mastered | Q2: ask only prerequisite-ready |
+|---|---|---|
+| **S1** prerequisites do not affect learning | scheduler barely matters | scheduler barely matters |
+| **S2** p(T) drops to `pT_low` until prerequisites are truly known | costly | good |
+
+S2 is selected by choosing the `bkt_prereq` student. There is exactly one
+S2 in the repo and its `pT_low` lives in `data/params.json`, so no code
+path can quietly run a different one.
+
+## Curricula and parameters are data
+
+Anything named `data/curriculum_<name>.json` is loadable by `<name>` and
+appears in the interface automatically, so adding a curriculum is a new
+file and never a code edit.
 
 | File | What it is |
 |---|---|
-| `data/curriculum_abstract.json` | 8 concepts, the default. Subject-free: ids are `<tier letter><index>`, so `A1` has no prerequisites and `D1` is the capstone. A symmetric 2-3-2-1 diamond, small enough that the ZPD stays readable |
-| `data/curriculum_language.json` | the original 40-concept graph, frozen, so the earlier experiments and their committed results stay reproducible |
-| `data/params.json` | the shared BKT parameters and the interface defaults |
+| `data/curriculum_abstract.json` | 8 concepts, the default. A symmetric 2-3-2-1 diamond over 4 tiers, small enough that the ZPD stays readable |
+| `data/curriculum_language.json` | the original 40-concept graph, frozen so earlier results stay reproducible |
+| `data/params.json` | the shared BKT parameters, S2's `pT_low`, and the interface defaults |
 
-`build_curriculum()` loads the default; `build_curriculum("language")` loads
-the original. The older experiment scripts are pinned to `"language"`.
+`build_curriculum()` loads the default; `build_curriculum("language")`
+loads the original. `python3 -m cursim.curriculum` lists what is
+available with its size and depth.
 
-### Code
+## The experiments
 
-| File | What it adds |
+All nine are in the `EXPERIMENTS` registry, so they appear in the
+interface with their parameters as controls, with no edit to `app.py`.
+
+| Name | What it asks |
+|---|---|
+| `check1_calibration` | when the tutor believes p, is the concept truly known with frequency p? |
+| `check2_detection` | how long until the tutor notices mastery, and how often does it declare too early? |
+| `s1s2_x_q1q2` | the 2x2: does the question-selection rule matter, and does that depend on the student model? |
+| `mastery_curve` | concepts truly known against questions asked, all four cells, and how many questions are enough to know every concept |
+| `param_sweep` | what each BKT parameter does, with the tutor correctly specified |
+| `mismatch` | the tutor's assumed parameters differ from the student's real ones, one parameter at a time or across a population |
+| `tutor_choice` | students differ in one parameter: which single fixed assumption should the tutor use, and how much would a perfectly adapting tutor buy over it? |
+| `restriction_only` | separates the prerequisite restriction from the cost of gating on a belief that lags the truth |
+| `trace_20_steps` | one run, 20 rows, every column |
+
+`tutor_choice` includes an **oracle** arm handed each learner's own true
+parameters. It is not a proposal, because no tutor can see a student's
+parameters. It is the upper bound that makes "should the tutor adapt"
+answerable at all.
+
+## Three scores, and why only one is used
+
+`tutor_choice` is scored on the Brier score. The other two stay in the
+CSV as diagnostics, because each fails in an instructive way:
+
+- the **pooled signed calibration gap** cancels. A tutor overconfident
+  about half its students and underconfident about the other half scores
+  zero, and under a symmetric spread that is exactly the error an
+  adapting tutor would remove.
+- **mean |belief - truth|** is not a proper scoring rule. It is minimised
+  by the median, so while most concepts are still unknown it rewards a
+  tutor that simply stays pessimistic.
+- **Brier** is proper, and at the 120-question horizon these studies run
+  at it does recover the true parameter.
+
+## Code
+
+| File | Role |
 |---|---|
 | `cursim/params.py` | reads the shared BKT parameters from `data/params.json` |
 | `cursim/curriculum.py` | loads any curriculum from `data/`, plus a tier layout for drawing |
-| `cursim/learner.py` | `BKTLearner` and the `LEARNERS` registry |
-| `cursim/mastery.py` | the `"bkt"` model and the `MASTERY_MODELS` registry |
-| `cursim/schedulers.py` | `zpd()` helper so the run loop can record the ZPD |
-| `cursim/simulation.py` | `learner`, `threshold`, `bkt_params` on `RunSpec`; `keep_trace` |
-| `cursim/sanity.py` | check 1, check 2, the trace, and the `EXPERIMENTS` registry |
+| `cursim/learner.py` | the simulated students: `BKTLearner` (S1 and S2) and the continuous learner, in the `LEARNERS` registry (3 entries) |
+| `cursim/mastery.py` | what the tutor believes, in `MASTERY_MODELS` (5 entries) |
+| `cursim/schedulers.py` | question selection, in `SCHEDULERS` (10 entries), plus the `zpd()` helper |
+| `cursim/simulation.py` | the run loop, the per-step trace, and the metrics |
+| `cursim/sanity.py` | the nine experiments, their figures, and the `EXPERIMENTS` registry |
+| `cursim/plots.py` | the six figure functions used by `run_experiments.py` |
 | `cursim/viewer_data.py` | packages one run into the JSON the viewer plays |
 | `cursim/viewer.py` | renders the viewer as one self-contained HTML string |
 | `viewer/viewer.html` | the viewer: curriculum graph, belief charts, transport |
 | `viewer/vendor/` | Chart.js, vendored so it works with no network |
-| `app.py` | the interface. Everything selectable comes from a registry or from `data/` |
+| `app.py` | the interface; everything selectable comes from a registry or from `data/` |
+| `run_experiments.py` | the four original experiments, `data/results.csv`, and `--selftest` |
+| `test_sanity.py`, `test_simulator.py` | the two suites |
 
-### The experiments
-
-| Name | What it asks |
-|---|---|
-| `check1_calibration` | when the tutor believes p, is the student known with frequency p? |
-| `check2_detection` | how long until the tutor notices, and how often does it declare too early? |
-| `s1s2_x_q1q2` | the 2x2: does the question-selection rule matter, and does that depend on the student model? |
-| `param_sweep` | what does each BKT parameter actually do, with the tutor correctly specified? |
-| `mismatch` | the tutor's assumed parameters differ from the student's real ones |
-| `restriction_only` | separates the prerequisite restriction from the cost of gating on a lagging belief |
-| `trace_20_steps` | one run, 20 rows, every column |
-
-`docs/simulator.tex` (and its PDF) is the written description: the models,
-the update rules, what is measured against what, and what has been established.
-
-### The dry run
+## The dry run
 
 Press Run, then Play or drag the slider. The graph shows every concept
 coloured by what the tutor believes, with the concept being asked filled
-solid and a ring on the ones the student truly knows. Beside it, one small
-chart per concept, all advancing together, so you never have to wait for a
-concept to come round again to see it move. Chips choose which charts to show.
+solid and a ring on the ones the student truly knows. Beside it, one
+small chart per concept, all advancing together, so you never have to
+wait for a concept to come round again to see it move. Chips choose which
+charts to show.
 
-## Running it
+## Written description
 
-```
-python -m cursim.curriculum      # builds the curriculum, writes data/curriculum.json
-python test_simulator.py         # 55 checks
-python run_experiments.py --selftest
-python run_experiments.py        # all four experiments -> data/results.csv, figures/
-```
+`docs/simulator.tex` and its PDF describe the models, the update rules,
+what is measured against what, and what the simulator has been used to
+establish. Its tables come from the same CSVs.
+
+## Branches
+
+`plain-bkt` carries the BKT students, the sanity checks and the
+interface. `main` keeps the original simulator untouched.

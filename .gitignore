@@ -15,3 +15,8 @@ runs/
 
 # run logs: stdout only, regenerable
 logs/
+
+# latex build products
+docs/*.aux
+docs/*.log
+docs/*.out
