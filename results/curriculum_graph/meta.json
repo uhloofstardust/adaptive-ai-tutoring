@@ -3,8 +3,8 @@
  "experiment": "curriculum_graph",
  "curriculum": "layered_40",
  "parameters": {},
- "commit": "744d4ea",
- "run_at_utc": "2026-10-15 11:16:07",
+ "commit": "0e9326f",
+ "run_at_utc": "2026-10-15 11:18:51",
  "seconds": 0.1,
  "python": "3.10.12"
 }
