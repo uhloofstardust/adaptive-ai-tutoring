@@ -1,0 +1,28 @@
+# trace_20_steps
+
+20 questions, seed 4242, threshold 0.9. The student learned 3 concept(s) during these steps.
+
+## trace
+
+| step | zpd | asked | question | answer | pick_in_zpd | true_before | true_after | belief_before | belief_after | declared_mastered |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | A1, A2 | A1 | A1.q4 | right | True | not yet | not yet | 0.15 | 0.511 | False |
+| 2 | A1, A2 | A1 | A1.q5 | wrong | True | not yet | known | 0.511 | 0.298 | False |
+| 3 | A1, A2 | A1 | A1.q4 | right | True | known | known | 0.298 | 0.683 | False |
+| 4 | A1, A2 | A1 | A1.q3 | right | True | known | known | 0.683 | 0.909 | True |
+| 5 | A2, B1 | A2 | A2.q5 | wrong | True | not yet | known | 0.15 | 0.218 | False |
+| 6 | A2, B1 | B1 | B1.q2 | right | True | known | known | 0.15 | 0.511 | False |
+| 7 | A2, B1 | B1 | B1.q1 | right | True | known | known | 0.511 | 0.832 | False |
+| 8 | A2, B1 | A2 | A2.q1 | right | True | known | known | 0.218 | 0.601 | False |
+| 9 | A2, B1 | A2 | A2.q3 | right | True | known | known | 0.601 | 0.876 | False |
+| 10 | A2, B1 | B1 | B1.q5 | right | True | known | known | 0.832 | 0.957 | True |
+| 11 | A2 | A2 | A2.q5 | wrong | True | known | known | 0.876 | 0.587 | False |
+| 12 | A2 | A2 | A2.q2 | right | True | known | known | 0.587 | 0.869 | False |
+| 13 | A2 | A2 | A2.q1 | right | True | known | known | 0.869 | 0.968 | True |
+| 14 | B2, B3 | B2 | B2.q3 | right | True | not yet | not yet | 0.15 | 0.511 | False |
+| 15 | B2, B3 | B3 | B3.q5 | wrong | True | not yet | not yet | 0.15 | 0.218 | False |
+| 16 | B2, B3 | B2 | B2.q5 | wrong | True | not yet | not yet | 0.511 | 0.298 | False |
+| 17 | B2, B3 | B2 | B2.q4 | right | True | not yet | not yet | 0.298 | 0.683 | False |
+| 18 | B2, B3 | B2 | B2.q2 | wrong | True | not yet | not yet | 0.683 | 0.379 | False |
+| 19 | B2, B3 | B3 | B3.q2 | wrong | True | not yet | not yet | 0.218 | 0.229 | False |
+| 20 | B2, B3 | B3 | B3.q5 | wrong | True | not yet | known | 0.229 | 0.23 | False |

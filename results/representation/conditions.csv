@@ -1,0 +1,4 @@
+experiment,condition,n_learners,final_mastery,final_learned,retained_mastery,retained_usable,coverage,sd_retained_usable
+1_representation,binary (permanent),30,0.6108,4.5,0.5153,21.87,39.97,3.61
+1_representation,continuous,30,0.652,4.7,0.5519,27.37,40,3.15
+1_representation,continuous + forgetting,30,0.6645,17.67,0.5664,31.23,34.5,1.41

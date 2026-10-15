@@ -1,0 +1,13 @@
+{
+ "output_name": "check2_detection",
+ "experiment": "check2_detection",
+ "curriculum": "abstract",
+ "parameters": {
+  "n_learners": 30,
+  "n_steps": 120
+ },
+ "commit": "f0445c2",
+ "run_at_utc": "2026-10-15 09:50:07",
+ "seconds": 0.2,
+ "python": "3.10.12"
+}

@@ -1,0 +1,12 @@
+{
+ "output_name": "learner_types",
+ "experiment": "learner_types",
+ "curriculum": "layered_40",
+ "parameters": {
+  "n_learners": 30
+ },
+ "commit": "f0445c2",
+ "run_at_utc": "2026-10-15 09:51:19",
+ "seconds": 5.4,
+ "python": "3.10.12"
+}

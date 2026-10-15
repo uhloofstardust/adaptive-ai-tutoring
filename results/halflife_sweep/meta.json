@@ -1,0 +1,25 @@
+{
+ "output_name": "halflife_sweep",
+ "experiment": "halflife_sweep",
+ "curriculum": "layered_40",
+ "parameters": {
+  "n_learners": 30,
+  "half_lives": [
+   5,
+   7,
+   8,
+   9,
+   10,
+   12,
+   16,
+   18,
+   19,
+   20,
+   22
+  ]
+ },
+ "commit": "f0445c2",
+ "run_at_utc": "2026-10-15 09:51:34",
+ "seconds": 14.9,
+ "python": "3.10.12"
+}

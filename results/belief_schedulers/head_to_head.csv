@@ -1,0 +1,5 @@
+comparison,mean_diff,wins,n,p_sign
+CT + BKT forget (p_F) - CT + time decay,-4.8,0,30,3.725290298461914e-09
+Predictive + BKT forget - CT + BKT forget (p_F),0.5666666666666667,17,30,0.45825831964612007
+MAPLE + BKT forget - Naive MAPLE + BKT forget,0.4666666666666667,16,30,0.5715881884098053
+MAPLE + BKT forget - CT + BKT forget (p_F),-2.566666666666667,3,30,0.00015652179718017578

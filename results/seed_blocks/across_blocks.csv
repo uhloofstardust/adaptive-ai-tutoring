@@ -1,0 +1,3 @@
+student,n_blocks,mean_across_blocks,ci95_across_blocks,blocks_favouring_Q2,blocks_favouring_Q1,sign_agrees_in_all_blocks,min_block,max_block
+S1,6,0.36541666666666667,0.570533994556367,1,5,False,-0.925,1.0775
+S2,6,-23.083333333333332,1.360804881106929,6,0,True,-25.61,-20.6625
