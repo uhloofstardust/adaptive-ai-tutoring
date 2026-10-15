@@ -93,7 +93,8 @@ def _git_commit() -> str:
             ["git", "-C", root, "rev-parse", "--short", "HEAD"],
             stderr=subprocess.DEVNULL, text=True).strip()
         dirty = subprocess.check_output(
-            ["git", "-C", root, "status", "--porcelain", "--untracked-files=no"],
+            ["git", "-C", root, "status", "--porcelain", "--untracked-files=no",
+             "--", ".", f":!{DEFAULT_OUT}"],      # outputs are not code
             stderr=subprocess.DEVNULL, text=True).strip()
         return sha + ("+uncommitted" if dirty else "")
     except Exception:
