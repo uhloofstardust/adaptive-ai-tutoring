@@ -18,10 +18,10 @@ import matplotlib.pyplot as plt
 
 from cursim import curriculum as curmod
 from cursim.curriculum import build_curriculum
-from cursim.learner import LEARNERS
+from cursim.students import LEARNERS
 from cursim.mastery import MASTERY_MODELS
 from cursim.params import BKT_PARAMS, DEFAULTS
-from cursim.sanity import EXPERIMENTS
+from experiments import EXPERIMENTS
 from cursim.schedulers import SCHEDULERS
 from cursim.simulation import RunSpec, run_one
 from cursim import viewer
@@ -123,7 +123,7 @@ with st.sidebar:
         "Curriculum", curricula,
         index=curricula.index(DEFAULTS["curriculum"])
         if DEFAULTS["curriculum"] in curricula else 0,
-        help="Loaded from data/. Drop in another curriculum_<name>.json "
+        help="Loaded from data/curricula/. Drop in another <name>.json "
              "and it appears here.")
     cur = build_curriculum(cur_name)
 

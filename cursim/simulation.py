@@ -7,14 +7,15 @@ separates a tutor that manages forgetting from one that does not.
 Final-day mastery flatters every scheduler equally; retention does not.
 """
 
+import dataclasses
 import random
 import statistics
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 from .curriculum import Curriculum
-from .learner import (Learner, BKTLearner, LearnerProfile, PROFILES,
-                      SimConfig, LEARNERS, learner_kwargs)
+from .students import (BKTLearner, LearnerProfile, PROFILES,
+                       SimConfig, LEARNERS, learner_kwargs)
 from .mastery import make_model
 from .schedulers import SCHEDULERS, zpd
 
@@ -34,6 +35,9 @@ class RunSpec:
     tutor_params: Optional[dict] = None
     pT_low: Optional[float] = None       # S2 only: p(T) while prereqs unmet
     profile: str = "average"
+    # replace fields of the named profile for this run only, e.g.
+    # {"forget_half_life_days": 8}; the shared PROFILES are never touched
+    profile_overrides: Optional[dict] = None
     learner_forgets: bool = True
     model_forget_per_day: float = 0.10
     n_sessions: int = 20
@@ -71,6 +75,8 @@ def run_one(cur: Curriculum, spec: RunSpec, seed: int,
     """
     cfg = cfg or SimConfig()
     profile: LearnerProfile = PROFILES[spec.profile]
+    if spec.profile_overrides:
+        profile = dataclasses.replace(profile, **spec.profile_overrides)
     LearnerCls, _, *rest = LEARNERS[spec.learner]
     if LearnerCls is BKTLearner:
         kw = learner_kwargs(spec.learner)      # what the registry says
@@ -176,39 +182,3 @@ def run_condition(cur: Curriculum, spec: RunSpec, n_learners=30,
             r.pop("log")
         out.per_learner.append(r)
     return out
-
-
-def paired(a: RunResult, b: RunResult, key: str) -> dict:
-    """b minus a, learner by learner (identical seeds)."""
-    diffs = [rb[key] - ra[key]
-             for ra, rb in zip(a.per_learner, b.per_learner)]
-    wins = sum(1 for d in diffs if d > 0)
-    losses = sum(1 for d in diffs if d < 0)
-    return {"mean_diff": statistics.mean(diffs),
-            "sd": statistics.stdev(diffs) if len(diffs) > 1 else 0.0,
-            "wins": wins, "losses": losses, "n": len(diffs),
-            "p_sign": sign_test(wins, wins + losses)}
-
-
-def sign_test(k: int, n: int) -> float:
-    """Two-sided sign test, standard library only."""
-    import math
-    if n == 0:
-        return 1.0
-    probs = [math.comb(n, i) * 0.5 ** n for i in range(n + 1)]
-    obs = probs[k]
-    return min(1.0, sum(p for p in probs if p <= obs + 1e-12))
-
-
-def table(results: Dict[str, RunResult], keys=("final_mastery",
-                                               "retained_mastery",
-                                               "final_learned",
-                                               "retained_learned")):
-    head = f"{'condition':28s}" + "".join(f"{k:>18s}" for k in keys)
-    print(head)
-    print("-" * len(head))
-    for name, r in results.items():
-        row = f"{name:28s}"
-        for k in keys:
-            row += f"{r.mean(k):>13.3f} ±{r.sd(k):>3.2f}"
-        print(row)

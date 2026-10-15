@@ -11,7 +11,6 @@ from typing import Optional
 
 from .curriculum import Curriculum
 from .params import BKT_PARAMS
-from .schedulers import zpd
 from .simulation import RunSpec, run_one
 
 

@@ -1,0 +1,1865 @@
+{
+ "name": "layered_40",
+ "title": "40-concept layered curriculum",
+ "note": "Subject-free. Ids are <tier letter><index>: A = no prerequisites, G = capstone. Wide and shallow (5 roots, 7 tiers, 290 questions). Structure, question counts and difficulties are those of the original 40-concept graph this replaced, so its earlier results can be compared directly.",
+ "concepts": [
+  {
+   "cid": "A01",
+   "name": "A01",
+   "tier": 0,
+   "prereqs": [],
+   "questions": [
+    {
+     "qid": "A01.q1",
+     "concept_id": "A01",
+     "difficulty": 0.053
+    },
+    {
+     "qid": "A01.q2",
+     "concept_id": "A01",
+     "difficulty": 0.245
+    },
+    {
+     "qid": "A01.q3",
+     "concept_id": "A01",
+     "difficulty": 0.319
+    },
+    {
+     "qid": "A01.q4",
+     "concept_id": "A01",
+     "difficulty": 0.138
+    },
+    {
+     "qid": "A01.q5",
+     "concept_id": "A01",
+     "difficulty": 0.05
+    },
+    {
+     "qid": "A01.q6",
+     "concept_id": "A01",
+     "difficulty": 0.192
+    },
+    {
+     "qid": "A01.q7",
+     "concept_id": "A01",
+     "difficulty": 0.257
+    },
+    {
+     "qid": "A01.q8",
+     "concept_id": "A01",
+     "difficulty": 0.332
+    }
+   ]
+  },
+  {
+   "cid": "A02",
+   "name": "A02",
+   "tier": 0,
+   "prereqs": [],
+   "questions": [
+    {
+     "qid": "A02.q1",
+     "concept_id": "A02",
+     "difficulty": 0.054
+    },
+    {
+     "qid": "A02.q2",
+     "concept_id": "A02",
+     "difficulty": 0.05
+    },
+    {
+     "qid": "A02.q3",
+     "concept_id": "A02",
+     "difficulty": 0.285
+    },
+    {
+     "qid": "A02.q4",
+     "concept_id": "A02",
+     "difficulty": 0.257
+    },
+    {
+     "qid": "A02.q5",
+     "concept_id": "A02",
+     "difficulty": 0.384
+    },
+    {
+     "qid": "A02.q6",
+     "concept_id": "A02",
+     "difficulty": 0.318
+    },
+    {
+     "qid": "A02.q7",
+     "concept_id": "A02",
+     "difficulty": 0.188
+    }
+   ]
+  },
+  {
+   "cid": "A03",
+   "name": "A03",
+   "tier": 0,
+   "prereqs": [],
+   "questions": [
+    {
+     "qid": "A03.q1",
+     "concept_id": "A03",
+     "difficulty": 0.167
+    },
+    {
+     "qid": "A03.q2",
+     "concept_id": "A03",
+     "difficulty": 0.508
+    },
+    {
+     "qid": "A03.q3",
+     "concept_id": "A03",
+     "difficulty": 0.165
+    },
+    {
+     "qid": "A03.q4",
+     "concept_id": "A03",
+     "difficulty": 0.106
+    },
+    {
+     "qid": "A03.q5",
+     "concept_id": "A03",
+     "difficulty": 0.063
+    },
+    {
+     "qid": "A03.q6",
+     "concept_id": "A03",
+     "difficulty": 0.211
+    },
+    {
+     "qid": "A03.q7",
+     "concept_id": "A03",
+     "difficulty": 0.217
+    }
+   ]
+  },
+  {
+   "cid": "A04",
+   "name": "A04",
+   "tier": 0,
+   "prereqs": [],
+   "questions": [
+    {
+     "qid": "A04.q1",
+     "concept_id": "A04",
+     "difficulty": 0.159
+    },
+    {
+     "qid": "A04.q2",
+     "concept_id": "A04",
+     "difficulty": 0.193
+    },
+    {
+     "qid": "A04.q3",
+     "concept_id": "A04",
+     "difficulty": 0.233
+    },
+    {
+     "qid": "A04.q4",
+     "concept_id": "A04",
+     "difficulty": 0.283
+    },
+    {
+     "qid": "A04.q5",
+     "concept_id": "A04",
+     "difficulty": 0.332
+    },
+    {
+     "qid": "A04.q6",
+     "concept_id": "A04",
+     "difficulty": 0.225
+    }
+   ]
+  },
+  {
+   "cid": "A05",
+   "name": "A05",
+   "tier": 0,
+   "prereqs": [],
+   "questions": [
+    {
+     "qid": "A05.q1",
+     "concept_id": "A05",
+     "difficulty": 0.05
+    },
+    {
+     "qid": "A05.q2",
+     "concept_id": "A05",
+     "difficulty": 0.284
+    },
+    {
+     "qid": "A05.q3",
+     "concept_id": "A05",
+     "difficulty": 0.05
+    },
+    {
+     "qid": "A05.q4",
+     "concept_id": "A05",
+     "difficulty": 0.179
+    },
+    {
+     "qid": "A05.q5",
+     "concept_id": "A05",
+     "difficulty": 0.05
+    }
+   ]
+  },
+  {
+   "cid": "B01",
+   "name": "B01",
+   "tier": 1,
+   "prereqs": [
+    "A02"
+   ],
+   "questions": [
+    {
+     "qid": "B01.q1",
+     "concept_id": "B01",
+     "difficulty": 0.31
+    },
+    {
+     "qid": "B01.q2",
+     "concept_id": "B01",
+     "difficulty": 0.217
+    },
+    {
+     "qid": "B01.q3",
+     "concept_id": "B01",
+     "difficulty": 0.336
+    },
+    {
+     "qid": "B01.q4",
+     "concept_id": "B01",
+     "difficulty": 0.706
+    },
+    {
+     "qid": "B01.q5",
+     "concept_id": "B01",
+     "difficulty": 0.304
+    },
+    {
+     "qid": "B01.q6",
+     "concept_id": "B01",
+     "difficulty": 0.411
+    },
+    {
+     "qid": "B01.q7",
+     "concept_id": "B01",
+     "difficulty": 0.151
+    }
+   ]
+  },
+  {
+   "cid": "B02",
+   "name": "B02",
+   "tier": 1,
+   "prereqs": [
+    "A01"
+   ],
+   "questions": [
+    {
+     "qid": "B02.q1",
+     "concept_id": "B02",
+     "difficulty": 0.275
+    },
+    {
+     "qid": "B02.q2",
+     "concept_id": "B02",
+     "difficulty": 0.389
+    },
+    {
+     "qid": "B02.q3",
+     "concept_id": "B02",
+     "difficulty": 0.299
+    },
+    {
+     "qid": "B02.q4",
+     "concept_id": "B02",
+     "difficulty": 0.354
+    },
+    {
+     "qid": "B02.q5",
+     "concept_id": "B02",
+     "difficulty": 0.322
+    },
+    {
+     "qid": "B02.q6",
+     "concept_id": "B02",
+     "difficulty": 0.189
+    },
+    {
+     "qid": "B02.q7",
+     "concept_id": "B02",
+     "difficulty": 0.378
+    },
+    {
+     "qid": "B02.q8",
+     "concept_id": "B02",
+     "difficulty": 0.213
+    }
+   ]
+  },
+  {
+   "cid": "B03",
+   "name": "B03",
+   "tier": 1,
+   "prereqs": [
+    "A01"
+   ],
+   "questions": [
+    {
+     "qid": "B03.q1",
+     "concept_id": "B03",
+     "difficulty": 0.535
+    },
+    {
+     "qid": "B03.q2",
+     "concept_id": "B03",
+     "difficulty": 0.249
+    },
+    {
+     "qid": "B03.q3",
+     "concept_id": "B03",
+     "difficulty": 0.392
+    },
+    {
+     "qid": "B03.q4",
+     "concept_id": "B03",
+     "difficulty": 0.31
+    },
+    {
+     "qid": "B03.q5",
+     "concept_id": "B03",
+     "difficulty": 0.424
+    },
+    {
+     "qid": "B03.q6",
+     "concept_id": "B03",
+     "difficulty": 0.238
+    },
+    {
+     "qid": "B03.q7",
+     "concept_id": "B03",
+     "difficulty": 0.43
+    },
+    {
+     "qid": "B03.q8",
+     "concept_id": "B03",
+     "difficulty": 0.295
+    }
+   ]
+  },
+  {
+   "cid": "B04",
+   "name": "B04",
+   "tier": 1,
+   "prereqs": [
+    "A01"
+   ],
+   "questions": [
+    {
+     "qid": "B04.q1",
+     "concept_id": "B04",
+     "difficulty": 0.462
+    },
+    {
+     "qid": "B04.q2",
+     "concept_id": "B04",
+     "difficulty": 0.385
+    },
+    {
+     "qid": "B04.q3",
+     "concept_id": "B04",
+     "difficulty": 0.327
+    },
+    {
+     "qid": "B04.q4",
+     "concept_id": "B04",
+     "difficulty": 0.216
+    },
+    {
+     "qid": "B04.q5",
+     "concept_id": "B04",
+     "difficulty": 0.402
+    },
+    {
+     "qid": "B04.q6",
+     "concept_id": "B04",
+     "difficulty": 0.366
+    }
+   ]
+  },
+  {
+   "cid": "B05",
+   "name": "B05",
+   "tier": 1,
+   "prereqs": [
+    "A01"
+   ],
+   "questions": [
+    {
+     "qid": "B05.q1",
+     "concept_id": "B05",
+     "difficulty": 0.507
+    },
+    {
+     "qid": "B05.q2",
+     "concept_id": "B05",
+     "difficulty": 0.265
+    },
+    {
+     "qid": "B05.q3",
+     "concept_id": "B05",
+     "difficulty": 0.377
+    },
+    {
+     "qid": "B05.q4",
+     "concept_id": "B05",
+     "difficulty": 0.371
+    },
+    {
+     "qid": "B05.q5",
+     "concept_id": "B05",
+     "difficulty": 0.344
+    },
+    {
+     "qid": "B05.q6",
+     "concept_id": "B05",
+     "difficulty": 0.335
+    }
+   ]
+  },
+  {
+   "cid": "B06",
+   "name": "B06",
+   "tier": 1,
+   "prereqs": [
+    "A01"
+   ],
+   "questions": [
+    {
+     "qid": "B06.q1",
+     "concept_id": "B06",
+     "difficulty": 0.332
+    },
+    {
+     "qid": "B06.q2",
+     "concept_id": "B06",
+     "difficulty": 0.238
+    },
+    {
+     "qid": "B06.q3",
+     "concept_id": "B06",
+     "difficulty": 0.188
+    },
+    {
+     "qid": "B06.q4",
+     "concept_id": "B06",
+     "difficulty": 0.262
+    },
+    {
+     "qid": "B06.q5",
+     "concept_id": "B06",
+     "difficulty": 0.381
+    },
+    {
+     "qid": "B06.q6",
+     "concept_id": "B06",
+     "difficulty": 0.491
+    },
+    {
+     "qid": "B06.q7",
+     "concept_id": "B06",
+     "difficulty": 0.427
+    }
+   ]
+  },
+  {
+   "cid": "B07",
+   "name": "B07",
+   "tier": 1,
+   "prereqs": [
+    "A03"
+   ],
+   "questions": [
+    {
+     "qid": "B07.q1",
+     "concept_id": "B07",
+     "difficulty": 0.436
+    },
+    {
+     "qid": "B07.q2",
+     "concept_id": "B07",
+     "difficulty": 0.403
+    },
+    {
+     "qid": "B07.q3",
+     "concept_id": "B07",
+     "difficulty": 0.394
+    },
+    {
+     "qid": "B07.q4",
+     "concept_id": "B07",
+     "difficulty": 0.332
+    },
+    {
+     "qid": "B07.q5",
+     "concept_id": "B07",
+     "difficulty": 0.403
+    },
+    {
+     "qid": "B07.q6",
+     "concept_id": "B07",
+     "difficulty": 0.523
+    },
+    {
+     "qid": "B07.q7",
+     "concept_id": "B07",
+     "difficulty": 0.271
+    }
+   ]
+  },
+  {
+   "cid": "B08",
+   "name": "B08",
+   "tier": 1,
+   "prereqs": [
+    "A02"
+   ],
+   "questions": [
+    {
+     "qid": "B08.q1",
+     "concept_id": "B08",
+     "difficulty": 0.227
+    },
+    {
+     "qid": "B08.q2",
+     "concept_id": "B08",
+     "difficulty": 0.545
+    },
+    {
+     "qid": "B08.q3",
+     "concept_id": "B08",
+     "difficulty": 0.339
+    },
+    {
+     "qid": "B08.q4",
+     "concept_id": "B08",
+     "difficulty": 0.427
+    },
+    {
+     "qid": "B08.q5",
+     "concept_id": "B08",
+     "difficulty": 0.415
+    },
+    {
+     "qid": "B08.q6",
+     "concept_id": "B08",
+     "difficulty": 0.174
+    }
+   ]
+  },
+  {
+   "cid": "B09",
+   "name": "B09",
+   "tier": 1,
+   "prereqs": [
+    "A04"
+   ],
+   "questions": [
+    {
+     "qid": "B09.q1",
+     "concept_id": "B09",
+     "difficulty": 0.602
+    },
+    {
+     "qid": "B09.q2",
+     "concept_id": "B09",
+     "difficulty": 0.523
+    },
+    {
+     "qid": "B09.q3",
+     "concept_id": "B09",
+     "difficulty": 0.331
+    },
+    {
+     "qid": "B09.q4",
+     "concept_id": "B09",
+     "difficulty": 0.4
+    },
+    {
+     "qid": "B09.q5",
+     "concept_id": "B09",
+     "difficulty": 0.325
+    },
+    {
+     "qid": "B09.q6",
+     "concept_id": "B09",
+     "difficulty": 0.204
+    }
+   ]
+  },
+  {
+   "cid": "C01",
+   "name": "C01",
+   "tier": 2,
+   "prereqs": [
+    "B02",
+    "B03"
+   ],
+   "questions": [
+    {
+     "qid": "C01.q1",
+     "concept_id": "C01",
+     "difficulty": 0.407
+    },
+    {
+     "qid": "C01.q2",
+     "concept_id": "C01",
+     "difficulty": 0.465
+    },
+    {
+     "qid": "C01.q3",
+     "concept_id": "C01",
+     "difficulty": 0.554
+    },
+    {
+     "qid": "C01.q4",
+     "concept_id": "C01",
+     "difficulty": 0.505
+    },
+    {
+     "qid": "C01.q5",
+     "concept_id": "C01",
+     "difficulty": 0.427
+    },
+    {
+     "qid": "C01.q6",
+     "concept_id": "C01",
+     "difficulty": 0.583
+    },
+    {
+     "qid": "C01.q7",
+     "concept_id": "C01",
+     "difficulty": 0.329
+    }
+   ]
+  },
+  {
+   "cid": "C02",
+   "name": "C02",
+   "tier": 2,
+   "prereqs": [
+    "A04",
+    "B02"
+   ],
+   "questions": [
+    {
+     "qid": "C02.q1",
+     "concept_id": "C02",
+     "difficulty": 0.515
+    },
+    {
+     "qid": "C02.q2",
+     "concept_id": "C02",
+     "difficulty": 0.553
+    },
+    {
+     "qid": "C02.q3",
+     "concept_id": "C02",
+     "difficulty": 0.385
+    },
+    {
+     "qid": "C02.q4",
+     "concept_id": "C02",
+     "difficulty": 0.205
+    },
+    {
+     "qid": "C02.q5",
+     "concept_id": "C02",
+     "difficulty": 0.311
+    },
+    {
+     "qid": "C02.q6",
+     "concept_id": "C02",
+     "difficulty": 0.448
+    },
+    {
+     "qid": "C02.q7",
+     "concept_id": "C02",
+     "difficulty": 0.483
+    }
+   ]
+  },
+  {
+   "cid": "C03",
+   "name": "C03",
+   "tier": 2,
+   "prereqs": [
+    "A04"
+   ],
+   "questions": [
+    {
+     "qid": "C03.q1",
+     "concept_id": "C03",
+     "difficulty": 0.606
+    },
+    {
+     "qid": "C03.q2",
+     "concept_id": "C03",
+     "difficulty": 0.299
+    },
+    {
+     "qid": "C03.q3",
+     "concept_id": "C03",
+     "difficulty": 0.42
+    },
+    {
+     "qid": "C03.q4",
+     "concept_id": "C03",
+     "difficulty": 0.498
+    },
+    {
+     "qid": "C03.q5",
+     "concept_id": "C03",
+     "difficulty": 0.401
+    },
+    {
+     "qid": "C03.q6",
+     "concept_id": "C03",
+     "difficulty": 0.136
+    },
+    {
+     "qid": "C03.q7",
+     "concept_id": "C03",
+     "difficulty": 0.517
+    },
+    {
+     "qid": "C03.q8",
+     "concept_id": "C03",
+     "difficulty": 0.697
+    },
+    {
+     "qid": "C03.q9",
+     "concept_id": "C03",
+     "difficulty": 0.541
+    }
+   ]
+  },
+  {
+   "cid": "C04",
+   "name": "C04",
+   "tier": 2,
+   "prereqs": [
+    "A05",
+    "A04"
+   ],
+   "questions": [
+    {
+     "qid": "C04.q1",
+     "concept_id": "C04",
+     "difficulty": 0.31
+    },
+    {
+     "qid": "C04.q2",
+     "concept_id": "C04",
+     "difficulty": 0.371
+    },
+    {
+     "qid": "C04.q3",
+     "concept_id": "C04",
+     "difficulty": 0.447
+    },
+    {
+     "qid": "C04.q4",
+     "concept_id": "C04",
+     "difficulty": 0.719
+    },
+    {
+     "qid": "C04.q5",
+     "concept_id": "C04",
+     "difficulty": 0.494
+    },
+    {
+     "qid": "C04.q6",
+     "concept_id": "C04",
+     "difficulty": 0.434
+    },
+    {
+     "qid": "C04.q7",
+     "concept_id": "C04",
+     "difficulty": 0.607
+    }
+   ]
+  },
+  {
+   "cid": "C05",
+   "name": "C05",
+   "tier": 2,
+   "prereqs": [
+    "B09"
+   ],
+   "questions": [
+    {
+     "qid": "C05.q1",
+     "concept_id": "C05",
+     "difficulty": 0.41
+    },
+    {
+     "qid": "C05.q2",
+     "concept_id": "C05",
+     "difficulty": 0.643
+    },
+    {
+     "qid": "C05.q3",
+     "concept_id": "C05",
+     "difficulty": 0.338
+    },
+    {
+     "qid": "C05.q4",
+     "concept_id": "C05",
+     "difficulty": 0.363
+    },
+    {
+     "qid": "C05.q5",
+     "concept_id": "C05",
+     "difficulty": 0.507
+    },
+    {
+     "qid": "C05.q6",
+     "concept_id": "C05",
+     "difficulty": 0.591
+    }
+   ]
+  },
+  {
+   "cid": "C06",
+   "name": "C06",
+   "tier": 2,
+   "prereqs": [
+    "B01"
+   ],
+   "questions": [
+    {
+     "qid": "C06.q1",
+     "concept_id": "C06",
+     "difficulty": 0.498
+    },
+    {
+     "qid": "C06.q2",
+     "concept_id": "C06",
+     "difficulty": 0.456
+    },
+    {
+     "qid": "C06.q3",
+     "concept_id": "C06",
+     "difficulty": 0.201
+    },
+    {
+     "qid": "C06.q4",
+     "concept_id": "C06",
+     "difficulty": 0.334
+    },
+    {
+     "qid": "C06.q5",
+     "concept_id": "C06",
+     "difficulty": 0.347
+    },
+    {
+     "qid": "C06.q6",
+     "concept_id": "C06",
+     "difficulty": 0.356
+    },
+    {
+     "qid": "C06.q7",
+     "concept_id": "C06",
+     "difficulty": 0.49
+    }
+   ]
+  },
+  {
+   "cid": "C07",
+   "name": "C07",
+   "tier": 2,
+   "prereqs": [
+    "B07"
+   ],
+   "questions": [
+    {
+     "qid": "C07.q1",
+     "concept_id": "C07",
+     "difficulty": 0.38
+    },
+    {
+     "qid": "C07.q2",
+     "concept_id": "C07",
+     "difficulty": 0.515
+    },
+    {
+     "qid": "C07.q3",
+     "concept_id": "C07",
+     "difficulty": 0.43
+    },
+    {
+     "qid": "C07.q4",
+     "concept_id": "C07",
+     "difficulty": 0.38
+    },
+    {
+     "qid": "C07.q5",
+     "concept_id": "C07",
+     "difficulty": 0.434
+    },
+    {
+     "qid": "C07.q6",
+     "concept_id": "C07",
+     "difficulty": 0.471
+    }
+   ]
+  },
+  {
+   "cid": "C08",
+   "name": "C08",
+   "tier": 2,
+   "prereqs": [
+    "A03",
+    "B06"
+   ],
+   "questions": [
+    {
+     "qid": "C08.q1",
+     "concept_id": "C08",
+     "difficulty": 0.523
+    },
+    {
+     "qid": "C08.q2",
+     "concept_id": "C08",
+     "difficulty": 0.363
+    },
+    {
+     "qid": "C08.q3",
+     "concept_id": "C08",
+     "difficulty": 0.392
+    },
+    {
+     "qid": "C08.q4",
+     "concept_id": "C08",
+     "difficulty": 0.256
+    },
+    {
+     "qid": "C08.q5",
+     "concept_id": "C08",
+     "difficulty": 0.612
+    },
+    {
+     "qid": "C08.q6",
+     "concept_id": "C08",
+     "difficulty": 0.594
+    }
+   ]
+  },
+  {
+   "cid": "C09",
+   "name": "C09",
+   "tier": 2,
+   "prereqs": [
+    "B03",
+    "B01"
+   ],
+   "questions": [
+    {
+     "qid": "C09.q1",
+     "concept_id": "C09",
+     "difficulty": 0.399
+    },
+    {
+     "qid": "C09.q2",
+     "concept_id": "C09",
+     "difficulty": 0.363
+    },
+    {
+     "qid": "C09.q3",
+     "concept_id": "C09",
+     "difficulty": 0.272
+    },
+    {
+     "qid": "C09.q4",
+     "concept_id": "C09",
+     "difficulty": 0.44
+    },
+    {
+     "qid": "C09.q5",
+     "concept_id": "C09",
+     "difficulty": 0.445
+    },
+    {
+     "qid": "C09.q6",
+     "concept_id": "C09",
+     "difficulty": 0.682
+    },
+    {
+     "qid": "C09.q7",
+     "concept_id": "C09",
+     "difficulty": 0.45
+    }
+   ]
+  },
+  {
+   "cid": "C10",
+   "name": "C10",
+   "tier": 2,
+   "prereqs": [
+    "B05"
+   ],
+   "questions": [
+    {
+     "qid": "C10.q1",
+     "concept_id": "C10",
+     "difficulty": 0.327
+    },
+    {
+     "qid": "C10.q2",
+     "concept_id": "C10",
+     "difficulty": 0.127
+    },
+    {
+     "qid": "C10.q3",
+     "concept_id": "C10",
+     "difficulty": 0.589
+    },
+    {
+     "qid": "C10.q4",
+     "concept_id": "C10",
+     "difficulty": 0.443
+    },
+    {
+     "qid": "C10.q5",
+     "concept_id": "C10",
+     "difficulty": 0.227
+    },
+    {
+     "qid": "C10.q6",
+     "concept_id": "C10",
+     "difficulty": 0.442
+    }
+   ]
+  },
+  {
+   "cid": "D01",
+   "name": "D01",
+   "tier": 3,
+   "prereqs": [
+    "C03",
+    "A05"
+   ],
+   "questions": [
+    {
+     "qid": "D01.q1",
+     "concept_id": "D01",
+     "difficulty": 0.337
+    },
+    {
+     "qid": "D01.q2",
+     "concept_id": "D01",
+     "difficulty": 0.948
+    },
+    {
+     "qid": "D01.q3",
+     "concept_id": "D01",
+     "difficulty": 0.664
+    },
+    {
+     "qid": "D01.q4",
+     "concept_id": "D01",
+     "difficulty": 0.599
+    },
+    {
+     "qid": "D01.q5",
+     "concept_id": "D01",
+     "difficulty": 0.509
+    },
+    {
+     "qid": "D01.q6",
+     "concept_id": "D01",
+     "difficulty": 0.273
+    },
+    {
+     "qid": "D01.q7",
+     "concept_id": "D01",
+     "difficulty": 0.515
+    }
+   ]
+  },
+  {
+   "cid": "D02",
+   "name": "D02",
+   "tier": 3,
+   "prereqs": [
+    "C03"
+   ],
+   "questions": [
+    {
+     "qid": "D02.q1",
+     "concept_id": "D02",
+     "difficulty": 0.343
+    },
+    {
+     "qid": "D02.q2",
+     "concept_id": "D02",
+     "difficulty": 0.602
+    },
+    {
+     "qid": "D02.q3",
+     "concept_id": "D02",
+     "difficulty": 0.273
+    },
+    {
+     "qid": "D02.q4",
+     "concept_id": "D02",
+     "difficulty": 0.421
+    },
+    {
+     "qid": "D02.q5",
+     "concept_id": "D02",
+     "difficulty": 0.676
+    },
+    {
+     "qid": "D02.q6",
+     "concept_id": "D02",
+     "difficulty": 0.727
+    },
+    {
+     "qid": "D02.q7",
+     "concept_id": "D02",
+     "difficulty": 0.388
+    },
+    {
+     "qid": "D02.q8",
+     "concept_id": "D02",
+     "difficulty": 0.346
+    },
+    {
+     "qid": "D02.q9",
+     "concept_id": "D02",
+     "difficulty": 0.636
+    }
+   ]
+  },
+  {
+   "cid": "D03",
+   "name": "D03",
+   "tier": 3,
+   "prereqs": [
+    "C05",
+    "C02"
+   ],
+   "questions": [
+    {
+     "qid": "D03.q1",
+     "concept_id": "D03",
+     "difficulty": 0.632
+    },
+    {
+     "qid": "D03.q2",
+     "concept_id": "D03",
+     "difficulty": 0.412
+    },
+    {
+     "qid": "D03.q3",
+     "concept_id": "D03",
+     "difficulty": 0.447
+    },
+    {
+     "qid": "D03.q4",
+     "concept_id": "D03",
+     "difficulty": 0.447
+    },
+    {
+     "qid": "D03.q5",
+     "concept_id": "D03",
+     "difficulty": 0.387
+    },
+    {
+     "qid": "D03.q6",
+     "concept_id": "D03",
+     "difficulty": 0.448
+    },
+    {
+     "qid": "D03.q7",
+     "concept_id": "D03",
+     "difficulty": 0.68
+    },
+    {
+     "qid": "D03.q8",
+     "concept_id": "D03",
+     "difficulty": 0.613
+    }
+   ]
+  },
+  {
+   "cid": "D04",
+   "name": "D04",
+   "tier": 3,
+   "prereqs": [
+    "C03",
+    "C01"
+   ],
+   "questions": [
+    {
+     "qid": "D04.q1",
+     "concept_id": "D04",
+     "difficulty": 0.777
+    },
+    {
+     "qid": "D04.q2",
+     "concept_id": "D04",
+     "difficulty": 0.52
+    },
+    {
+     "qid": "D04.q3",
+     "concept_id": "D04",
+     "difficulty": 0.514
+    },
+    {
+     "qid": "D04.q4",
+     "concept_id": "D04",
+     "difficulty": 0.412
+    },
+    {
+     "qid": "D04.q5",
+     "concept_id": "D04",
+     "difficulty": 0.515
+    },
+    {
+     "qid": "D04.q6",
+     "concept_id": "D04",
+     "difficulty": 0.372
+    },
+    {
+     "qid": "D04.q7",
+     "concept_id": "D04",
+     "difficulty": 0.317
+    },
+    {
+     "qid": "D04.q8",
+     "concept_id": "D04",
+     "difficulty": 0.614
+    },
+    {
+     "qid": "D04.q9",
+     "concept_id": "D04",
+     "difficulty": 0.703
+    }
+   ]
+  },
+  {
+   "cid": "D05",
+   "name": "D05",
+   "tier": 3,
+   "prereqs": [
+    "A01",
+    "C03"
+   ],
+   "questions": [
+    {
+     "qid": "D05.q1",
+     "concept_id": "D05",
+     "difficulty": 0.63
+    },
+    {
+     "qid": "D05.q2",
+     "concept_id": "D05",
+     "difficulty": 0.69
+    },
+    {
+     "qid": "D05.q3",
+     "concept_id": "D05",
+     "difficulty": 0.56
+    },
+    {
+     "qid": "D05.q4",
+     "concept_id": "D05",
+     "difficulty": 0.444
+    },
+    {
+     "qid": "D05.q5",
+     "concept_id": "D05",
+     "difficulty": 0.54
+    },
+    {
+     "qid": "D05.q6",
+     "concept_id": "D05",
+     "difficulty": 0.485
+    },
+    {
+     "qid": "D05.q7",
+     "concept_id": "D05",
+     "difficulty": 0.397
+    }
+   ]
+  },
+  {
+   "cid": "D06",
+   "name": "D06",
+   "tier": 3,
+   "prereqs": [
+    "B08",
+    "C06"
+   ],
+   "questions": [
+    {
+     "qid": "D06.q1",
+     "concept_id": "D06",
+     "difficulty": 0.327
+    },
+    {
+     "qid": "D06.q2",
+     "concept_id": "D06",
+     "difficulty": 0.352
+    },
+    {
+     "qid": "D06.q3",
+     "concept_id": "D06",
+     "difficulty": 0.529
+    },
+    {
+     "qid": "D06.q4",
+     "concept_id": "D06",
+     "difficulty": 0.548
+    },
+    {
+     "qid": "D06.q5",
+     "concept_id": "D06",
+     "difficulty": 0.473
+    },
+    {
+     "qid": "D06.q6",
+     "concept_id": "D06",
+     "difficulty": 0.701
+    },
+    {
+     "qid": "D06.q7",
+     "concept_id": "D06",
+     "difficulty": 0.551
+    }
+   ]
+  },
+  {
+   "cid": "D07",
+   "name": "D07",
+   "tier": 3,
+   "prereqs": [
+    "C09",
+    "C04"
+   ],
+   "questions": [
+    {
+     "qid": "D07.q1",
+     "concept_id": "D07",
+     "difficulty": 0.6
+    },
+    {
+     "qid": "D07.q2",
+     "concept_id": "D07",
+     "difficulty": 0.676
+    },
+    {
+     "qid": "D07.q3",
+     "concept_id": "D07",
+     "difficulty": 0.432
+    },
+    {
+     "qid": "D07.q4",
+     "concept_id": "D07",
+     "difficulty": 0.294
+    },
+    {
+     "qid": "D07.q5",
+     "concept_id": "D07",
+     "difficulty": 0.62
+    },
+    {
+     "qid": "D07.q6",
+     "concept_id": "D07",
+     "difficulty": 0.447
+    },
+    {
+     "qid": "D07.q7",
+     "concept_id": "D07",
+     "difficulty": 0.687
+    },
+    {
+     "qid": "D07.q8",
+     "concept_id": "D07",
+     "difficulty": 0.571
+    }
+   ]
+  },
+  {
+   "cid": "D08",
+   "name": "D08",
+   "tier": 3,
+   "prereqs": [
+    "B07",
+    "B05"
+   ],
+   "questions": [
+    {
+     "qid": "D08.q1",
+     "concept_id": "D08",
+     "difficulty": 0.651
+    },
+    {
+     "qid": "D08.q2",
+     "concept_id": "D08",
+     "difficulty": 0.622
+    },
+    {
+     "qid": "D08.q3",
+     "concept_id": "D08",
+     "difficulty": 0.28
+    },
+    {
+     "qid": "D08.q4",
+     "concept_id": "D08",
+     "difficulty": 0.616
+    },
+    {
+     "qid": "D08.q5",
+     "concept_id": "D08",
+     "difficulty": 0.449
+    },
+    {
+     "qid": "D08.q6",
+     "concept_id": "D08",
+     "difficulty": 0.439
+    },
+    {
+     "qid": "D08.q7",
+     "concept_id": "D08",
+     "difficulty": 0.478
+    }
+   ]
+  },
+  {
+   "cid": "E01",
+   "name": "E01",
+   "tier": 4,
+   "prereqs": [
+    "D02"
+   ],
+   "questions": [
+    {
+     "qid": "E01.q1",
+     "concept_id": "E01",
+     "difficulty": 0.732
+    },
+    {
+     "qid": "E01.q2",
+     "concept_id": "E01",
+     "difficulty": 0.746
+    },
+    {
+     "qid": "E01.q3",
+     "concept_id": "E01",
+     "difficulty": 0.761
+    },
+    {
+     "qid": "E01.q4",
+     "concept_id": "E01",
+     "difficulty": 0.441
+    },
+    {
+     "qid": "E01.q5",
+     "concept_id": "E01",
+     "difficulty": 0.569
+    },
+    {
+     "qid": "E01.q6",
+     "concept_id": "E01",
+     "difficulty": 0.355
+    },
+    {
+     "qid": "E01.q7",
+     "concept_id": "E01",
+     "difficulty": 0.628
+    },
+    {
+     "qid": "E01.q8",
+     "concept_id": "E01",
+     "difficulty": 0.712
+    }
+   ]
+  },
+  {
+   "cid": "E02",
+   "name": "E02",
+   "tier": 4,
+   "prereqs": [
+    "D04",
+    "D01"
+   ],
+   "questions": [
+    {
+     "qid": "E02.q1",
+     "concept_id": "E02",
+     "difficulty": 0.548
+    },
+    {
+     "qid": "E02.q2",
+     "concept_id": "E02",
+     "difficulty": 0.669
+    },
+    {
+     "qid": "E02.q3",
+     "concept_id": "E02",
+     "difficulty": 0.668
+    },
+    {
+     "qid": "E02.q4",
+     "concept_id": "E02",
+     "difficulty": 0.761
+    },
+    {
+     "qid": "E02.q5",
+     "concept_id": "E02",
+     "difficulty": 0.541
+    },
+    {
+     "qid": "E02.q6",
+     "concept_id": "E02",
+     "difficulty": 0.541
+    },
+    {
+     "qid": "E02.q7",
+     "concept_id": "E02",
+     "difficulty": 0.548
+    },
+    {
+     "qid": "E02.q8",
+     "concept_id": "E02",
+     "difficulty": 0.85
+    },
+    {
+     "qid": "E02.q9",
+     "concept_id": "E02",
+     "difficulty": 0.771
+    }
+   ]
+  },
+  {
+   "cid": "E03",
+   "name": "E03",
+   "tier": 4,
+   "prereqs": [
+    "D02",
+    "D04"
+   ],
+   "questions": [
+    {
+     "qid": "E03.q1",
+     "concept_id": "E03",
+     "difficulty": 0.625
+    },
+    {
+     "qid": "E03.q2",
+     "concept_id": "E03",
+     "difficulty": 0.667
+    },
+    {
+     "qid": "E03.q3",
+     "concept_id": "E03",
+     "difficulty": 0.654
+    },
+    {
+     "qid": "E03.q4",
+     "concept_id": "E03",
+     "difficulty": 0.664
+    },
+    {
+     "qid": "E03.q5",
+     "concept_id": "E03",
+     "difficulty": 0.615
+    },
+    {
+     "qid": "E03.q6",
+     "concept_id": "E03",
+     "difficulty": 0.6
+    },
+    {
+     "qid": "E03.q7",
+     "concept_id": "E03",
+     "difficulty": 0.489
+    },
+    {
+     "qid": "E03.q8",
+     "concept_id": "E03",
+     "difficulty": 0.563
+    },
+    {
+     "qid": "E03.q9",
+     "concept_id": "E03",
+     "difficulty": 0.838
+    }
+   ]
+  },
+  {
+   "cid": "E04",
+   "name": "E04",
+   "tier": 4,
+   "prereqs": [
+    "D03",
+    "C04"
+   ],
+   "questions": [
+    {
+     "qid": "E04.q1",
+     "concept_id": "E04",
+     "difficulty": 0.704
+    },
+    {
+     "qid": "E04.q2",
+     "concept_id": "E04",
+     "difficulty": 0.648
+    },
+    {
+     "qid": "E04.q3",
+     "concept_id": "E04",
+     "difficulty": 0.614
+    },
+    {
+     "qid": "E04.q4",
+     "concept_id": "E04",
+     "difficulty": 0.648
+    },
+    {
+     "qid": "E04.q5",
+     "concept_id": "E04",
+     "difficulty": 0.682
+    },
+    {
+     "qid": "E04.q6",
+     "concept_id": "E04",
+     "difficulty": 0.562
+    },
+    {
+     "qid": "E04.q7",
+     "concept_id": "E04",
+     "difficulty": 0.664
+    },
+    {
+     "qid": "E04.q8",
+     "concept_id": "E04",
+     "difficulty": 0.669
+    }
+   ]
+  },
+  {
+   "cid": "E05",
+   "name": "E05",
+   "tier": 4,
+   "prereqs": [
+    "C10",
+    "D05"
+   ],
+   "questions": [
+    {
+     "qid": "E05.q1",
+     "concept_id": "E05",
+     "difficulty": 0.55
+    },
+    {
+     "qid": "E05.q2",
+     "concept_id": "E05",
+     "difficulty": 0.545
+    },
+    {
+     "qid": "E05.q3",
+     "concept_id": "E05",
+     "difficulty": 0.52
+    },
+    {
+     "qid": "E05.q4",
+     "concept_id": "E05",
+     "difficulty": 0.512
+    },
+    {
+     "qid": "E05.q5",
+     "concept_id": "E05",
+     "difficulty": 0.747
+    },
+    {
+     "qid": "E05.q6",
+     "concept_id": "E05",
+     "difficulty": 0.357
+    },
+    {
+     "qid": "E05.q7",
+     "concept_id": "E05",
+     "difficulty": 0.608
+    }
+   ]
+  },
+  {
+   "cid": "F01",
+   "name": "F01",
+   "tier": 5,
+   "prereqs": [
+    "E02"
+   ],
+   "questions": [
+    {
+     "qid": "F01.q1",
+     "concept_id": "F01",
+     "difficulty": 0.677
+    },
+    {
+     "qid": "F01.q2",
+     "concept_id": "F01",
+     "difficulty": 0.676
+    },
+    {
+     "qid": "F01.q3",
+     "concept_id": "F01",
+     "difficulty": 0.762
+    },
+    {
+     "qid": "F01.q4",
+     "concept_id": "F01",
+     "difficulty": 0.885
+    },
+    {
+     "qid": "F01.q5",
+     "concept_id": "F01",
+     "difficulty": 0.759
+    },
+    {
+     "qid": "F01.q6",
+     "concept_id": "F01",
+     "difficulty": 0.733
+    },
+    {
+     "qid": "F01.q7",
+     "concept_id": "F01",
+     "difficulty": 0.677
+    },
+    {
+     "qid": "F01.q8",
+     "concept_id": "F01",
+     "difficulty": 0.735
+    }
+   ]
+  },
+  {
+   "cid": "F02",
+   "name": "F02",
+   "tier": 5,
+   "prereqs": [
+    "D05",
+    "E02"
+   ],
+   "questions": [
+    {
+     "qid": "F02.q1",
+     "concept_id": "F02",
+     "difficulty": 0.859
+    },
+    {
+     "qid": "F02.q2",
+     "concept_id": "F02",
+     "difficulty": 0.703
+    },
+    {
+     "qid": "F02.q3",
+     "concept_id": "F02",
+     "difficulty": 0.612
+    },
+    {
+     "qid": "F02.q4",
+     "concept_id": "F02",
+     "difficulty": 0.598
+    },
+    {
+     "qid": "F02.q5",
+     "concept_id": "F02",
+     "difficulty": 0.617
+    },
+    {
+     "qid": "F02.q6",
+     "concept_id": "F02",
+     "difficulty": 0.583
+    },
+    {
+     "qid": "F02.q7",
+     "concept_id": "F02",
+     "difficulty": 0.882
+    },
+    {
+     "qid": "F02.q8",
+     "concept_id": "F02",
+     "difficulty": 0.793
+    }
+   ]
+  },
+  {
+   "cid": "G01",
+   "name": "G01",
+   "tier": 6,
+   "prereqs": [
+    "E03",
+    "F01"
+   ],
+   "questions": [
+    {
+     "qid": "G01.q1",
+     "concept_id": "G01",
+     "difficulty": 0.832
+    },
+    {
+     "qid": "G01.q2",
+     "concept_id": "G01",
+     "difficulty": 0.95
+    },
+    {
+     "qid": "G01.q3",
+     "concept_id": "G01",
+     "difficulty": 0.781
+    },
+    {
+     "qid": "G01.q4",
+     "concept_id": "G01",
+     "difficulty": 0.95
+    },
+    {
+     "qid": "G01.q5",
+     "concept_id": "G01",
+     "difficulty": 0.95
+    },
+    {
+     "qid": "G01.q6",
+     "concept_id": "G01",
+     "difficulty": 0.674
+    },
+    {
+     "qid": "G01.q7",
+     "concept_id": "G01",
+     "difficulty": 0.673
+    },
+    {
+     "qid": "G01.q8",
+     "concept_id": "G01",
+     "difficulty": 0.749
+    },
+    {
+     "qid": "G01.q9",
+     "concept_id": "G01",
+     "difficulty": 0.95
+    }
+   ]
+  }
+ ]
+}
