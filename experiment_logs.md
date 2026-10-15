@@ -561,6 +561,55 @@ CT + binary on the same learners.
   CurriculumTutor that had the wrong belief. With the same belief, adaptive review
   is worse than CurriculumTutor (-2.90).
 
+## 2026-10-15 (evening) · literature on forgetting, and what it means for the algorithm
+
+Guide's suggestion: look at how others have handled forgetting. 13 papers read
+(full text or abstract page; the fetch was summarised, so check a figure
+against the paper before quoting it). A full write-up with links is in the
+shared doc "Forgetting in tutoring: what the literature does and what it
+means for our algorithm". The points that matter here:
+
+- **Closest to our problem:** Hunziker et al., NeurIPS 2019, "Teaching
+  Multiple Concepts to a Forgetful Learner". Each step picks one concept; the
+  greedy policy takes the largest expected gain in average predicted recall,
+  with an approximation bound under conditions on the memory model (half-life
+  regression, concepts independent). Baselines: random, round robin, lowest
+  predicted recall. Simulations favour greedy; in the German vocabulary user
+  study it scored 0.572 against 0.487 for lowest-recall (p 0.065, not
+  significant).
+- **Threshold review:** Lindsey et al. 2014 ask the item whose predicted
+  recall is nearest a threshold (0.33 best in their simulation). In a
+  179-student classroom study it beat massed review by 16.5% on an exam 28
+  days later.
+- **Review rate from recall:** Tabibian et al. 2019 (MEMORIZE): rate
+  proportional to (1 - recall probability), closed form from optimal control.
+- **Others:** Settles and Meeder 2016 (half-life regression, Duolingo),
+  Pavlik and Anderson 2008 (retention gain per unit practice time), Reddy et
+  al. 2016 (new-item rate against review, Leitner queues), Ye et al. 2022
+  (stochastic shortest path, 220M logs), Qiu 2012 (KT-Forget: forgetting tied
+  to the calendar day), Nagatani et al. 2019 (DKT-F), Choffin et al. 2019
+  (DAS3H, prediction only), Cepeda et al. 2006 and 2008 (best gap grows with
+  the test delay, 8% to 43% of it).
+- **Agreement with our results:** time decay beat forgetting inside the
+  update (Qiu's reason: knowledge tracing over-predicts after a day away); the
+  leader depends on the delay (Cepeda); a too-slow assumed rate costs more than
+  a too-fast one for fast forgetters (same shape as Cepeda's ridgeline, not the
+  same quantity).
+- **Gap we can fill, from what I read:** none of the schedulers uses a
+  prerequisite graph, and only Reddy et al. looks at introducing new items
+  against review. Ours must choose between reviewing a faded concept and
+  teaching a ready one, from an estimate of recall.
+- **Not searched:** restless-bandit and reinforcement-learning review
+  schedulers; FSRS.
+
+**Candidate schedulers to implement from this** (replaces item 3 below as
+the first step): lowest predicted recall; recall nearest a threshold r*
+(sweep r*); review probability proportional to 1 - recall; greedy expected gain
+in average recall, extended to score new ZPD concepts on the same scale.
+Design question: Cepeda says the best gap depends on the delay, but the rule
+here is not to give a scheduler the break length, so the objective should be
+an average over plausible breaks.
+
 ## Open threads
 
 1. ~~Cross belief with scheduler~~ done 2026-10-15 (later); the effects
@@ -568,7 +617,8 @@ CT + binary on the same learners.
 2. ~~Oracle~~ done as an oracle belief. A true oracle scheduler (one that
    plans using the learner's true state) is still open, and is needed to
    say how far the best tutor is from the best possible.
-3. **Schedulers that account for forgetting**: a retention-gain index
+3. **Schedulers that account for forgetting** (first four candidates: see the
+   2026-10-15 evening entry): a retention-gain index
    (marginal rise in expected recall at the next session per question; the
    restless-bandit view), recall-threshold review (review when predicted
    recall falls below r*), forgetting-aware predictive (lookahead with the
