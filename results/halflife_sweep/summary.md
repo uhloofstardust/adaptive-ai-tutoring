@@ -1,0 +1,57 @@
+# halflife_sweep
+
+30 learners per cell on layered_40. Best tutor changes: adaptive review -> CT + forgetting model between 9d and 10d; CT + forgetting model -> CT + binary between 18d and 19d.
+
+## conditions
+
+| experiment | condition | n_learners | final_mastery | final_learned | retained_mastery | retained_usable | coverage | sd_retained_usable |
+|---|---|---|---|---|---|---|---|---|
+| 4_halflife_5 | CT + binary | 30 | 0.2282 | 0.03 | 0.1504 | 0.03 | 32.57 | 0.18 |
+| 4_halflife_5 | CT + forgetting model | 30 | 0.3974 | 0.2 | 0.2623 | 0.97 | 30.7 | 1.03 |
+| 4_halflife_5 | adaptive review | 30 | 0.3864 | 0.07 | 0.255 | 1.17 | 31.5 | 1.09 |
+| 4_halflife_7 | CT + binary | 30 | 0.3375 | 0.6 | 0.2444 | 2.57 | 36.8 | 0.97 |
+| 4_halflife_7 | CT + forgetting model | 30 | 0.4907 | 1.43 | 0.361 | 12.27 | 31.77 | 1.72 |
+| 4_halflife_7 | adaptive review | 30 | 0.472 | 1.17 | 0.3479 | 14.73 | 31.93 | 1.53 |
+| 4_halflife_8 | CT + binary | 30 | 0.3876 | 1.63 | 0.2903 | 4.2 | 37.9 | 0.81 |
+| 4_halflife_8 | CT + forgetting model | 30 | 0.5259 | 2.97 | 0.4009 | 18.13 | 32.67 | 2.24 |
+| 4_halflife_8 | adaptive review | 30 | 0.5044 | 2.43 | 0.3852 | 20.33 | 32.53 | 1.97 |
+| 4_halflife_9 | CT + binary | 30 | 0.4355 | 1.7 | 0.3357 | 6.3 | 38.9 | 1.18 |
+| 4_halflife_9 | CT + forgetting model | 30 | 0.5581 | 4.3 | 0.4377 | 23 | 32.97 | 1.74 |
+| 4_halflife_9 | adaptive review | 30 | 0.534 | 5.6 | 0.4195 | 23.63 | 32.87 | 1.61 |
+| 4_halflife_10 | CT + binary | 30 | 0.48 | 2.37 | 0.3788 | 8.77 | 39.53 | 1.48 |
+| 4_halflife_10 | CT + forgetting model | 30 | 0.5858 | 6.8 | 0.4701 | 26.47 | 33.37 | 1.55 |
+| 4_halflife_10 | adaptive review | 30 | 0.559 | 8.87 | 0.4492 | 25.1 | 32.9 | 1.27 |
+| 4_halflife_12 | CT + binary | 30 | 0.5522 | 3.53 | 0.4527 | 14.47 | 39.97 | 2.53 |
+| 4_halflife_12 | CT + forgetting model | 30 | 0.6314 | 12.2 | 0.5245 | 29.47 | 34.2 | 1.36 |
+| 4_halflife_12 | adaptive review | 30 | 0.5907 | 16.1 | 0.4918 | 27.1 | 33.33 | 1.12 |
+| 4_halflife_16 | CT + binary | 30 | 0.6579 | 6.47 | 0.567 | 28.57 | 40 | 3.54 |
+| 4_halflife_16 | CT + forgetting model | 30 | 0.6925 | 22.8 | 0.6017 | 32.4 | 35 | 1.22 |
+| 4_halflife_16 | adaptive review | 30 | 0.6404 | 24.9 | 0.5575 | 28.53 | 33.63 | 1.36 |
+| 4_halflife_18 | CT + binary | 30 | 0.6945 | 9.07 | 0.6086 | 32.6 | 40 | 2.9 |
+| 4_halflife_18 | CT + forgetting model | 30 | 0.7224 | 26.1 | 0.637 | 33.47 | 35.97 | 1.46 |
+| 4_halflife_18 | adaptive review | 30 | 0.663 | 25.87 | 0.5857 | 29.43 | 34.1 | 1.3 |
+| 4_halflife_19 | CT + binary | 30 | 0.712 | 11.13 | 0.6282 | 34.7 | 40 | 2.14 |
+| 4_halflife_19 | CT + forgetting model | 30 | 0.7311 | 28 | 0.6489 | 33.73 | 36.07 | 1.31 |
+| 4_halflife_19 | adaptive review | 30 | 0.6708 | 27.03 | 0.5964 | 29.4 | 34.27 | 0.97 |
+| 4_halflife_20 | CT + binary | 30 | 0.7283 | 12.37 | 0.6467 | 36.5 | 40 | 1.85 |
+| 4_halflife_20 | CT + forgetting model | 30 | 0.7365 | 29.23 | 0.6576 | 33.77 | 35.8 | 1.17 |
+| 4_halflife_20 | adaptive review | 30 | 0.6765 | 27.4 | 0.6051 | 29.7 | 33.9 | 1.15 |
+| 4_halflife_22 | CT + binary | 30 | 0.7559 | 15.53 | 0.6785 | 38.77 | 40 | 0.97 |
+| 4_halflife_22 | CT + forgetting model | 30 | 0.7473 | 29.7 | 0.674 | 33.9 | 35.83 | 1.27 |
+| 4_halflife_22 | adaptive review | 30 | 0.6865 | 28.07 | 0.6202 | 29.9 | 33.9 | 0.99 |
+
+## best_by_half_life
+
+| half_life_days | best | CT + binary | CT + forgetting model | adaptive review |
+|---|---|---|---|---|
+| 5 | adaptive review | 0.03 | 0.97 | 1.17 |
+| 7 | adaptive review | 2.57 | 12.27 | 14.73 |
+| 8 | adaptive review | 4.2 | 18.13 | 20.33 |
+| 9 | adaptive review | 6.3 | 23 | 23.63 |
+| 10 | CT + forgetting model | 8.77 | 26.47 | 25.1 |
+| 12 | CT + forgetting model | 14.47 | 29.47 | 27.1 |
+| 16 | CT + forgetting model | 28.57 | 32.4 | 28.53 |
+| 18 | CT + forgetting model | 32.6 | 33.47 | 29.43 |
+| 19 | CT + binary | 34.7 | 33.73 | 29.4 |
+| 20 | CT + binary | 36.5 | 33.77 | 29.7 |
+| 22 | CT + binary | 38.77 | 33.9 | 29.9 |

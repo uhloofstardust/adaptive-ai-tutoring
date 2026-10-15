@@ -1,0 +1,29 @@
+# learner_types
+
+30 learners on layered_40. Best tutor by profile (concepts usable after the break): fast: CT + binary (38.0); average: CT + forgetting model (31.2); slow: CT + forgetting model (21.8); forgetful: adaptive review (8.4).
+
+## conditions
+
+| experiment | condition | n_learners | final_mastery | final_learned | retained_mastery | retained_usable | coverage | sd_retained_usable |
+|---|---|---|---|---|---|---|---|---|
+| 3_fast | CT + binary | 30 | 0.8002 | 23.77 | 0.7018 | 38.03 | 40 | 1.61 |
+| 3_fast | CT + forgetting model | 30 | 0.8264 | 34.53 | 0.7266 | 37.3 | 38.5 | 1.18 |
+| 3_fast | adaptive review | 30 | 0.7415 | 30.83 | 0.654 | 31.93 | 35.37 | 1.26 |
+| 3_average | CT + binary | 30 | 0.6108 | 4.5 | 0.5153 | 21.87 | 39.97 | 3.61 |
+| 3_average | CT + forgetting model | 30 | 0.6645 | 17.67 | 0.5664 | 31.23 | 34.5 | 1.41 |
+| 3_average | adaptive review | 30 | 0.6223 | 22.07 | 0.5314 | 28.33 | 33.33 | 1.27 |
+| 3_slow | CT + binary | 30 | 0.4296 | 1.3 | 0.3571 | 9.4 | 33.27 | 1.43 |
+| 3_slow | CT + forgetting model | 30 | 0.507 | 2.47 | 0.4236 | 21.83 | 31.33 | 1.7 |
+| 3_slow | adaptive review | 30 | 0.483 | 3.03 | 0.4039 | 21.33 | 31.83 | 1.21 |
+| 3_forgetful | CT + binary | 30 | 0.3013 | 0.43 | 0.2071 | 1.13 | 36.77 | 0.97 |
+| 3_forgetful | CT + forgetting model | 30 | 0.4755 | 1.07 | 0.3329 | 7.47 | 32.17 | 1.61 |
+| 3_forgetful | adaptive review | 30 | 0.4585 | 0.67 | 0.3217 | 8.43 | 32.23 | 1.83 |
+
+## paired_best_vs_binary
+
+| profile | best | comparison | metric | mean_diff | sd | wins | losses | n | p_sign |
+|---|---|---|---|---|---|---|---|---|---|
+| fast | CT + binary | CT + binary - CT + binary | retained_usable | 0 | 0 | 0 | 0 | 30 | 1 |
+| average | CT + forgetting model | CT + forgetting model - CT + binary | retained_usable | 9.367 | 3.801 | 30 | 0 | 30 | 1.863e-09 |
+| slow | CT + forgetting model | CT + forgetting model - CT + binary | retained_usable | 12.43 | 2.402 | 30 | 0 | 30 | 1.863e-09 |
+| forgetful | adaptive review | adaptive review - CT + binary | retained_usable | 7.3 | 2.103 | 30 | 0 | 30 | 1.863e-09 |

@@ -1,0 +1,5 @@
+profile,best,comparison,metric,mean_diff,sd,wins,losses,n,p_sign
+fast,CT + binary,CT + binary - CT + binary,retained_usable,0,0.0,0,0,30,1.0
+average,CT + forgetting model,CT + forgetting model - CT + binary,retained_usable,9.366666666666667,3.8009375733865465,30,0,30,1.862645149230957e-09
+slow,CT + forgetting model,CT + forgetting model - CT + binary,retained_usable,12.433333333333334,2.402345597081338,30,0,30,1.862645149230957e-09
+forgetful,adaptive review,adaptive review - CT + binary,retained_usable,7.3,2.10336348048417,30,0,30,1.862645149230957e-09

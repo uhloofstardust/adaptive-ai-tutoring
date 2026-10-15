@@ -1,0 +1,14 @@
+{
+ "output_name": "trace_20_steps",
+ "experiment": "trace_20_steps",
+ "curriculum": "abstract",
+ "parameters": {
+  "n_steps": 20,
+  "threshold": 0.9,
+  "seed": 4242
+ },
+ "commit": "f0445c2",
+ "run_at_utc": "2026-10-15 09:51:10",
+ "seconds": 0.0,
+ "python": "3.10.12"
+}

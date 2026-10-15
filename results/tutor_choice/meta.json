@@ -1,0 +1,18 @@
+{
+ "output_name": "tutor_choice",
+ "experiment": "tutor_choice",
+ "curriculum": "abstract",
+ "parameters": {
+  "n_learners": 600,
+  "n_steps": 120,
+  "threshold": 0.9,
+  "vary": [
+   "p_S",
+   "p_G"
+  ]
+ },
+ "commit": "f0445c2",
+ "run_at_utc": "2026-10-15 09:51:09",
+ "seconds": 26.5,
+ "python": "3.10.12"
+}

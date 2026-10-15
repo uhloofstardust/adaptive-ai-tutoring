@@ -1,0 +1,4 @@
+comparison,metric,mean_diff,sd,wins,losses,n,p_sign
+continuous + forgetting - binary (permanent),final_learned,13.166666666666666,3.130311577896463,30,0,30,1.862645149230957e-09
+continuous + forgetting - binary (permanent),retained_usable,9.366666666666667,3.8009375733865465,30,0,30,1.862645149230957e-09
+continuous + forgetting - binary (permanent),retained_mastery,0.05106344412153494,0.01992641950544881,30,0,30,1.862645149230957e-09

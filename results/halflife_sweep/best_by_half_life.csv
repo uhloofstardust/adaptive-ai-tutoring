@@ -1,0 +1,12 @@
+half_life_days,best,CT + binary,CT + forgetting model,adaptive review
+5,adaptive review,0.03,0.97,1.17
+7,adaptive review,2.57,12.27,14.73
+8,adaptive review,4.2,18.13,20.33
+9,adaptive review,6.3,23,23.63
+10,CT + forgetting model,8.77,26.47,25.1
+12,CT + forgetting model,14.47,29.47,27.1
+16,CT + forgetting model,28.57,32.4,28.53
+18,CT + forgetting model,32.6,33.47,29.43
+19,CT + binary,34.7,33.73,29.4
+20,CT + binary,36.5,33.77,29.7
+22,CT + binary,38.77,33.9,29.9
