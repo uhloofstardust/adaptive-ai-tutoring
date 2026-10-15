@@ -122,7 +122,7 @@ def fig_learner_types(matrix):
     for i, c in enumerate(conds):
         xs = [j + i * width - 0.4 + width / 2 for j in range(len(profiles))]
         vals = [matrix[p][c] for p in profiles]
-        bars = ax.bar(xs, vals, width=width * 0.92, label=c, color=color(c))
+        ax.bar(xs, vals, width=width * 0.92, label=c, color=color(c))
         for x, v in zip(xs, vals):
             ax.text(x, v + 0.4, f"{v:.0f}", ha="center", fontsize=8)
     ax.set_xticks(range(len(profiles)))
@@ -144,5 +144,77 @@ def fig_halflife_sweep(x, series):
     ax.set_ylabel("concepts usable after the break")
     ax.set_title("Where modelling forgetting starts to matter")
     ax.legend()
+    fig.tight_layout()
+    return fig
+
+
+def fig_grid(beliefs, scheds, cell, baseline):
+    """Heatmap: tutor's belief model (rows) x scheduler (columns).
+    `cell[(belief, sched)]` is the mean number of concepts usable."""
+    import numpy as np
+    z = np.array([[cell[(b, s)] for s in scheds] for b in beliefs])
+    fig, ax = plt.subplots(figsize=(7.6, 4.2))
+    im = ax.imshow(z, cmap="YlGn", aspect="auto")
+    for i in range(len(beliefs)):
+        for j in range(len(scheds)):
+            ax.text(j, i, f"{z[i, j]:.1f}", ha="center", va="center",
+                    fontsize=11, fontweight="bold")
+    ax.set_xticks(range(len(scheds)))
+    ax.set_xticklabels(scheds)
+    ax.set_yticks(range(len(beliefs)))
+    ax.set_yticklabels(beliefs)
+    ax.set_xlabel("question-selection rule")
+    ax.set_ylabel("what the tutor believes")
+    ax.grid(False)
+    ax.set_title(f"Concepts usable after the break "
+                 f"(CurriculumTutor baseline {baseline:.1f})")
+    fig.colorbar(im, ax=ax, fraction=0.04)
+    fig.tight_layout()
+    return fig
+
+
+def fig_break_sweep(days, series, cis, title):
+    """Concepts still usable against the length of the break."""
+    fig, ax = plt.subplots(figsize=(8, 4.8))
+    for name, ys in series.items():
+        ls = ("-" if "oracle" not in name
+              else "--" if name.endswith("CT") else ":")
+        ax.plot(days, ys, marker="o", ms=4, lw=2, ls=ls, label=name,
+                color=color(name))
+        lo = [y - e for y, e in zip(ys, cis[name])]
+        hi = [y + e for y, e in zip(ys, cis[name])]
+        ax.fill_between(days, lo, hi, color=color(name), alpha=0.12, lw=0)
+    ax.set_xlabel("days of break after the last session")
+    ax.set_ylabel("concepts still usable (mastery >= 0.50)")
+    ax.set_title(title)
+    ax.legend(fontsize=9)
+    fig.tight_layout()
+    return fig
+
+
+def fig_mismatch(panels, baselines, matched):
+    """Tutor's assumed forgetting rate against concepts usable, one panel
+    per true learner half-life. `panels[hl][scheduler]` is
+    [(rate, mean, ci), ...]."""
+    hls = list(panels)
+    fig, axes = plt.subplots(1, len(hls), figsize=(4.6 * len(hls), 4.4),
+                             sharey=True, squeeze=False)
+    axes = axes[0]
+    for ax, hl in zip(axes, hls):
+        for sched, pts in panels[hl].items():
+            xs = [p[0] for p in pts]
+            ys = [p[1] for p in pts]
+            ax.errorbar(xs, ys, yerr=[p[2] for p in pts], marker="o", ms=4,
+                        lw=2, capsize=2, label=sched, color=color(sched))
+        ax.axhline(baselines[hl], color=color("CT + binary"), ls="--",
+                   lw=1.5, label="CT + binary")
+        ax.axvline(matched[hl], color="#6B4FA0", ls=":", lw=1.5,
+                   label="true rate")
+        ax.set_xscale("symlog", linthresh=0.01)
+        ax.set_title(f"true half-life {hl} days")
+        ax.set_xlabel("forgetting rate the tutor assumes (per day)")
+    axes[0].set_ylabel("concepts usable after the break")
+    axes[0].legend(fontsize=8)
+    fig.suptitle("A tutor with the wrong forgetting speed", fontsize=12)
     fig.tight_layout()
     return fig

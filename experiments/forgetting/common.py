@@ -9,7 +9,7 @@ import statistics
 from typing import Dict, List, Tuple
 
 from cursim.simulation import RunResult, RunSpec, run_condition
-from cursim.stats import paired
+from cursim.stats import mean_ci, paired
 
 # (scheduler, mastery model, label)
 Condition = Tuple[str, str, str]
@@ -63,3 +63,8 @@ def mean_curve(res: RunResult) -> List[float]:
     n = min(len(r["curve"]) for r in res.per_learner)
     return [statistics.mean(r["curve"][i] for r in res.per_learner)
             for i in range(n)]
+
+
+def usable_ci(res: RunResult, key: str = PRIMARY) -> Tuple[float, float]:
+    """Population mean of `key` and its 95% half-width."""
+    return mean_ci([r[key] for r in res.per_learner])

@@ -44,6 +44,9 @@ class RunSpec:
     questions_per_session: int = 25
     gap_hours: float = 24.0
     retention_days: float = 3.0
+    # extra idle periods (days) at which to measure what is still usable,
+    # all from the same run: result["usable_after"][days]
+    break_days: tuple = ()
     label: str = ""
 
     def name(self) -> str:
@@ -99,6 +102,8 @@ def run_one(cur: Curriculum, spec: RunSpec, seed: int,
     tp = spec.tutor_params or spec.bkt_params
     if tp:
         mkw.update(tp)
+    if spec.mastery_model == "oracle":
+        mkw["truth"] = learner.true_mastery
     model = make_model(spec.mastery_model, cur.ids(), **mkw)
     sched = SCHEDULERS[spec.scheduler]()
     # separate stream so the learner's randomness does not shift when
@@ -139,25 +144,38 @@ def run_one(cur: Curriculum, spec: RunSpec, seed: int,
         now_h += spec.gap_hours
 
     end_h = now_h
-    ret_h = end_h + spec.retention_days * 24.0
+    final_mastery = learner.mean_mastery(end_h)
+    final_learned = learner.n_learned(end_h)
+    snapshot_end = learner.snapshot(end_h)      # before any idle decay
+    # Idle periods are read in increasing order: the learner applies decay
+    # lazily, so asking about an earlier time after a later one would
+    # return the later, more decayed state.
+    after = {}
+    for d in sorted({*spec.break_days, spec.retention_days}):
+        t = end_h + d * 24.0
+        after[d] = {"mastery": learner.mean_mastery(t),
+                    "learned": learner.n_learned(t),
+                    "usable": learner.n_learned(t, 0.50)}
+    ret = after[spec.retention_days]
     accs = [r["correct"] for r in log] if keep_log else None
 
     return {
         "seed": seed,
-        "final_mastery": learner.mean_mastery(end_h),
-        "final_learned": learner.n_learned(end_h),
-        "retained_mastery": learner.mean_mastery(ret_h),
-        "retained_learned": learner.n_learned(ret_h),
+        "final_mastery": final_mastery,
+        "final_learned": final_learned,
+        "retained_mastery": ret["mastery"],
+        "retained_learned": ret["learned"],
         # concepts still usable after the break. Mean mastery rewards
         # spreading thin (many concepts at 0.5); a threshold does not.
-        "retained_usable": learner.n_learned(ret_h, 0.50),
+        "retained_usable": ret["usable"],
+        "usable_after": {d: v["usable"] for d, v in after.items()},
         "coverage": sum(1 for v in learner.exposures.values() if v > 0),
         "max_tier_reached": max(
             (cur.concepts[c].tier
-             for c, v in learner.snapshot(end_h).items()
+             for c, v in snapshot_end.items()
              if v >= cfg.learned_threshold), default=-1),
         "curve": curve,
-        "snapshot_end": learner.snapshot(end_h),
+        "snapshot_end": snapshot_end,
         "accuracy": statistics.mean(accs) if accs else None,
         "log": log,
         "trace": trace,

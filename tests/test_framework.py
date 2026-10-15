@@ -105,7 +105,7 @@ d = paired(R([1, 2, 3]), R([2, 2, 5]), "k")
 check((d["wins"], d["losses"], d["n"]) == (2, 0, 3) and abs(d["mean_diff"] - 1.0) < 1e-12, "paired differences are b minus a")
 
 print("6. experiment registry")
-check(len(EXPERIMENTS) >= 16, f"{len(EXPERIMENTS)} experiments registered")
+check(len(EXPERIMENTS) >= 19, f"{len(EXPERIMENTS)} experiments registered")
 check(all(isinstance(v[1], str) and v[1] and isinstance(v[2], dict) for v in EXPERIMENTS.values()), "each has a description and default parameters")
 check(all(META[n]["curriculum"] in available() for n in EXPERIMENTS), "each declares a curriculum that exists")
 check(all(e in EXPERIMENTS for entries in SUITES.values() for _, e, _ in entries), "every suite entry names a registered experiment")
@@ -142,5 +142,37 @@ res = run("representation", dict(n_learners=3))
 check({"conditions", "paired"} <= set(res["tables"]) and len(res["tables"]["conditions"]) == 3, "representation")
 res = run("halflife_sweep", dict(n_learners=2, half_lives=(5, 20)))
 check(len(res["tables"]["best_by_half_life"]) == 2, "halflife_sweep honours its half_lives parameter")
+
+print("9. oracle belief, break lengths, and the experiments built on them")
+from cursim.mastery import make_model
+from experiments.forgetting.decay_mismatch import matched_rate
+
+cur = build_curriculum("layered_40")
+small = dict(n_sessions=3, questions_per_session=10)
+o = run_one(cur, RunSpec(scheduler="curriculum_tutor", mastery_model="oracle", **small), seed=5, keep_trace=True)
+check(all(abs(t["belief_before"] - t["true_before"]) < 1e-9 for t in o["trace"]),
+      "the oracle's belief is exactly the learner's true mastery at every step")
+try:
+    make_model("oracle", cur.ids())
+    check(False, "oracle without a truth source is refused")
+except TypeError:
+    check(True, "oracle without a truth source is refused")
+a = run_one(cur, RunSpec(**small), seed=5)
+b = run_one(cur, RunSpec(break_days=(0, 1, 3, 9, 30), **small), seed=5)
+check(a["retained_usable"] == b["retained_usable"] and a["curve"] == b["curve"],
+      "asking for more break lengths does not change the run or the default measure")
+u = b["usable_after"]
+check(u[3.0] == b["retained_usable"], "the default retention period is one of the measured breaks")
+ds = sorted(u)
+check(all(u[x] >= u[y] for x, y in zip(ds, ds[1:])), "what is usable never increases with a longer break")
+check(sum(1 for v in b["snapshot_end"].values() if v >= 0.80) == b["final_learned"],
+      "the end-of-training snapshot is taken before any break decay")
+check(abs((1 - matched_rate(14)) ** 14 - 0.5) < 1e-12, "matched_rate gives the stated half-life")
+res = run("belief_scheduler_grid", dict(n_learners=2))
+check(len(res["tables"]["grid"]) == 13 and len(res["tables"]["effects"]) == 14, "belief_scheduler_grid: 12 crossed cells plus random")
+res = run("break_sweep", dict(n_learners=2, break_days=(0, 5)))
+check(len(res["tables"]["curves"]) == 2 and len(res["tables"]["leader"]) == 2, "break_sweep honours break_days")
+res = run("decay_mismatch", dict(n_learners=2, half_lives=(14,), rates=(0.0, 0.05)))
+check(len(res["tables"]["sweep"]) == 4 and len(res["tables"]["reach"]) == 2, "decay_mismatch honours half_lives and rates")
 
 print(f"\nALL {passed} CHECKS PASSED")

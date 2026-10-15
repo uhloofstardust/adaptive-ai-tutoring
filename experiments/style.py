@@ -39,7 +39,7 @@ THEMES = {
 # Light-theme colours, keyed by a substring of the condition label. Most
 # specific substring first: "continuous + forgetting" must not be caught
 # by the "continuous" rule.
-PALETTE = [("binary", "#B4482B"), ("forgetting", "#3D7A5B"),
+PALETTE = [("oracle", "#6B4FA0"), ("binary", "#B4482B"), ("forgetting", "#3D7A5B"),
            ("forget", "#3D7A5B"), ("adaptive", "#E8A020"),
            ("continuous", "#2C5FA8"), ("curriculum", "#B4482B"),
            ("CT +", "#B4482B"), ("random", "#8A8F9A")]
