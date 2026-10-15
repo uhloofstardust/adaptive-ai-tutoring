@@ -141,6 +141,27 @@ class ContinuousMastery(MasteryModel):
         return self.core.expected_gain(cid, now_h)
 
 
+class OracleMastery(MasteryModel):
+    """Reference only: reads the learner's TRUE mastery instead of
+    estimating it. No real tutor can do this. It separates "the tutor
+    estimated badly" from "the scheduler chose badly": cross it with any
+    scheduler and the result is that scheduler's score with a perfect
+    belief. `truth(cid, now_h)` is supplied by the simulation loop."""
+    name = "oracle"
+
+    def __init__(self, cids, truth, threshold=0.80, **_):
+        self.truth, self.threshold = truth, threshold
+
+    def observe(self, cid, correct, now_h):
+        pass                                # nothing to learn: it knows
+
+    def belief(self, cid, now_h):
+        return self.truth(cid, now_h)
+
+    def is_mastered(self, cid, now_h):
+        return self.belief(cid, now_h) >= self.threshold
+
+
 def make_model(kind: str, cids, **kw) -> MasteryModel:
     if kind == "bkt":                 # plain BKT tutor, shared params, no decay
         kw.setdefault("threshold", 0.9)
@@ -155,6 +176,8 @@ def make_model(kind: str, cids, **kw) -> MasteryModel:
     if kind == "continuous_forget":
         kw.setdefault("forget_per_day", 0.10)
         return ContinuousMastery(cids, **kw)
+    if kind == "oracle":              # needs truth=<callable>, see class
+        return OracleMastery(cids, **kw)
     raise ValueError(kind)
 
 
@@ -169,4 +192,6 @@ MASTERY_MODELS = {
     "continuous":       "BKT belief used as-is, threshold 0.80",
     "continuous_forget": "BKT belief that decays 10%/day between practices",
     "bkt_forget":       "BKT with a forget probability p_F inside the update",
+    "oracle":           "Reference only: reads the learner's true mastery "
+                        "(no estimation error), threshold 0.80",
 }
