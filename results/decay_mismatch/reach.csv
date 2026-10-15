@@ -1,0 +1,7 @@
+true_half_life_days,scheduler,true_rate,lowest_ok,highest_ok,n_rates_ok,n_rates
+7,curriculum_tutor,0.0943,0.05,0.3,6,10
+7,adaptive_review,0.0943,0.05,0.3,6,10
+14,curriculum_tutor,0.0483,0.0,0.2,9,10
+14,adaptive_review,0.0483,0.0,0.1,7,10
+28,curriculum_tutor,0.0245,,,0,10
+28,adaptive_review,0.0245,,,0,10

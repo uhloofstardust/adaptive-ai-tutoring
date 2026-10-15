@@ -204,13 +204,16 @@ def fig_mismatch(panels, baselines, matched):
         for sched, pts in panels[hl].items():
             xs = [p[0] for p in pts]
             ys = [p[1] for p in pts]
+            name = {"curriculum_tutor": "CT + forgetting model",
+                    "adaptive_review": "adaptive review"}.get(sched, sched)
             ax.errorbar(xs, ys, yerr=[p[2] for p in pts], marker="o", ms=4,
-                        lw=2, capsize=2, label=sched, color=color(sched))
+                        lw=2, capsize=2, label=name, color=color(name))
         ax.axhline(baselines[hl], color=color("CT + binary"), ls="--",
                    lw=1.5, label="CT + binary")
         ax.axvline(matched[hl], color="#6B4FA0", ls=":", lw=1.5,
                    label="true rate")
         ax.set_xscale("symlog", linthresh=0.01)
+        ax.set_xlim(left=0)
         ax.set_title(f"true half-life {hl} days")
         ax.set_xlabel("forgetting rate the tutor assumes (per day)")
     axes[0].set_ylabel("concepts usable after the break")

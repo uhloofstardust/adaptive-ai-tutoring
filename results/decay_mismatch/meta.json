@@ -1,0 +1,29 @@
+{
+ "output_name": "decay_mismatch",
+ "experiment": "decay_mismatch",
+ "curriculum": "layered_40",
+ "parameters": {
+  "n_learners": 30,
+  "half_lives": [
+   7,
+   14,
+   28
+  ],
+  "rates": [
+   0.0,
+   0.01,
+   0.02,
+   0.03,
+   0.05,
+   0.075,
+   0.1,
+   0.15,
+   0.2,
+   0.3
+  ]
+ },
+ "commit": "744d4ea+uncommitted",
+ "run_at_utc": "2026-10-15 11:18:16",
+ "seconds": 34.8,
+ "python": "3.10.12"
+}

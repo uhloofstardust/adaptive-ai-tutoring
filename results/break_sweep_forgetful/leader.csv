@@ -1,0 +1,9 @@
+break_days,best_real_tutor,best_oracle_minus_best
+0,CT + forgetting model,-1.37
+1,CT + forgetting model,-0.67
+2,adaptive review,0.53
+3,adaptive review,3.37
+4,adaptive review,7.13
+5,none left,2.93
+6,none left,0
+8,none left,0
