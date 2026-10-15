@@ -40,7 +40,7 @@ def break_sweep(n_learners=30, break_days=BREAKS, profile="average",
     break_days = tuple(break_days)
     over = ({"forget_half_life_days": half_life_days}
             if half_life_days else None)
-    who = (f"{profile} learners (half-life {half_life_days}d)"
+    who = (f"learners with a {half_life_days}-day memory half-life"
            if half_life_days else f"{profile} learners")
     arms = [*THREE_TUTORS, *ORACLES]
     res = {label: run_condition(

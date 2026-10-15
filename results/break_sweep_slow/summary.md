@@ -1,6 +1,6 @@
 # break_sweep_slow
 
-30 average learners (half-life 28d) on layered_40. Best real tutor changes: CT + binary -> CT + forgetting model between 7d and 14d; CT + forgetting model -> adaptive review between 18d and 21d. Best oracle reference minus the best real tutor ranges -9.1 to 6.2 concepts.
+30 learners with a 28-day memory half-life on layered_40. Best real tutor changes: CT + binary -> CT + forgetting model between 7d and 14d; CT + forgetting model -> adaptive review between 18d and 21d. Best oracle reference minus the best real tutor ranges -9.1 to 6.2 concepts.
 
 ## curves
 
