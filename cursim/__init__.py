@@ -1,1 +1,1 @@
-"""Research simulator for adaptive language tutoring."""
+"""Research simulator for adaptive tutoring (domain agnostic)."""

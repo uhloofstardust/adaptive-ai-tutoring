@@ -1,22 +1,12 @@
 __pycache__/
 *.pyc
 .DS_Store
+
+# written by the interface's "Save" buttons
 runs/
 
-# data/ holds SOURCE now, not generated output: the curricula and the
-# shared parameters are the inputs every run reads, so they are committed.
-# (It used to hold a curriculum.json generated from code, which is why an
-# earlier version of this file excluded data/*.json.)
-
-# results.csv and the figures ARE committed: they are the record of what the
-# experiments produced, and should be readable without running anything.
-# Regenerate with `python run_experiments.py`; commit the result if it
-# changes, so the committed numbers and the code never disagree.
-
-# run logs: stdout only, regenerable
-logs/
-
-# latex build products
-docs/*.aux
-docs/*.log
-docs/*.out
+# results/ IS committed: it is the record of what each experiment
+# produced, readable without running anything. Regenerate with
+#     python -m experiments suite all
+# and commit the result if it changes, so the numbers and the code never
+# disagree. results/<name>/meta.json says exactly what produced each one.
