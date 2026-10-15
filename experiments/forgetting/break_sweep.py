@@ -13,19 +13,12 @@ from cursim.curriculum import build_curriculum
 from cursim.simulation import RunSpec, run_condition
 
 from ..registry import experiment
-from .common import THREE_TUTORS, paired_row, usable_ci
+from .common import THREE_TUTORS, UsableAfter, paired_row, usable_ci
 from .plots import fig_break_sweep
 
 ORACLES = [("curriculum_tutor", "oracle", "oracle belief + CT"),
            ("adaptive_review", "oracle", "oracle belief + adaptive review")]
 BREAKS = (0, 1, 2, 3, 5, 7, 8, 9, 10, 11, 12, 14, 21)
-
-
-class _Arm:
-    """Adapter so per-break values look like a RunResult to `paired`."""
-    def __init__(self, res, d):
-        self.per_learner = [{"v": r["usable_after"][d]}
-                            for r in res.per_learner]
 
 
 @experiment("break_sweep",
@@ -57,14 +50,14 @@ def break_sweep(n_learners=30, break_days=BREAKS, profile="average",
     for d in break_days:
         row = {"break_days": d}
         for l in labels:
-            vals = _Arm(res[l], d)
+            vals = UsableAfter(res[l], d)
             m, e = usable_ci(vals, "v")
             series[l].append(m)
             cis[l].append(e)
             row[l] = round(m, 2)
             if l != base:
                 paired_rows.append(paired_row(
-                    base, l, "v", _Arm(res[base], d), vals,
+                    base, l, "v", UsableAfter(res[base], d), vals,
                     break_days=d))
         curve_rows.append(row)
 

@@ -46,5 +46,13 @@ SUITES = {
          dict(n_learners=30, half_life_days=7,
               break_days=(0, 1, 2, 3, 4, 5, 6, 8))),
         ("decay_mismatch", "decay_mismatch", dict(n_learners=30)),
+        ("review_tuning", "review_tuning", dict(n_learners=30)),
+        ("forgetting_rules", "forgetting_rules",
+         dict(n_learners=50, belief_rate=0.05)),
+        ("forgetting_rules_rate10", "forgetting_rules",
+         dict(n_learners=50, belief_rate=0.10)),
+        ("mastery_margin", "mastery_margin", dict(n_learners=30)),
+        ("mastery_margin_fresh", "mastery_margin",
+         dict(n_learners=50, base_seed=9000)),
     ],
 }
