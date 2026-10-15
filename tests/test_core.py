@@ -490,10 +490,13 @@ def test_schedulers():
             if cls in seen:
                 continue
             seen.add(cls)
-            r = run_one(CUR, RunSpec(scheduler=name,
-                                     mastery_model="continuous",
-                                     n_sessions=6,
-                                     questions_per_session=15), seed=200)
+            # a decaying belief on the larger curriculum, where the review
+            # rules have faded concepts to choose between
+            r = run_one(CUR,
+                        RunSpec(scheduler=name,
+                                mastery_model="continuous_forget",
+                                n_sessions=8, questions_per_session=25),
+                        seed=200)
             vals[name] = round(r["final_mastery"], 6)
         assert len(set(vals.values())) == len(vals), vals
         return "  ".join(f"{k} {v:.3f}" for k, v in vals.items())

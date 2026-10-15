@@ -68,3 +68,25 @@ def mean_curve(res: RunResult) -> List[float]:
 def usable_ci(res: RunResult, key: str = PRIMARY) -> Tuple[float, float]:
     """Population mean of `key` and its 95% half-width."""
     return mean_ci([r[key] for r in res.per_learner])
+
+
+class UsableAfter:
+    """One break length of a run, shaped like a RunResult so `paired` and
+    `usable_ci` work on it: key "v" holds each learner's usable concepts
+    after `days` idle days (the run must have been given break_days)."""
+
+    def __init__(self, res: RunResult, days):
+        self.per_learner = [{"v": r["usable_after"][days]}
+                            for r in res.per_learner]
+
+
+def add_robust_score(res: RunResult, max_days: int):
+    """Give every learner a "robust" value: usable concepts averaged over
+    breaks of 0, 1, ..., max_days days. A tutor cannot know the break in
+    advance, so this rewards being good across the plausible range."""
+    for r in res.per_learner:
+        r["robust"] = st_mean(r["usable_after"][d]
+                              for d in range(max_days + 1))
+
+
+st_mean = statistics.mean

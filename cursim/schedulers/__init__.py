@@ -4,15 +4,18 @@
     review      continuous, adaptive_review
     lookahead   predictive
     bandits     maple, naive_maple, ucb
+    forgetting  lowest_recall, recall_threshold, proportional_review
 """
 
 from .base import SCHEDULERS, Scheduler, pick_question, register_scheduler, zpd
-from . import baselines, review, lookahead, bandits  # noqa: F401  (registers)
+from . import baselines, review, lookahead, bandits, forgetting  # noqa: F401  (registers)
 from .baselines import (CurriculumTutorScheduler, RandomScheduler,
                         UniformUnmasteredScheduler)
 from .review import AdaptiveReviewScheduler, ContinuousScheduler
 from .lookahead import PredictiveScheduler
 from .bandits import MapleScheduler, NaiveMapleScheduler, UCBScheduler
+from .forgetting import (LowestRecallScheduler, ProportionalReviewScheduler,
+                         RecallThresholdScheduler)
 
 __all__ = ["SCHEDULERS", "Scheduler", "pick_question", "register_scheduler",
            "zpd"]

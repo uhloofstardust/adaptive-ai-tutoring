@@ -221,3 +221,69 @@ def fig_mismatch(panels, baselines, matched):
     fig.suptitle("A tutor with the wrong forgetting speed", fontsize=12)
     fig.tight_layout()
     return fig
+
+
+def fig_estimation_cost(rules, estimated, oracle, errs):
+    """Per rule: usable concepts with the tutor's own belief against the
+    same rule with a perfect belief. The gap is what better estimation
+    could buy that rule."""
+    import numpy as np
+    x = np.arange(len(rules))
+    fig, ax = plt.subplots(figsize=(8, 4.4))
+    ax.bar(x - 0.2, estimated, 0.38, yerr=errs, capsize=3,
+           color=[color(r) for r in rules], label="tutor's decaying belief")
+    ax.bar(x + 0.2, oracle, 0.38, color=[color(r) for r in rules],
+           alpha=0.45, hatch="//", edgecolor="white",
+           label="perfect belief (reference)")
+    for xi, a, b in zip(x, estimated, oracle):
+        ax.text(xi - 0.2, a + 0.5, f"{a:.1f}", ha="center", fontsize=8.5)
+        ax.text(xi + 0.2, b + 0.5, f"{b:.1f}", ha="center", fontsize=8.5)
+    ax.set_xticks(x)
+    ax.set_xticklabels(rules, fontsize=9)
+    ax.set_ylabel("concepts usable after the break")
+    ax.set_title("What a perfect belief would add to each rule")
+    ax.legend(fontsize=9, loc="lower right")
+    fig.tight_layout()
+    return fig
+
+
+def fig_review_tuning(rules, rates, r_review, rows):
+    """Robust score against the fade threshold, a panel per belief decay
+    rate and a line per review rule."""
+    fig, axes = plt.subplots(1, len(rates), figsize=(5.2 * len(rates), 4.2),
+                             sharey=True, squeeze=False)
+    for ax, rate in zip(axes[0], rates):
+        for rule in rules:
+            ys = [next(x["robust"] for x in rows
+                       if x["rule"] == rule and x["r_review"] == r
+                       and x["belief_decay_per_day"] == rate)
+                  for r in r_review]
+            name = rule.replace("_", " ")
+            ax.plot(r_review, ys, marker="o", lw=2, label=name,
+                    color=color(name))
+        ax.set_title(f"belief decays {rate} per day")
+        ax.set_xlabel("fade threshold r_review")
+    axes[0][0].set_ylabel("usable concepts, mean over breaks of 0-10 days")
+    axes[0][0].legend(fontsize=8.5)
+    fig.tight_layout()
+    return fig
+
+
+def fig_margin(days, panels, title):
+    """Break curves for several mastery thresholds, one panel per belief.
+    `panels[name][threshold]` is the list of usable concepts by break."""
+    fig, axes = plt.subplots(1, len(panels), figsize=(5.6 * len(panels), 4.4),
+                             sharey=True, squeeze=False)
+    for ax, (name, by_thr) in zip(axes[0], panels.items()):
+        n = len(by_thr)
+        for i, (thr, ys) in enumerate(by_thr.items()):
+            ax.plot(days, ys, lw=2, marker="o", ms=3.5,
+                    color=plt.cm.viridis(i / max(1, n - 1)),
+                    label=f"mastered at {thr}")
+        ax.set_title(name)
+        ax.set_xlabel("days of break")
+    axes[0][0].set_ylabel("concepts usable (mastery >= 0.50)")
+    axes[0][0].legend(fontsize=8.5)
+    fig.suptitle(title, fontsize=11.5)
+    fig.tight_layout()
+    return fig

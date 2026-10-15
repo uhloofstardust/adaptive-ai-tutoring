@@ -73,8 +73,9 @@ check(diff(Curriculum.from_json(p)) == diff(a), "a generated curriculum survives
 print("3. schedulers")
 expected = {"random", "curriculum_tutor", "uniform_zpd", "uniform_unmastered",
             "continuous", "adaptive_review", "predictive", "maple",
-            "naive_maple", "ucb"}
-check(set(SCHEDULERS) == expected, "the registry holds exactly the ten known names")
+            "naive_maple", "ucb", "lowest_recall", "recall_threshold",
+            "proportional_review"}
+check(set(SCHEDULERS) == expected, "the registry holds exactly the thirteen known names")
 check(SCHEDULERS["uniform_zpd"] is SCHEDULERS["curriculum_tutor"], "uniform_zpd is an alias of curriculum_tutor")
 cur = build_curriculum()
 for name in sorted(SCHEDULERS):
@@ -105,7 +106,7 @@ d = paired(R([1, 2, 3]), R([2, 2, 5]), "k")
 check((d["wins"], d["losses"], d["n"]) == (2, 0, 3) and abs(d["mean_diff"] - 1.0) < 1e-12, "paired differences are b minus a")
 
 print("6. experiment registry")
-check(len(EXPERIMENTS) >= 19, f"{len(EXPERIMENTS)} experiments registered")
+check(len(EXPERIMENTS) >= 22, f"{len(EXPERIMENTS)} experiments registered")
 check(all(isinstance(v[1], str) and v[1] and isinstance(v[2], dict) for v in EXPERIMENTS.values()), "each has a description and default parameters")
 check(all(META[n]["curriculum"] in available() for n in EXPERIMENTS), "each declares a curriculum that exists")
 check(all(e in EXPERIMENTS for entries in SUITES.values() for _, e, _ in entries), "every suite entry names a registered experiment")
@@ -174,5 +175,24 @@ res = run("break_sweep", dict(n_learners=2, break_days=(0, 5)))
 check(len(res["tables"]["curves"]) == 2 and len(res["tables"]["leader"]) == 2, "break_sweep honours break_days")
 res = run("decay_mismatch", dict(n_learners=2, half_lives=(14,), rates=(0.0, 0.05)))
 check(len(res["tables"]["sweep"]) == 4 and len(res["tables"]["reach"]) == 2, "decay_mismatch honours half_lives and rates")
+
+print("10. review rules and the mastery margin")
+a = run_one(cur, RunSpec(scheduler="recall_threshold", mastery_model="continuous_forget",
+                         scheduler_params={"r_review": 0.4}, **small), seed=5)
+b = run_one(cur, RunSpec(scheduler="recall_threshold", mastery_model="continuous_forget",
+                         scheduler_params={"r_review": 0.9}, **small), seed=5)
+check(a["final_mastery"] != b["final_mastery"], "scheduler_params reach the scheduler")
+for name in ("lowest_recall", "recall_threshold", "proportional_review"):
+    r = run_one(cur, RunSpec(scheduler=name, mastery_model="oracle", **small), seed=5)
+    check(0 <= r["final_mastery"] <= 1, f"{name} also runs with a perfect belief")
+hi = run_one(cur, RunSpec(mastery_model="continuous_forget", threshold=0.98, **small), seed=5)
+lo = run_one(cur, RunSpec(mastery_model="continuous_forget", threshold=0.7, **small), seed=5)
+check(lo["coverage"] >= hi["coverage"], "a higher mastery threshold never covers more concepts")
+res = run("review_tuning", dict(n_learners=2, r_review=(0.4, 0.8), rates=(0.05,)))
+check(len(res["tables"]["tuning"]) == 6, "review_tuning: three rules x two thresholds")
+res = run("forgetting_rules", dict(n_learners=2))
+check(len(res["tables"]["summary"]) == 10 and len(res["tables"]["curves"]) == 13, "forgetting_rules: ten arms, thirteen break lengths")
+res = run("mastery_margin", dict(n_learners=2, thresholds=(0.8, 0.9)))
+check(len(res["tables"]["margin"]) == 4, "mastery_margin honours thresholds")
 
 print(f"\nALL {passed} CHECKS PASSED")

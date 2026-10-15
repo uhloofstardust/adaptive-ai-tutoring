@@ -24,6 +24,7 @@ from .schedulers import SCHEDULERS, zpd
 class RunSpec:
     """One experimental condition."""
     scheduler: str = "curriculum_tutor"
+    scheduler_params: Optional[dict] = None   # keyword arguments for it
     mastery_model: str = "binary"
     learner: str = "continuous"          # key into LEARNERS
     threshold: Optional[float] = None    # mastery threshold for the tutor
@@ -105,7 +106,7 @@ def run_one(cur: Curriculum, spec: RunSpec, seed: int,
     if spec.mastery_model == "oracle":
         mkw["truth"] = learner.true_mastery
     model = make_model(spec.mastery_model, cur.ids(), **mkw)
-    sched = SCHEDULERS[spec.scheduler]()
+    sched = SCHEDULERS[spec.scheduler](**(spec.scheduler_params or {}))
     # separate stream so the learner's randomness does not shift when
     # the scheduler changes
     rng = random.Random(seed + 77777)
