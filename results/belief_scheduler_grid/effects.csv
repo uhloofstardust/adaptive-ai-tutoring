@@ -1,0 +1,15 @@
+varied,held,comparison,metric,mean_diff,sd,wins,losses,n,p_sign
+belief,curriculum_tutor,curriculum_tutor + continuous_forget - curriculum_tutor + binary,retained_usable,9.366666666666667,3.8009375733865465,30,0,30,1.862645149230957e-09
+belief,curriculum_tutor,curriculum_tutor + oracle - curriculum_tutor + continuous_forget,retained_usable,3.9,1.241522980192001,30,0,30,1.862645149230957e-09
+belief,continuous,continuous + continuous_forget - continuous + binary,retained_usable,5.733333333333333,3.6287485572789446,27,2,30,1.6242265701293945e-06
+belief,continuous,continuous + oracle - continuous + continuous_forget,retained_usable,-1.9666666666666666,1.6501480254047292,3,25,30,2.744048833847046e-05
+belief,adaptive_review,adaptive_review + continuous_forget - adaptive_review + binary,retained_usable,-2.3333333333333335,2.880772565599833,8,20,30,0.03569813817739487
+belief,adaptive_review,adaptive_review + oracle - adaptive_review + continuous_forget,retained_usable,-0.06666666666666667,1.1724814044061258,10,9,30,1.0
+scheduler,binary,continuous + binary - curriculum_tutor + binary,retained_usable,2.4,4.782150720882957,18,9,30,0.12207812070846558
+scheduler,binary,adaptive_review + binary - curriculum_tutor + binary,retained_usable,8.8,4.2132794991468385,29,0,30,3.725290298461914e-09
+scheduler,continuous,continuous + continuous - curriculum_tutor + continuous,retained_usable,-1.1333333333333333,4.099901877154971,10,16,30,0.32693958282470703
+scheduler,continuous,adaptive_review + continuous - curriculum_tutor + continuous,retained_usable,5.8,3.745341934576408,27,3,30,8.430331945419312e-06
+scheduler,continuous_forget,continuous + continuous_forget - curriculum_tutor + continuous_forget,retained_usable,-1.2333333333333334,2.079179767539865,8,19,30,0.052238985896110535
+scheduler,continuous_forget,adaptive_review + continuous_forget - curriculum_tutor + continuous_forget,retained_usable,-2.9,1.422722014672748,0,28,30,7.450580596923828e-09
+scheduler,oracle,continuous + oracle - curriculum_tutor + oracle,retained_usable,-7.1,1.0288929437289247,0,30,30,1.862645149230957e-09
+scheduler,oracle,adaptive_review + oracle - curriculum_tutor + oracle,retained_usable,-6.866666666666666,0.9371024061116425,0,30,30,1.862645149230957e-09

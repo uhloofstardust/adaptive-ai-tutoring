@@ -1,0 +1,12 @@
+{
+ "output_name": "belief_scheduler_grid",
+ "experiment": "belief_scheduler_grid",
+ "curriculum": "layered_40",
+ "parameters": {
+  "n_learners": 30
+ },
+ "commit": "744d4ea+uncommitted",
+ "run_at_utc": "2026-10-15 11:16:39",
+ "seconds": 5.5,
+ "python": "3.10.12"
+}

@@ -434,14 +434,140 @@ on 3.10.
 
 ---
 
+## 2026-10-15 (later) · belief x scheduler grid, break length, wrong decay rate
+
+Three experiments, all on `layered_40`, 30 learners each (seeds 4242..4271,
+the same learners as every earlier forgetting experiment), primary metric
+`retained_usable`, paired sign tests. Outputs: `results/belief_scheduler_grid`,
+`results/break_sweep`, `results/break_sweep_slow`,
+`results/break_sweep_forgetful`, `results/decay_mismatch`. Regenerate with
+`python -m experiments suite forgetting`.
+
+**Code added.** `OracleMastery` in `cursim/mastery.py` (belief = the learner's
+true mastery; a reference, no real tutor can do it). `RunSpec.break_days`
+measures usable concepts after several idle periods from one training run.
+One latent bug fixed: `snapshot_end` and `max_tier_reached` were read after
+the break decay, so they described the learner a break later. No experiment
+used either field, and every earlier table reproduces byte for byte
+(only `meta.json` commit hashes changed).
+
+**Correction to an earlier statement.** The crossovers "near 9-10 days and
+18-19 days" (entry 2026-10-15 above and the halflife sweep) are in the
+learner's memory half-life, with the break fixed at 3 days. They are not
+break lengths. Break length is measured for the first time below.
+
+### 1. Belief x scheduler (`belief_scheduler_grid`)
+
+Concepts usable after a 3-day break, mean over 30 learners:
+
+| belief \ scheduler | curriculum_tutor | continuous | adaptive_review |
+|---|---|---|---|
+| binary | 21.87 | 24.27 | 30.67 |
+| continuous (no decay) | 27.37 | 26.23 | 33.17 |
+| continuous_forget (10%/day) | 31.23 | 30.00 | 28.33 |
+| oracle | 35.13 | 28.03 | 28.27 |
+
+Random scheduler: 21.43 (no better than CurriculumTutor with the binary belief).
+All cells except `binary + continuous` (p 0.12) beat the baseline at
+p < 1e-5 (sign test, 26 to 30 of 30 learners).
+
+What it shows:
+- Belief and scheduler each matter, and they interact, so "which one is
+  responsible" has no single answer. Under CurriculumTutor the belief change
+  (binary to time decay) is worth +9.37 (30 wins, 0 losses). Under the binary
+  belief the scheduler change (CurriculumTutor to adaptive review) is worth +8.80
+  (29/0). Under adaptive review the same belief change is -2.33 (8 wins, 20
+  losses, p 0.036), and with the time-decay belief adaptive review is
+  below CurriculumTutor by 2.90 (0/28).
+- Likely reason, not tested: adaptive review has its own review term, which
+  double-counts forgetting once the belief already decays. CurriculumTutor has
+  no review term of its own, so a belief that notices forgetting is all it needs.
+- Best cell is CurriculumTutor with the oracle belief: 35.13, +13.27 over the
+  baseline. Better estimation alone (time decay to oracle) is worth another
+  +3.90 (30/0) under CurriculumTutor.
+- The oracle is not a ceiling for every scheduler. Adaptive review with a perfect
+  belief (28.27) is below adaptive review with the binary belief (30.67). 35.13
+  is a reference for these schedulers, not the best possible policy.
+
+### 2. Break length (`break_sweep*`)
+
+Learner fixed, break varied; each length read from the same runs. Average learner
+(half-life 14 days), usable concepts:
+
+| break (days) | CT + binary | CT + forgetting | adaptive review | oracle + CT |
+|---|---|---|---|---|
+| 0 | 28.87 | 32.30 | 29.00 | 35.80 |
+| 3 | 21.87 | 31.23 | 28.33 | 35.13 |
+| 7 | 6.93 | 26.77 | 25.87 | 30.57 |
+| 8 | 3.47 | 22.40 | 23.50 | 22.07 |
+| 10 | 0.17 | 9.33 | 11.73 | 2.13 |
+| 12 | 0.00 | 0.50 | 0.77 | 0.00 |
+
+- There is a cliff, not a slope. Concepts are learned to about the same level
+  and decay together, so almost nothing is usable after about 11 days for any
+  tutor. At that point no tutor has an advantage.
+- The leader changes once: CT + forgetting model up to 7 days, adaptive review
+  from 8 days (the two are close either side). CT + binary never leads.
+- The advantage of modelling forgetting grows with the break over the useful
+  range: CT + forgetting minus CT + binary is +3.43 at 0 days (22/6, p 0.004),
+  +9.37 at 3 days, and about +20 at 7 days.
+- The oracle line is above the real tutors up to 7 days and below them from 8 to
+  10 days (22.07 vs 22.40 and 23.50 at 8; 2.13 vs 9.33 and 11.73 at 10). A
+  tutor that assumes faster forgetting than the truth (10%/day against about
+  5%/day) keeps a safety margin, which pays off on long breaks.
+- Slower learner (half-life 28 days, `break_sweep_slow`): CT + binary already has
+  all 40 concepts usable for breaks up to 7 days, and the forgetting model
+  costs 5 concepts there (35.07 vs 40 at 0 days). It wins only from about 14
+  days on (33.23 vs 32.40). Modelling forgetting has no value when the break is
+  short compared with the learner's memory.
+- Forgetful learner (half-life 7 days, `break_sweep_forgetful`): CT + binary
+  has 9.03 usable at 0 days and 2.57 at 3, the forgetting model 25.33 and 12.27.
+  Everything is gone by 5 to 6 days.
+
+### 3. Wrong forgetting rate (`decay_mismatch`)
+
+The tutor's daily decay rate is swept from 0 to 0.30 for learners with true
+half-life 7, 14 and 28 days (true daily rates 0.094, 0.048, 0.024), against
+CT + binary on the same learners.
+
+- Half-life 14: every assumed rate from 0 to 0.20 beats CT + binary for
+  CurriculumTutor (9 of 10 rates significant; rate 0.30, +1.93, is not). Best is 36.40 at 0.05,
+  almost exactly the true rate (0.048); baseline 21.87. The hand-picked 0.10 used
+  in all earlier experiments gives 31.23, so the earlier forgetting-model
+  numbers understated the benefit by about 5 concepts. Adaptive review is best at
+  0.03 (36.23) and drops below the baseline at 0.20 and above.
+- Half-life 7: the baseline is 2.56. Rates up to 0.03 do nothing (the tutor
+  underestimates the forgetting and behaves like the binary tutor). From 0.05
+  upwards it helps, best at 0.15 to 0.20 (15.3 and 16.7), about twice the true
+  rate. Too high is cheap, too low is useless.
+- Half-life 28: the baseline is already at 40 of 40, so nothing can be gained,
+  and assuming a fast rate costs up to 12.7 concepts (0.30). Too high is
+  expensive here.
+- So the benefit does not depend on knowing the exact rate, but the rate has to
+  be within roughly 0.5x to 3x of the truth when forgetting is fast, and the
+  cost of overestimating depends on how much forgetting there really is.
+- Caveat: the tutor's decay has the same functional form as the simulator's
+  (exponential toward a floor). Only the rate is varied here. A different
+  shape (for example a power law) is untested.
+
+### Implications
+
+- For the thesis: a scheduler that works with a belief that decays, with the
+  decay rate learned per student, is the supported direction. The rate matters
+  more than the scheduler's review heuristics.
+- Headline numbers should be quoted at the tuned rate, not 0.10: CT with a
+  matched decay belief 36.40 vs CT + binary 21.87 on the average learner.
+- The earlier remark that adaptive review "wins" came from comparing it with a
+  CurriculumTutor that had the wrong belief. With the same belief, adaptive review
+  is worse than CurriculumTutor (-2.90).
+
 ## Open threads
 
-1. **Cross belief model with scheduler** on the forgetting student. The
-   2026-09-10 comparison confounds them. All schedulers already exist, so
-   this needs no new code: every scheduler x {binary, continuous,
-   continuous_forget, bkt_forget} on `layered_40`.
-2. **Oracle scheduler** (sees true mastery) to measure headroom above the
-   current best of about 31 usable concepts. Not a proposal.
+1. ~~Cross belief with scheduler~~ done 2026-10-15 (later); the effects
+   interact. Not yet crossed: `bkt_forget`, `predictive`, `maple`.
+2. ~~Oracle~~ done as an oracle belief. A true oracle scheduler (one that
+   plans using the learner's true state) is still open, and is needed to
+   say how far the best tutor is from the best possible.
 3. **Schedulers that account for forgetting**: a retention-gain index
    (marginal rise in expected recall at the next session per question; the
    restless-bandit view), recall-threshold review (review when predicted
@@ -459,4 +585,6 @@ on 3.10.
 6. **Fit parameters to real data** (pilot logs: student, question, concept,
    correct, timestamp) and validate the direction of simulated effects
    against the pilot.
-7. A second curriculum shape as a robustness check (`generate_layered`).
+7. Per-student estimation of the decay rate (the mismatch result says the
+   rate matters most), and a different decay shape in the tutor.
+8. A second curriculum shape as a robustness check (`generate_layered`).

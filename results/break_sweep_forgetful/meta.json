@@ -1,0 +1,24 @@
+{
+ "output_name": "break_sweep_forgetful",
+ "experiment": "break_sweep",
+ "curriculum": "layered_40",
+ "parameters": {
+  "n_learners": 30,
+  "break_days": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   8
+  ],
+  "profile": "average",
+  "half_life_days": 7
+ },
+ "commit": "744d4ea+uncommitted",
+ "run_at_utc": "2026-10-15 11:16:46",
+ "seconds": 2.5,
+ "python": "3.10.12"
+}
