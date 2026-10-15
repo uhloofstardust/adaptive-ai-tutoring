@@ -1,0 +1,13 @@
+{
+ "output_name": "forgetting_rules_rate10",
+ "experiment": "forgetting_rules",
+ "curriculum": "layered_40",
+ "parameters": {
+  "n_learners": 50,
+  "belief_rate": 0.1
+ },
+ "commit": "0af20eb",
+ "run_at_utc": "2026-10-15 12:48:56",
+ "seconds": 9.0,
+ "python": "3.10.12"
+}

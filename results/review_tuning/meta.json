@@ -1,0 +1,23 @@
+{
+ "output_name": "review_tuning",
+ "experiment": "review_tuning",
+ "curriculum": "layered_40",
+ "parameters": {
+  "n_learners": 30,
+  "r_review": [
+   0.4,
+   0.55,
+   0.7,
+   0.8,
+   0.9
+  ],
+  "rates": [
+   0.05,
+   0.1
+  ]
+ },
+ "commit": "0af20eb",
+ "run_at_utc": "2026-10-15 12:48:38",
+ "seconds": 14.0,
+ "python": "3.10.12"
+}
