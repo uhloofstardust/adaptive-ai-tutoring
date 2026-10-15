@@ -14,8 +14,8 @@
   "belief_rate": 0.05,
   "base_seed": 9000
  },
- "commit": "0af20eb",
- "run_at_utc": "2026-10-15 12:49:07",
- "seconds": 7.0,
+ "commit": "e1cc4f3",
+ "run_at_utc": "2026-10-15 12:53:15",
+ "seconds": 7.3,
  "python": "3.10.12"
 }
