@@ -41,7 +41,7 @@ THEMES = {
 # by the "continuous" rule.
 PALETTE = [("oracle", "#6B4FA0"), ("lowest recall", "#8C6D1F"),
            ("threshold", "#2A9D8F"), ("proportional", "#C0508A"),
-           ("greedy", "#4A6FA5"), ("binary", "#B4482B"), ("forgetting", "#3D7A5B"),
+           ("greedy", "#4A6FA5"), ("decay belief", "#3D7A5B"), ("binary", "#B4482B"), ("forgetting", "#3D7A5B"),
            ("forget", "#3D7A5B"), ("adaptive", "#E8A020"),
            ("continuous", "#2C5FA8"), ("curriculum", "#B4482B"),
            ("CT +", "#B4482B"), ("random", "#8A8F9A")]

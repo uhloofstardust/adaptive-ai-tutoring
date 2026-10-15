@@ -1,0 +1,18 @@
+# mastery_margin
+
+30 learners (seeds from 4242) on layered_40. Best threshold by the robust score (mean over breaks of 0 to 10 days): decaying belief 0.9, perfect belief 0.8.
+
+## margin
+
+| belief | threshold | usable_0d | usable_3d | usable_7d | robust | robust_ci95 | coverage |
+|---|---|---|---|---|---|---|---|
+| continuous_forget | 0.7 | 39.13 | 33.87 | 14.07 | 23 | 0.32 | 40 |
+| continuous_forget | 0.8 | 38.77 | 36.4 | 19.2 | 25.41 | 0.2 | 39.5 |
+| continuous_forget | 0.9 | 31.5 | 30.73 | 26.47 | 26.2 | 0.26 | 33.7 |
+| continuous_forget | 0.95 | 25.63 | 24.3 | 21 | 21.88 | 0.35 | 29.1 |
+| continuous_forget | 0.98 | 23.43 | 22.1 | 19.6 | 20.45 | 0.33 | 27.8 |
+| oracle | 0.7 | 40 | 40 | 16.17 | 26.51 | 0.22 | 40 |
+| oracle | 0.8 | 35.8 | 35.13 | 30.57 | 28.06 | 0.23 | 36.9 |
+| oracle | 0.9 | 26.93 | 25.83 | 23.1 | 23.6 | 0.21 | 29.4 |
+| oracle | 0.95 | 21.6 | 20.23 | 17.73 | 18.75 | 0.23 | 26.6 |
+| oracle | 0.98 | 16.3 | 16.07 | 15.23 | 15.27 | 0.17 | 19.1 |

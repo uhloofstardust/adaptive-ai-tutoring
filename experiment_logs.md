@@ -638,3 +638,16 @@ an average over plausible breaks.
 7. Per-student estimation of the decay rate (the mismatch result says the
    rate matters most), and a different decay shape in the tutor.
 8. A second curriculum shape as a robustness check (`generate_layered`).
+
+## 2026-10-15 (night): forgetting-aware review rules, perfect-belief cost, mastery margin
+
+Setup: three review rules adapted from the literature (lowest_recall, recall_threshold, proportional_review) as a two-step policy: review a faded learned concept (belief < r_review), else teach new via CurriculumTutor's ZPD choice. Tuned on seeds 4242+ (n=30), reported on fresh seeds 9000+ (n=50). Entries: review_tuning, forgetting_rules, forgetting_rules_rate10, mastery_margin, mastery_margin_fresh.
+
+Findings:
+- The rules are indistinguishable from CT with a decaying belief on fresh learners (robust-score differences <= 0.15, p >= 0.32 at belief rate 0.05). Adaptive review: +1.04 at rate 0.05, -1.63 at rate 0.10, so it is sensitive to the assumed rate.
+- greedy_gain was identical to lowest_recall in tuning, so it was removed (see cursim/schedulers/forgetting.py docstring).
+- Perfect belief (oracle) per rule: about +2.1 to +2.6 concepts on the break-robust score, but about 1.7 to 2.1 fewer at a 3-day break. The decaying belief is conservative and works as a safety margin, so the oracle is a reference, not a ceiling.
+- Mastery margin: the best mastery threshold depends on break length (0.7 to 0.8 for short breaks, 0.8 to 0.9 for 7 days; the 500-question budget limits high thresholds). Cleanest version so far of "no single setting is best for every break length".
+- Caveat: rules are adapted to a prerequisite graph with a two-step policy, not the papers' exact algorithms.
+
+Open: break-aware margin scheduler (trade coverage against margin, objective averaged over plausible breaks; the scheduler is not given the break length). Figure fix: "decay belief" now has its own colour.
