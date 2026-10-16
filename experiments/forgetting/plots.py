@@ -287,3 +287,38 @@ def fig_margin(days, panels, title):
     fig.suptitle(title, fontsize=11.5)
     fig.tight_layout()
     return fig
+
+
+_GAP_COLORS = {"CT as published (binary)": "#B4482B",
+               "CT + decay belief, mastered at 0.7": "#9FC5A8",
+               "CT + decay belief, mastered at 0.8": "#3D7A5B",
+               "CT + decay belief, mastered at 0.9": "#1C4A33",
+               "adaptive review + decay belief": "#E8A020"}
+
+
+def fig_poster_gap(days, panels):
+    """Top row: concepts usable against break length for every setting, with
+    the best-in-hindsight envelope. Bottom row: each setting's gap to it.
+    `panels[half_life] = (series, cis, best)`."""
+    n = len(panels)
+    fig, axes = plt.subplots(2, n, figsize=(5.2 * n, 8), squeeze=False,
+                             sharex="col")
+    for j, (hl, (series, cis, best)) in enumerate(panels.items()):
+        top, bot = axes[0][j], axes[1][j]
+        for name, ys in series.items():
+            c = _GAP_COLORS.get(name, "#5B6B78")
+            top.plot(days, ys, marker="o", ms=3, lw=1.8, color=c, label=name)
+            bot.plot(days, [b - y for b, y in zip(best, ys)], marker="o",
+                     ms=3, lw=1.8, color=c)
+        top.plot(days, best, color="black", ls="--", lw=1.4,
+                 label="best possible (best setting at each break)")
+        top.set_title(f"learners with a {hl}-day memory half-life")
+        bot.set_xlabel("days of break")
+        bot.axhline(0, color="black", lw=0.8)
+        live = [d for d, b in zip(days, best) if b >= 1.0]
+        top.set_xlim(-0.5, max(live) + 2)
+    axes[0][0].set_ylabel("concepts still usable")
+    axes[1][0].set_ylabel("concepts lost versus the best setting")
+    axes[0][0].legend(fontsize=7.5)
+    fig.tight_layout()
+    return fig
