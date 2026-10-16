@@ -194,5 +194,9 @@ res = run("forgetting_rules", dict(n_learners=2))
 check(len(res["tables"]["summary"]) == 10 and len(res["tables"]["curves"]) == 13, "forgetting_rules: ten arms, thirteen break lengths")
 res = run("mastery_margin", dict(n_learners=2, thresholds=(0.8, 0.9)))
 check(len(res["tables"]["margin"]) == 4, "mastery_margin honours thresholds")
+res = run("poster_gap", dict(n_learners=2, half_lives=(14,), break_days=(0, 3)))
+rows = res["tables"]["curves"]
+check(len(rows) == 2 and all(r["best_possible"] >= max(v for k, v in r.items() if k not in ("half_life_days", "break_days", "best_possible")) for r in rows),
+      "poster_gap: the best possible is never below any setting")
 
 print(f"\nALL {passed} CHECKS PASSED")

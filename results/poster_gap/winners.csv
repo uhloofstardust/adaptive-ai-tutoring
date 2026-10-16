@@ -1,0 +1,31 @@
+half_life_days,break_days,best_setting,best_concepts
+7,0,adaptive review + decay belief,25.98
+7,1,"CT + decay belief, mastered at 0.9",22.9
+7,2,"CT + decay belief, mastered at 0.9",18.8
+7,3,"CT + decay belief, mastered at 0.9",13.12
+7,4,"CT + decay belief, mastered at 0.9",5.52
+14,0,"CT + decay belief, mastered at 0.7",39.18
+14,1,"CT + decay belief, mastered at 0.8",38.7
+14,2,"CT + decay belief, mastered at 0.8",38.24
+14,3,"CT + decay belief, mastered at 0.8",36.98
+14,4,"CT + decay belief, mastered at 0.8",34.62
+14,5,adaptive review + decay belief,33
+14,6,adaptive review + decay belief,29.64
+14,7,"CT + decay belief, mastered at 0.9",26.92
+14,8,"CT + decay belief, mastered at 0.9",22.9
+14,10,"CT + decay belief, mastered at 0.9",9.7
+28,0,"CT as published (binary) = CT + decay belief, mastered at 0.7 = CT + decay belief, mastered at 0.8",40
+28,1,"CT as published (binary) = CT + decay belief, mastered at 0.7 = CT + decay belief, mastered at 0.8",40
+28,2,"CT as published (binary) = CT + decay belief, mastered at 0.7 = CT + decay belief, mastered at 0.8",40
+28,3,"CT as published (binary) = CT + decay belief, mastered at 0.7 = CT + decay belief, mastered at 0.8",40
+28,4,"CT as published (binary) = CT + decay belief, mastered at 0.8",40
+28,5,"CT + decay belief, mastered at 0.8",40
+28,6,"CT + decay belief, mastered at 0.8",40
+28,7,"CT + decay belief, mastered at 0.8",40
+28,8,"CT + decay belief, mastered at 0.8",39.94
+28,10,"CT + decay belief, mastered at 0.8",39.78
+28,12,"CT + decay belief, mastered at 0.8",39.34
+28,14,"CT + decay belief, mastered at 0.8",37.84
+28,18,"CT + decay belief, mastered at 0.9",30.32
+28,21,"CT + decay belief, mastered at 0.9",20.16
+28,25,"CT + decay belief, mastered at 0.9",3.34

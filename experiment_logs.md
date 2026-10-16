@@ -651,3 +651,15 @@ Findings:
 - Caveat: rules are adapted to a prerequisite graph with a two-step policy, not the papers' exact algorithms.
 
 Open: break-aware margin scheduler (trade coverage against margin, objective averaged over plausible breaks; the scheduler is not given the break length). Figure fix: "decay belief" now has its own colour.
+
+## 2026-10-16: poster_gap (poster experiment, fresh learners)
+
+Question: at each break length, how far is each tutor setting from the best one? Settings: CT as published (binary belief), CT with the decaying belief at mastery thresholds 0.7 / 0.8 / 0.9, adaptive review with the decaying belief. "Best possible" = best setting at that break length, picked in hindsight (reachable yardstick, not a ceiling). 50 fresh learners (seeds 9000+), layered_40, belief decay 0.05/day, memory half-lives 7, 14 and 28 days, breaks 0 to 28 days. Entry: poster_gap.
+
+Findings:
+- No single setting is best at every break length. Average learner (14d): threshold 0.7 best at 0d, 0.8 at 1 to 4d, adaptive review at 5 to 6d, 0.9 at 7 to 10d. Slow forgetters (28d): published CT ties for best up to 4d, 0.8 until 14d, 0.9 after that.
+- Worst-case loss of one fixed setting against the best (14d learners): published CT 19.2 concepts, 0.7: 12.7, 0.8: 11.2, 0.9: 7.4, adaptive review 6.4. Mean loss over live breaks: 14.4, 5.5, 3.5, 3.6, 2.6.
+- At 14d and a 3-day break: published CT 22.7 usable vs 37.0 for the decaying belief at 0.8.
+- Fast forgetters (7d, tutor assumes 0.05/day, true about 0.094): 0.9 is best at every break from 1 day; the poorly matched belief makes extra margin worth more.
+- Even the best fixed setting loses 2.6 concepts on average and 6.4 at worst to the best-per-break choice: this is the room a break-aware scheduler can use.
+- Caveat: the envelope is chosen on the same seeds it is scored on (50 learners, paired); with gaps this large the selection bias is small, but it is optimistic by construction.

@@ -54,5 +54,6 @@ SUITES = {
         ("mastery_margin", "mastery_margin", dict(n_learners=30)),
         ("mastery_margin_fresh", "mastery_margin",
          dict(n_learners=50, base_seed=9000)),
+        ("poster_gap", "poster_gap", dict(n_learners=50)),
     ],
 }
