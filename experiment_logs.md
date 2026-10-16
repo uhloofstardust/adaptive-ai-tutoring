@@ -663,3 +663,5 @@ Findings:
 - Fast forgetters (7d, tutor assumes 0.05/day, true about 0.094): 0.9 is best at every break from 1 day; the poorly matched belief makes extra margin worth more.
 - Even the best fixed setting loses 2.6 concepts on average and 6.4 at worst to the best-per-break choice: this is the room a break-aware scheduler can use.
 - Caveat: the envelope is chosen on the same seeds it is scored on (50 learners, paired); with gaps this large the selection bias is small, but it is optimistic by construction.
+
+Poster guide: `poster/build_explainer.py` builds `poster/poster_explainer.pdf` (plain-language guide, 5 pages, 4 figures) from results/poster_gap and results/forgetting_rules. Re-run it after any change to those results.
