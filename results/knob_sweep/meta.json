@@ -1,0 +1,33 @@
+{
+ "output_name": "knob_sweep",
+ "experiment": "knob_sweep",
+ "curriculum": "layered_40",
+ "parameters": {
+  "n_select": 50,
+  "n_eval": 100,
+  "select_seed": 9000,
+  "eval_seed": 12000,
+  "half_lives": [
+   14,
+   7,
+   28
+  ],
+  "break_days": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   7,
+   10,
+   14,
+   21,
+   28
+  ]
+ },
+ "commit": "9f1ca24+uncommitted",
+ "run_at_utc": "2026-10-18 05:38:08",
+ "seconds": 0.2,
+ "python": "3.10.12"
+}

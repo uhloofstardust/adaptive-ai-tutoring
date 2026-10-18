@@ -74,8 +74,8 @@ print("3. schedulers")
 expected = {"random", "curriculum_tutor", "uniform_zpd", "uniform_unmastered",
             "continuous", "adaptive_review", "predictive", "maple",
             "naive_maple", "ucb", "lowest_recall", "recall_threshold",
-            "proportional_review"}
-check(set(SCHEDULERS) == expected, "the registry holds exactly the thirteen known names")
+            "proportional_review", "curriculum_tutor_paper"}
+check(set(SCHEDULERS) == expected, "the registry holds exactly the fourteen known names")
 check(SCHEDULERS["uniform_zpd"] is SCHEDULERS["curriculum_tutor"], "uniform_zpd is an alias of curriculum_tutor")
 cur = build_curriculum()
 for name in sorted(SCHEDULERS):

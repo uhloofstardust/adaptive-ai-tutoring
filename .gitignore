@@ -10,3 +10,4 @@ runs/
 #     python -m experiments suite all
 # and commit the result if it changes, so the numbers and the code never
 # disagree. results/<name>/meta.json says exactly what produced each one.
+.cache/

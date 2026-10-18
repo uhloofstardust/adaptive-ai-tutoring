@@ -322,3 +322,107 @@ def fig_poster_gap(days, panels):
     axes[0][0].legend(fontsize=7.5)
     fig.tight_layout()
     return fig
+
+
+# -- knob_sweep figures ---------------------------------------------------
+
+def _break_colors(breaks):
+    import matplotlib.cm as cm
+    n = max(len(breaks) - 1, 1)
+    return {d: cm.viridis(0.92 * i / n) for i, d in enumerate(breaks)}
+
+
+def fig_knob_curves(rhos, depth_rows, curves_rho, curves_h, breaks, hl,
+                    rho_best, h_best):
+    """Usable topics against each knob, one line per break length. Stars
+    mark the best setting for that break (chosen on the selection seeds)."""
+    cols = _break_colors(breaks)
+    fig, (a, b) = plt.subplots(1, 2, figsize=(12.5, 4.8), sharey=True)
+    for d in breaks:
+        a.plot(rhos, curves_rho[d], marker="o", ms=3.5, lw=1.8, color=cols[d],
+               label=f"{d} d")
+        i = rhos.index(rho_best[d])
+        a.plot([rhos[i]], [curves_rho[d][i]], marker="*", ms=13,
+               color=cols[d], mec="black", mew=0.6)
+        xs = list(range(len(depth_rows)))
+        b.plot(xs, curves_h[d], marker="o", ms=3.5, lw=1.8, color=cols[d])
+        j = depth_rows.index(h_best[d])
+        b.plot([j], [curves_h[d][j]], marker="*", ms=13, color=cols[d],
+               mec="black", mew=0.6)
+    a.set_xlabel("revision budget (share of questions spent revising)")
+    a.set_ylabel("topics still usable after the break (of 40)")
+    a.set_title("Revision budget (study depth as published)")
+    b.set_xticks(range(len(depth_rows)))
+    b.set_xticklabels([str(r) for r in depth_rows])
+    b.set_xlabel("study depth: correct answers in a row needed to move on")
+    b.set_title("Study depth (no revision)")
+    a.legend(title="break", fontsize=8, ncol=2)
+    fig.suptitle(f"One knob at a time, learners with a {hl}-day half-life "
+                 f"(star = best for that break)", fontsize=11.5)
+    fig.tight_layout()
+    return fig
+
+
+def fig_knob_best(breaks_by_hl, rho_by_hl, rows_by_hl):
+    """The best value of each knob against break length."""
+    cols = {7: "#B4482B", 14: "#2F7A52", 28: "#2C5FA8"}
+    fig, (a, b) = plt.subplots(1, 2, figsize=(12, 4.4))
+    for hl in breaks_by_hl:
+        a.plot(breaks_by_hl[hl], rho_by_hl[hl], marker="o", lw=1.8,
+               color=cols.get(hl, "#555"), label=f"{hl}-day half-life")
+        b.plot(breaks_by_hl[hl], rows_by_hl[hl], marker="o", lw=1.8,
+               color=cols.get(hl, "#555"))
+    a.set_xlabel("days of break")
+    b.set_xlabel("days of break")
+    a.set_ylabel("revision budget of the best pair")
+    b.set_ylabel("study depth of the best pair (correct in a row)")
+    a.set_title("Best revision budget, both knobs tuned")
+    b.set_title("Best study depth, both knobs tuned")
+    a.legend()
+    fig.tight_layout()
+    return fig
+
+
+def fig_knob_heat(rhos, depth_rows, grids, breaks, hl):
+    """Both knobs together: usable topics for every (revision, depth) cell,
+    one panel per break length. Boxed cell = best, dotted = published."""
+    n = len(breaks)
+    fig, axes = plt.subplots(1, n, figsize=(3.9 * n, 4.4), squeeze=False)
+    for ax, d in zip(axes[0], breaks):
+        g = grids[d]                       # g[depth_idx][rho_idx]
+        im = ax.imshow(g, origin="lower", aspect="auto", cmap="YlGn",
+                       vmin=0, vmax=40)
+        ax.set_xticks(range(len(rhos)))
+        ax.set_xticklabels([f"{r:g}" for r in rhos], fontsize=8)
+        ax.set_yticks(range(len(depth_rows)))
+        ax.set_yticklabels([str(r) for r in depth_rows], fontsize=8)
+        ax.grid(False)
+        best = max((v, i, j) for i, row in enumerate(g)
+                   for j, v in enumerate(row))
+        ax.add_patch(plt.Rectangle((best[2] - .5, best[1] - .5), 1, 1,
+                                   fill=False, ec="black", lw=2))
+        ax.set_title(f"{d}-day break (best {best[0]:.1f})", fontsize=10)
+        ax.set_xlabel("revision budget")
+    axes[0][0].set_ylabel("study depth (correct in a row)")
+    fig.suptitle(f"Both knobs together, {hl}-day half-life learners",
+                 fontsize=11.5)
+    fig.tight_layout()
+    return fig
+
+
+def fig_knob_loss(breaks, series, hl):
+    """Topics lost against the best (revision, depth) for each break."""
+    fig, ax = plt.subplots(figsize=(7.5, 4.6))
+    pal = ["#B4482B", "#2C5FA8", "#2F7A52", "#E8A020"]
+    for (name, ys), c in zip(series.items(), pal):
+        dashed = name.startswith("published")
+        ax.plot(breaks, ys, marker="o", ms=3.5, lw=2.6 if dashed else 1.9,
+                color=c, ls="--" if dashed else "-", label=name,
+                zorder=3 if dashed else 2)
+    ax.axhline(0, color="black", lw=0.8)
+    ax.set_xlabel("days of break")
+    ax.set_ylabel("topics lost versus the best setting for that break")
+    ax.set_title(f"What a fixed choice costs, {hl}-day half-life learners")
+    ax.legend(fontsize=8.5)
+    fig.tight_layout()
+    return fig

@@ -118,6 +118,9 @@ def run_one(cur: Curriculum, spec: RunSpec, seed: int,
             step += 1
             z = zpd(cur, model, now_h) if keep_trace else None
             q = sched.select(cur, model, now_h, rng, last_qid)
+            if q is None:           # the scheduler asks nothing this slot
+                now_h += 1.0 / 60.0
+                continue
             b_before = model.belief(q.concept_id, now_h)
             res = learner.answer(q, now_h)
             model.observe(q.concept_id, res["correct"], now_h)
@@ -181,6 +184,7 @@ def run_one(cur: Curriculum, spec: RunSpec, seed: int,
         "log": log,
         "trace": trace,
         "learned_step": dict(getattr(learner, "learned_step", {})),
+        "sched_stats": sched.stats() if hasattr(sched, "stats") else {},
     }
 
 
