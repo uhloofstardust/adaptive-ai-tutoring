@@ -1,0 +1,7 @@
+version,overall_p_right,p_right_on_hard,share_hard
+capped at 0.6,0.3635,0.3807,0.438
+slow (30% speed),0.3546,0.3708,0.3459
+P(right) at mastery 0.2,0.3424,0.279,
+P(right) at mastery 0.4,0.4683,0.3629,
+P(right) at mastery 0.6,0.6109,0.4999,
+P(right) at mastery 0.9,0.8467,0.8031,
