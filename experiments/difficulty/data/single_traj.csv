@@ -1,0 +1,367 @@
+version,policy,q,mean_m
+capped at 0.6,easy only,0,0.05
+capped at 0.6,easy only,1,0.10952
+capped at 0.6,easy only,2,0.16972
+capped at 0.6,easy only,3,0.22894
+capped at 0.6,easy only,4,0.28567
+capped at 0.6,easy only,5,0.33829
+capped at 0.6,easy only,6,0.38654
+capped at 0.6,easy only,7,0.42913
+capped at 0.6,easy only,8,0.46517
+capped at 0.6,easy only,9,0.49492
+capped at 0.6,easy only,10,0.51923
+capped at 0.6,easy only,11,0.53853
+capped at 0.6,easy only,12,0.5535
+capped at 0.6,easy only,13,0.56542
+capped at 0.6,easy only,14,0.57447
+capped at 0.6,easy only,15,0.58139
+capped at 0.6,easy only,16,0.58645
+capped at 0.6,easy only,17,0.59009
+capped at 0.6,easy only,18,0.59286
+capped at 0.6,easy only,19,0.59485
+capped at 0.6,easy only,20,0.59628
+capped at 0.6,easy only,21,0.59735
+capped at 0.6,easy only,22,0.59811
+capped at 0.6,easy only,23,0.59866
+capped at 0.6,easy only,24,0.59903
+capped at 0.6,easy only,25,0.5993
+capped at 0.6,easy only,26,0.5995
+capped at 0.6,easy only,27,0.59964
+capped at 0.6,easy only,28,0.59975
+capped at 0.6,easy only,29,0.59982
+capped at 0.6,easy only,30,0.59987
+capped at 0.6,easy only,31,0.59991
+capped at 0.6,easy only,32,0.59993
+capped at 0.6,easy only,33,0.59995
+capped at 0.6,easy only,34,0.59997
+capped at 0.6,easy only,35,0.59998
+capped at 0.6,easy only,36,0.59998
+capped at 0.6,easy only,37,0.59999
+capped at 0.6,easy only,38,0.59999
+capped at 0.6,easy only,39,0.59999
+capped at 0.6,easy only,40,0.6
+capped at 0.6,easy only,41,0.6
+capped at 0.6,easy only,42,0.6
+capped at 0.6,easy only,43,0.6
+capped at 0.6,easy only,44,0.6
+capped at 0.6,easy only,45,0.6
+capped at 0.6,easy only,46,0.6
+capped at 0.6,easy only,47,0.6
+capped at 0.6,easy only,48,0.6
+capped at 0.6,easy only,49,0.6
+capped at 0.6,easy only,50,0.6
+capped at 0.6,easy only,51,0.6
+capped at 0.6,easy only,52,0.6
+capped at 0.6,easy only,53,0.6
+capped at 0.6,easy only,54,0.6
+capped at 0.6,easy only,55,0.6
+capped at 0.6,easy only,56,0.6
+capped at 0.6,easy only,57,0.6
+capped at 0.6,easy only,58,0.6
+capped at 0.6,easy only,59,0.6
+capped at 0.6,easy only,60,0.6
+capped at 0.6,hard only,0,0.05
+capped at 0.6,hard only,1,0.05171
+capped at 0.6,hard only,2,0.05464
+capped at 0.6,hard only,3,0.05728
+capped at 0.6,hard only,4,0.05947
+capped at 0.6,hard only,5,0.06223
+capped at 0.6,hard only,6,0.06439
+capped at 0.6,hard only,7,0.06741
+capped at 0.6,hard only,8,0.0697
+capped at 0.6,hard only,9,0.07396
+capped at 0.6,hard only,10,0.07676
+capped at 0.6,hard only,11,0.08025
+capped at 0.6,hard only,12,0.08308
+capped at 0.6,hard only,13,0.08531
+capped at 0.6,hard only,14,0.08895
+capped at 0.6,hard only,15,0.0929
+capped at 0.6,hard only,16,0.09631
+capped at 0.6,hard only,17,0.09849
+capped at 0.6,hard only,18,0.10121
+capped at 0.6,hard only,19,0.10253
+capped at 0.6,hard only,20,0.10439
+capped at 0.6,hard only,21,0.10608
+capped at 0.6,hard only,22,0.10922
+capped at 0.6,hard only,23,0.1121
+capped at 0.6,hard only,24,0.11448
+capped at 0.6,hard only,25,0.11749
+capped at 0.6,hard only,26,0.11891
+capped at 0.6,hard only,27,0.12099
+capped at 0.6,hard only,28,0.12308
+capped at 0.6,hard only,29,0.12605
+capped at 0.6,hard only,30,0.12806
+capped at 0.6,hard only,31,0.13082
+capped at 0.6,hard only,32,0.13411
+capped at 0.6,hard only,33,0.13675
+capped at 0.6,hard only,34,0.13979
+capped at 0.6,hard only,35,0.14311
+capped at 0.6,hard only,36,0.14513
+capped at 0.6,hard only,37,0.14777
+capped at 0.6,hard only,38,0.15101
+capped at 0.6,hard only,39,0.15406
+capped at 0.6,hard only,40,0.15649
+capped at 0.6,hard only,41,0.15953
+capped at 0.6,hard only,42,0.1628
+capped at 0.6,hard only,43,0.16469
+capped at 0.6,hard only,44,0.16575
+capped at 0.6,hard only,45,0.1667
+capped at 0.6,hard only,46,0.16916
+capped at 0.6,hard only,47,0.17283
+capped at 0.6,hard only,48,0.17523
+capped at 0.6,hard only,49,0.17699
+capped at 0.6,hard only,50,0.17983
+capped at 0.6,hard only,51,0.18202
+capped at 0.6,hard only,52,0.18331
+capped at 0.6,hard only,53,0.18491
+capped at 0.6,hard only,54,0.18789
+capped at 0.6,hard only,55,0.1905
+capped at 0.6,hard only,56,0.19204
+capped at 0.6,hard only,57,0.19434
+capped at 0.6,hard only,58,0.19666
+capped at 0.6,hard only,59,0.19845
+capped at 0.6,hard only,60,0.20032
+capped at 0.6,best switch rule,0,0.05
+capped at 0.6,best switch rule,1,0.10952
+capped at 0.6,best switch rule,2,0.16972
+capped at 0.6,best switch rule,3,0.22905
+capped at 0.6,best switch rule,4,0.28815
+capped at 0.6,best switch rule,5,0.3445
+capped at 0.6,best switch rule,6,0.41464
+capped at 0.6,best switch rule,7,0.48252
+capped at 0.6,best switch rule,8,0.55066
+capped at 0.6,best switch rule,9,0.61482
+capped at 0.6,best switch rule,10,0.67432
+capped at 0.6,best switch rule,11,0.73248
+capped at 0.6,best switch rule,12,0.78415
+capped at 0.6,best switch rule,13,0.82373
+capped at 0.6,best switch rule,14,0.85597
+capped at 0.6,best switch rule,15,0.88432
+capped at 0.6,best switch rule,16,0.90518
+capped at 0.6,best switch rule,17,0.91941
+capped at 0.6,best switch rule,18,0.93538
+capped at 0.6,best switch rule,19,0.94708
+capped at 0.6,best switch rule,20,0.95663
+capped at 0.6,best switch rule,21,0.96533
+capped at 0.6,best switch rule,22,0.97299
+capped at 0.6,best switch rule,23,0.97856
+capped at 0.6,best switch rule,24,0.98307
+capped at 0.6,best switch rule,25,0.98651
+capped at 0.6,best switch rule,26,0.98987
+capped at 0.6,best switch rule,27,0.992
+capped at 0.6,best switch rule,28,0.99368
+capped at 0.6,best switch rule,29,0.9949
+capped at 0.6,best switch rule,30,0.99657
+capped at 0.6,best switch rule,31,0.99715
+capped at 0.6,best switch rule,32,0.998
+capped at 0.6,best switch rule,33,0.99822
+capped at 0.6,best switch rule,34,0.99849
+capped at 0.6,best switch rule,35,0.99865
+capped at 0.6,best switch rule,36,0.99868
+capped at 0.6,best switch rule,37,0.99895
+capped at 0.6,best switch rule,38,0.99925
+capped at 0.6,best switch rule,39,0.99941
+capped at 0.6,best switch rule,40,0.99943
+capped at 0.6,best switch rule,41,0.99969
+capped at 0.6,best switch rule,42,0.99972
+capped at 0.6,best switch rule,43,0.99972
+capped at 0.6,best switch rule,44,0.99984
+capped at 0.6,best switch rule,45,0.99985
+capped at 0.6,best switch rule,46,0.99985
+capped at 0.6,best switch rule,47,0.99985
+capped at 0.6,best switch rule,48,0.99985
+capped at 0.6,best switch rule,49,0.99985
+capped at 0.6,best switch rule,50,0.99985
+capped at 0.6,best switch rule,51,0.99985
+capped at 0.6,best switch rule,52,0.99985
+capped at 0.6,best switch rule,53,0.99985
+capped at 0.6,best switch rule,54,0.99985
+capped at 0.6,best switch rule,55,0.99985
+capped at 0.6,best switch rule,56,0.99985
+capped at 0.6,best switch rule,57,0.99999
+capped at 0.6,best switch rule,58,1.0
+capped at 0.6,best switch rule,59,1.0
+capped at 0.6,best switch rule,60,1.0
+slow (30% speed),easy only,0,0.05
+slow (30% speed),easy only,1,0.08084
+slow (30% speed),easy only,2,0.1129
+slow (30% speed),easy only,3,0.14573
+slow (30% speed),easy only,4,0.17935
+slow (30% speed),easy only,5,0.21343
+slow (30% speed),easy only,6,0.24893
+slow (30% speed),easy only,7,0.28523
+slow (30% speed),easy only,8,0.32271
+slow (30% speed),easy only,9,0.35965
+slow (30% speed),easy only,10,0.39729
+slow (30% speed),easy only,11,0.4341
+slow (30% speed),easy only,12,0.47107
+slow (30% speed),easy only,13,0.50769
+slow (30% speed),easy only,14,0.54424
+slow (30% speed),easy only,15,0.57993
+slow (30% speed),easy only,16,0.61377
+slow (30% speed),easy only,17,0.64618
+slow (30% speed),easy only,18,0.67761
+slow (30% speed),easy only,19,0.70703
+slow (30% speed),easy only,20,0.73491
+slow (30% speed),easy only,21,0.76103
+slow (30% speed),easy only,22,0.78519
+slow (30% speed),easy only,23,0.80786
+slow (30% speed),easy only,24,0.82829
+slow (30% speed),easy only,25,0.84735
+slow (30% speed),easy only,26,0.86473
+slow (30% speed),easy only,27,0.88014
+slow (30% speed),easy only,28,0.89404
+slow (30% speed),easy only,29,0.90665
+slow (30% speed),easy only,30,0.91794
+slow (30% speed),easy only,31,0.928
+slow (30% speed),easy only,32,0.93685
+slow (30% speed),easy only,33,0.94478
+slow (30% speed),easy only,34,0.95178
+slow (30% speed),easy only,35,0.95791
+slow (30% speed),easy only,36,0.96332
+slow (30% speed),easy only,37,0.96804
+slow (30% speed),easy only,38,0.97216
+slow (30% speed),easy only,39,0.9758
+slow (30% speed),easy only,40,0.97898
+slow (30% speed),easy only,41,0.98177
+slow (30% speed),easy only,42,0.98417
+slow (30% speed),easy only,43,0.98626
+slow (30% speed),easy only,44,0.98808
+slow (30% speed),easy only,45,0.98967
+slow (30% speed),easy only,46,0.99104
+slow (30% speed),easy only,47,0.99224
+slow (30% speed),easy only,48,0.99328
+slow (30% speed),easy only,49,0.99418
+slow (30% speed),easy only,50,0.99496
+slow (30% speed),easy only,51,0.99564
+slow (30% speed),easy only,52,0.99622
+slow (30% speed),easy only,53,0.99673
+slow (30% speed),easy only,54,0.99717
+slow (30% speed),easy only,55,0.99755
+slow (30% speed),easy only,56,0.99788
+slow (30% speed),easy only,57,0.99817
+slow (30% speed),easy only,58,0.99841
+slow (30% speed),easy only,59,0.99863
+slow (30% speed),easy only,60,0.99881
+slow (30% speed),hard only,0,0.05
+slow (30% speed),hard only,1,0.05171
+slow (30% speed),hard only,2,0.05464
+slow (30% speed),hard only,3,0.05728
+slow (30% speed),hard only,4,0.05947
+slow (30% speed),hard only,5,0.06223
+slow (30% speed),hard only,6,0.06439
+slow (30% speed),hard only,7,0.06741
+slow (30% speed),hard only,8,0.0697
+slow (30% speed),hard only,9,0.07396
+slow (30% speed),hard only,10,0.07676
+slow (30% speed),hard only,11,0.08025
+slow (30% speed),hard only,12,0.08308
+slow (30% speed),hard only,13,0.08531
+slow (30% speed),hard only,14,0.08895
+slow (30% speed),hard only,15,0.0929
+slow (30% speed),hard only,16,0.09631
+slow (30% speed),hard only,17,0.09849
+slow (30% speed),hard only,18,0.10121
+slow (30% speed),hard only,19,0.10253
+slow (30% speed),hard only,20,0.10439
+slow (30% speed),hard only,21,0.10608
+slow (30% speed),hard only,22,0.10922
+slow (30% speed),hard only,23,0.1121
+slow (30% speed),hard only,24,0.11448
+slow (30% speed),hard only,25,0.11749
+slow (30% speed),hard only,26,0.11891
+slow (30% speed),hard only,27,0.12099
+slow (30% speed),hard only,28,0.12308
+slow (30% speed),hard only,29,0.12605
+slow (30% speed),hard only,30,0.12806
+slow (30% speed),hard only,31,0.13082
+slow (30% speed),hard only,32,0.13411
+slow (30% speed),hard only,33,0.13675
+slow (30% speed),hard only,34,0.13979
+slow (30% speed),hard only,35,0.14311
+slow (30% speed),hard only,36,0.14513
+slow (30% speed),hard only,37,0.14777
+slow (30% speed),hard only,38,0.15101
+slow (30% speed),hard only,39,0.15406
+slow (30% speed),hard only,40,0.15649
+slow (30% speed),hard only,41,0.15953
+slow (30% speed),hard only,42,0.1628
+slow (30% speed),hard only,43,0.16469
+slow (30% speed),hard only,44,0.16575
+slow (30% speed),hard only,45,0.1667
+slow (30% speed),hard only,46,0.16916
+slow (30% speed),hard only,47,0.17283
+slow (30% speed),hard only,48,0.17523
+slow (30% speed),hard only,49,0.17699
+slow (30% speed),hard only,50,0.17983
+slow (30% speed),hard only,51,0.18202
+slow (30% speed),hard only,52,0.18331
+slow (30% speed),hard only,53,0.18491
+slow (30% speed),hard only,54,0.18789
+slow (30% speed),hard only,55,0.1905
+slow (30% speed),hard only,56,0.19204
+slow (30% speed),hard only,57,0.19434
+slow (30% speed),hard only,58,0.19666
+slow (30% speed),hard only,59,0.19845
+slow (30% speed),hard only,60,0.20032
+slow (30% speed),best switch rule,0,0.05
+slow (30% speed),best switch rule,1,0.08084
+slow (30% speed),best switch rule,2,0.1129
+slow (30% speed),best switch rule,3,0.14573
+slow (30% speed),best switch rule,4,0.17935
+slow (30% speed),best switch rule,5,0.2137
+slow (30% speed),best switch rule,6,0.24969
+slow (30% speed),best switch rule,7,0.28721
+slow (30% speed),best switch rule,8,0.3332
+slow (30% speed),best switch rule,9,0.38032
+slow (30% speed),best switch rule,10,0.43124
+slow (30% speed),best switch rule,11,0.48393
+slow (30% speed),best switch rule,12,0.55355
+slow (30% speed),best switch rule,13,0.61515
+slow (30% speed),best switch rule,14,0.67262
+slow (30% speed),best switch rule,15,0.72278
+slow (30% speed),best switch rule,16,0.77279
+slow (30% speed),best switch rule,17,0.8082
+slow (30% speed),best switch rule,18,0.84304
+slow (30% speed),best switch rule,19,0.86903
+slow (30% speed),best switch rule,20,0.89133
+slow (30% speed),best switch rule,21,0.91255
+slow (30% speed),best switch rule,22,0.92883
+slow (30% speed),best switch rule,23,0.9418
+slow (30% speed),best switch rule,24,0.95281
+slow (30% speed),best switch rule,25,0.96202
+slow (30% speed),best switch rule,26,0.96835
+slow (30% speed),best switch rule,27,0.97346
+slow (30% speed),best switch rule,28,0.97777
+slow (30% speed),best switch rule,29,0.98155
+slow (30% speed),best switch rule,30,0.98513
+slow (30% speed),best switch rule,31,0.98734
+slow (30% speed),best switch rule,32,0.98939
+slow (30% speed),best switch rule,33,0.99211
+slow (30% speed),best switch rule,34,0.99346
+slow (30% speed),best switch rule,35,0.99437
+slow (30% speed),best switch rule,36,0.99531
+slow (30% speed),best switch rule,37,0.99593
+slow (30% speed),best switch rule,38,0.99679
+slow (30% speed),best switch rule,39,0.99753
+slow (30% speed),best switch rule,40,0.99799
+slow (30% speed),best switch rule,41,0.99844
+slow (30% speed),best switch rule,42,0.99877
+slow (30% speed),best switch rule,43,0.99905
+slow (30% speed),best switch rule,44,0.99908
+slow (30% speed),best switch rule,45,0.9991
+slow (30% speed),best switch rule,46,0.9991
+slow (30% speed),best switch rule,47,0.9991
+slow (30% speed),best switch rule,48,0.99924
+slow (30% speed),best switch rule,49,0.99939
+slow (30% speed),best switch rule,50,0.9994
+slow (30% speed),best switch rule,51,0.9994
+slow (30% speed),best switch rule,52,0.9994
+slow (30% speed),best switch rule,53,0.9994
+slow (30% speed),best switch rule,54,0.99954
+slow (30% speed),best switch rule,55,0.99955
+slow (30% speed),best switch rule,56,0.99955
+slow (30% speed),best switch rule,57,0.99968
+slow (30% speed),best switch rule,58,0.9997
+slow (30% speed),best switch rule,59,0.9997
+slow (30% speed),best switch rule,60,0.9997

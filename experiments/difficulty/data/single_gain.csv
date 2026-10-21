@@ -1,0 +1,283 @@
+model,m,gain_easy,gain_hard
+today,0.02,0.185574,0.183859
+"idea, learn from marked answer",0.02,0.10983,0.220781
+"idea, learn from solving",0.02,0.059588,0.000413
+today,0.03,0.18486,0.182114
+"idea, learn from marked answer",0.03,0.108629,0.218865
+"idea, learn from solving",0.03,0.05958,0.000904
+today,0.04,0.184221,0.180416
+"idea, learn from marked answer",0.04,0.107462,0.217069
+"idea, learn from solving",0.04,0.059621,0.001572
+today,0.05,0.183633,0.178762
+"idea, learn from marked answer",0.05,0.106314,0.215389
+"idea, learn from solving",0.05,0.05969,0.00241
+today,0.06,0.183083,0.177151
+"idea, learn from marked answer",0.06,0.105175,0.213818
+"idea, learn from solving",0.06,0.059773,0.003408
+today,0.07,0.182559,0.175581
+"idea, learn from marked answer",0.07,0.104039,0.212352
+"idea, learn from solving",0.07,0.059859,0.004562
+today,0.08,0.182054,0.17405
+"idea, learn from marked answer",0.08,0.1029,0.210987
+"idea, learn from solving",0.08,0.059942,0.005863
+today,0.09,0.181562,0.172557
+"idea, learn from marked answer",0.09,0.101754,0.209717
+"idea, learn from solving",0.09,0.060014,0.007305
+today,0.1,0.181076,0.171099
+"idea, learn from marked answer",0.1,0.100598,0.208539
+"idea, learn from solving",0.1,0.06007,0.008881
+today,0.11,0.180593,0.169675
+"idea, learn from marked answer",0.11,0.099428,0.207449
+"idea, learn from solving",0.11,0.060107,0.010587
+today,0.12,0.180109,0.168283
+"idea, learn from marked answer",0.12,0.098241,0.206442
+"idea, learn from solving",0.12,0.06012,0.012414
+today,0.13,0.179621,0.166922
+"idea, learn from marked answer",0.13,0.097037,0.205513
+"idea, learn from solving",0.13,0.060106,0.014358
+today,0.14,0.179126,0.16559
+"idea, learn from marked answer",0.14,0.095812,0.20466
+"idea, learn from solving",0.14,0.060061,0.016412
+today,0.15,0.178621,0.164286
+"idea, learn from marked answer",0.15,0.094564,0.203877
+"idea, learn from solving",0.15,0.059984,0.01857
+today,0.16,0.178105,0.163007
+"idea, learn from marked answer",0.16,0.093293,0.203161
+"idea, learn from solving",0.16,0.059872,0.020826
+today,0.17,0.177574,0.161753
+"idea, learn from marked answer",0.17,0.091996,0.202508
+"idea, learn from solving",0.17,0.059722,0.023174
+today,0.18,0.177027,0.160522
+"idea, learn from marked answer",0.18,0.090672,0.201914
+"idea, learn from solving",0.18,0.059533,0.025609
+today,0.19,0.176463,0.159312
+"idea, learn from marked answer",0.19,0.089321,0.201375
+"idea, learn from solving",0.19,0.059302,0.028124
+today,0.2,0.175879,0.158122
+"idea, learn from marked answer",0.2,0.087939,0.200886
+"idea, learn from solving",0.2,0.059029,0.030715
+today,0.21,0.175274,0.156951
+"idea, learn from marked answer",0.21,0.086528,0.200445
+"idea, learn from solving",0.21,0.05871,0.033375
+today,0.22,0.174647,0.155796
+"idea, learn from marked answer",0.22,0.085085,0.200047
+"idea, learn from solving",0.22,0.058345,0.036098
+today,0.23,0.173997,0.154656
+"idea, learn from marked answer",0.23,0.083609,0.199688
+"idea, learn from solving",0.23,0.057932,0.038879
+today,0.24,0.173321,0.153531
+"idea, learn from marked answer",0.24,0.0821,0.199365
+"idea, learn from solving",0.24,0.05747,0.041713
+today,0.25,0.17262,0.152417
+"idea, learn from marked answer",0.25,0.080556,0.199073
+"idea, learn from solving",0.25,0.056957,0.044593
+today,0.26,0.171892,0.151315
+"idea, learn from marked answer",0.26,0.078977,0.19881
+"idea, learn from solving",0.26,0.056393,0.047514
+today,0.27,0.171135,0.150222
+"idea, learn from marked answer",0.27,0.077363,0.19857
+"idea, learn from solving",0.27,0.055776,0.050471
+today,0.28,0.17035,0.149136
+"idea, learn from marked answer",0.28,0.075711,0.198351
+"idea, learn from solving",0.28,0.055104,0.053457
+today,0.29,0.169534,0.148058
+"idea, learn from marked answer",0.29,0.074022,0.198148
+"idea, learn from solving",0.29,0.054378,0.056468
+today,0.3,0.168687,0.146984
+"idea, learn from marked answer",0.3,0.072295,0.197958
+"idea, learn from solving",0.3,0.053595,0.059497
+today,0.31,0.167809,0.145913
+"idea, learn from marked answer",0.31,0.070528,0.197777
+"idea, learn from solving",0.31,0.052755,0.06254
+today,0.32,0.166898,0.144845
+"idea, learn from marked answer",0.32,0.068723,0.197602
+"idea, learn from solving",0.32,0.051857,0.065591
+today,0.33,0.165953,0.143778
+"idea, learn from marked answer",0.33,0.066877,0.197428
+"idea, learn from solving",0.33,0.0509,0.068644
+today,0.34,0.164974,0.142709
+"idea, learn from marked answer",0.34,0.06499,0.197252
+"idea, learn from solving",0.34,0.049882,0.071694
+today,0.35,0.163961,0.141638
+"idea, learn from marked answer",0.35,0.063062,0.19707
+"idea, learn from solving",0.35,0.048804,0.074736
+today,0.36,0.162911,0.140564
+"idea, learn from marked answer",0.36,0.061092,0.196879
+"idea, learn from solving",0.36,0.047664,0.077763
+today,0.37,0.161826,0.139485
+"idea, learn from marked answer",0.37,0.059079,0.196675
+"idea, learn from solving",0.37,0.046462,0.080772
+today,0.38,0.160703,0.138399
+"idea, learn from marked answer",0.38,0.057024,0.196453
+"idea, learn from solving",0.38,0.045196,0.083755
+today,0.39,0.159543,0.137304
+"idea, learn from marked answer",0.39,0.054924,0.196211
+"idea, learn from solving",0.39,0.043867,0.086708
+today,0.4,0.158344,0.136201
+"idea, learn from marked answer",0.4,0.052781,0.195945
+"idea, learn from solving",0.4,0.042473,0.089625
+today,0.41,0.157107,0.135087
+"idea, learn from marked answer",0.41,0.050594,0.195651
+"idea, learn from solving",0.41,0.041013,0.092502
+today,0.42,0.15583,0.13396
+"idea, learn from marked answer",0.42,0.048361,0.195326
+"idea, learn from solving",0.42,0.039487,0.095332
+today,0.43,0.154513,0.13282
+"idea, learn from marked answer",0.43,0.046083,0.194965
+"idea, learn from solving",0.43,0.037894,0.098111
+today,0.44,0.153156,0.131664
+"idea, learn from marked answer",0.44,0.043759,0.194566
+"idea, learn from solving",0.44,0.036233,0.100832
+today,0.45,0.151757,0.130493
+"idea, learn from marked answer",0.45,0.041388,0.194124
+"idea, learn from solving",0.45,0.034505,0.103491
+today,0.46,0.150317,0.129303
+"idea, learn from marked answer",0.46,0.038971,0.193636
+"idea, learn from solving",0.46,0.032708,0.106082
+today,0.47,0.148835,0.128094
+"idea, learn from marked answer",0.47,0.036507,0.193098
+"idea, learn from solving",0.47,0.030841,0.1086
+today,0.48,0.14731,0.126864
+"idea, learn from marked answer",0.48,0.033995,0.192507
+"idea, learn from solving",0.48,0.028904,0.11104
+today,0.49,0.145743,0.125612
+"idea, learn from marked answer",0.49,0.031435,0.191859
+"idea, learn from solving",0.49,0.026897,0.113396
+today,0.5,0.144131,0.124336
+"idea, learn from marked answer",0.5,0.028826,0.191151
+"idea, learn from solving",0.5,0.024818,0.115663
+today,0.51,0.142476,0.123036
+"idea, learn from marked answer",0.51,0.026169,0.190378
+"idea, learn from solving",0.51,0.022668,0.117835
+today,0.52,0.140776,0.121709
+"idea, learn from marked answer",0.52,0.023463,0.189538
+"idea, learn from solving",0.52,0.020445,0.119909
+today,0.53,0.139032,0.120355
+"idea, learn from marked answer",0.53,0.020707,0.188626
+"idea, learn from solving",0.53,0.01815,0.121877
+today,0.54,0.137242,0.118971
+"idea, learn from marked answer",0.54,0.017901,0.18764
+"idea, learn from solving",0.54,0.015781,0.123735
+today,0.55,0.135407,0.117557
+"idea, learn from marked answer",0.55,0.015045,0.186575
+"idea, learn from solving",0.55,0.013338,0.125478
+today,0.56,0.133525,0.116111
+"idea, learn from marked answer",0.56,0.012139,0.185428
+"idea, learn from solving",0.56,0.010822,0.127099
+today,0.57,0.131597,0.114631
+"idea, learn from marked answer",0.57,0.009181,0.184195
+"idea, learn from solving",0.57,0.00823,0.128595
+today,0.58,0.129622,0.113117
+"idea, learn from marked answer",0.58,0.006172,0.182873
+"idea, learn from solving",0.58,0.005562,0.12996
+today,0.59,0.127599,0.111567
+"idea, learn from marked answer",0.59,0.003112,0.181458
+"idea, learn from solving",0.59,0.002819,0.131189
+today,0.6,0.125529,0.109979
+"idea, learn from marked answer",0.6,0.0,0.179947
+"idea, learn from solving",0.6,0.0,0.132275
+today,0.61,0.123411,0.108353
+"idea, learn from marked answer",0.61,0.0,0.178336
+"idea, learn from solving",0.61,0.0,0.133215
+today,0.62,0.121245,0.106686
+"idea, learn from marked answer",0.62,0.0,0.176622
+"idea, learn from solving",0.62,0.0,0.134003
+today,0.63,0.11903,0.104978
+"idea, learn from marked answer",0.63,0.0,0.1748
+"idea, learn from solving",0.63,0.0,0.134633
+today,0.64,0.116765,0.103227
+"idea, learn from marked answer",0.64,0.0,0.172869
+"idea, learn from solving",0.64,0.0,0.135101
+today,0.65,0.114452,0.101431
+"idea, learn from marked answer",0.65,0.0,0.170822
+"idea, learn from solving",0.65,0.0,0.135401
+today,0.66,0.112088,0.09959
+"idea, learn from marked answer",0.66,0.0,0.168659
+"idea, learn from solving",0.66,0.0,0.135528
+today,0.67,0.109675,0.097701
+"idea, learn from marked answer",0.67,0.0,0.166374
+"idea, learn from solving",0.67,0.0,0.135476
+today,0.68,0.10721,0.095764
+"idea, learn from marked answer",0.68,0.0,0.163964
+"idea, learn from solving",0.68,0.0,0.135241
+today,0.69,0.104696,0.093777
+"idea, learn from marked answer",0.69,0.0,0.161426
+"idea, learn from solving",0.69,0.0,0.134818
+today,0.7,0.10213,0.091739
+"idea, learn from marked answer",0.7,0.0,0.158757
+"idea, learn from solving",0.7,0.0,0.134201
+today,0.71,0.099512,0.089648
+"idea, learn from marked answer",0.71,0.0,0.155952
+"idea, learn from solving",0.71,0.0,0.133385
+today,0.72,0.096843,0.087503
+"idea, learn from marked answer",0.72,0.0,0.153008
+"idea, learn from solving",0.72,0.0,0.132365
+today,0.73,0.094122,0.085303
+"idea, learn from marked answer",0.73,0.0,0.149922
+"idea, learn from solving",0.73,0.0,0.131135
+today,0.74,0.091349,0.083046
+"idea, learn from marked answer",0.74,0.0,0.14669
+"idea, learn from solving",0.74,0.0,0.129691
+today,0.75,0.088523,0.080731
+"idea, learn from marked answer",0.75,0.0,0.143309
+"idea, learn from solving",0.75,0.0,0.128027
+today,0.76,0.085644,0.078357
+"idea, learn from marked answer",0.76,0.0,0.139774
+"idea, learn from solving",0.76,0.0,0.126139
+today,0.77,0.082712,0.075921
+"idea, learn from marked answer",0.77,0.0,0.136084
+"idea, learn from solving",0.77,0.0,0.12402
+today,0.78,0.079727,0.073424
+"idea, learn from marked answer",0.78,0.0,0.132233
+"idea, learn from solving",0.78,0.0,0.121666
+today,0.79,0.076687,0.070863
+"idea, learn from marked answer",0.79,0.0,0.128219
+"idea, learn from solving",0.79,0.0,0.119072
+today,0.8,0.073594,0.068237
+"idea, learn from marked answer",0.8,0.0,0.124038
+"idea, learn from solving",0.8,0.0,0.116233
+today,0.81,0.070447,0.065545
+"idea, learn from marked answer",0.81,0.0,0.119687
+"idea, learn from solving",0.81,0.0,0.113143
+today,0.82,0.067245,0.062785
+"idea, learn from marked answer",0.82,0.0,0.115162
+"idea, learn from solving",0.82,0.0,0.109797
+today,0.83,0.063988,0.059956
+"idea, learn from marked answer",0.83,0.0,0.110459
+"idea, learn from solving",0.83,0.0,0.10619
+today,0.84,0.060676,0.057057
+"idea, learn from marked answer",0.84,0.0,0.105576
+"idea, learn from solving",0.84,0.0,0.102317
+today,0.85,0.057309,0.054086
+"idea, learn from marked answer",0.85,0.0,0.100508
+"idea, learn from solving",0.85,0.0,0.098174
+today,0.86,0.053887,0.051043
+"idea, learn from marked answer",0.86,0.0,0.095252
+"idea, learn from solving",0.86,0.0,0.093754
+today,0.87,0.050408,0.047924
+"idea, learn from marked answer",0.87,0.0,0.089805
+"idea, learn from solving",0.87,0.0,0.089052
+today,0.88,0.046873,0.04473
+"idea, learn from marked answer",0.88,0.0,0.084163
+"idea, learn from solving",0.88,0.0,0.084064
+today,0.89,0.043283,0.041459
+"idea, learn from marked answer",0.89,0.0,0.078323
+"idea, learn from solving",0.89,0.0,0.078784
+today,0.9,0.039635,0.038109
+"idea, learn from marked answer",0.9,0.0,0.072281
+"idea, learn from solving",0.9,0.0,0.073208
+today,0.91,0.035931,0.03468
+"idea, learn from marked answer",0.91,0.0,0.066034
+"idea, learn from solving",0.91,0.0,0.06733
+today,0.92,0.03217,0.031169
+"idea, learn from marked answer",0.92,0.0,0.059578
+"idea, learn from solving",0.92,0.0,0.061144
+today,0.93,0.028351,0.027576
+"idea, learn from marked answer",0.93,0.0,0.05291
+"idea, learn from solving",0.93,0.0,0.054647
+today,0.94,0.024475,0.023899
+"idea, learn from marked answer",0.94,0.0,0.046026
+"idea, learn from solving",0.94,0.0,0.047833
+today,0.95,0.020542,0.020137
+"idea, learn from marked answer",0.95,0.0,0.038923
+"idea, learn from solving",0.95,0.0,0.040696

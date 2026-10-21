@@ -1,0 +1,7 @@
+# LaTeX build files; the committed PDF is easy_hard_note.pdf
+*.aux
+*.log
+*.fls
+*.fdb_latexmk
+*.out
+report.pdf
