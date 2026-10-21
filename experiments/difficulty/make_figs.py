@@ -9,7 +9,10 @@ FIG = os.path.join(HERE, 'figs'); os.makedirs(FIG, exist_ok=True)
 C = dict(blue='#0072B2', orange='#E69F00', green='#009E73', red='#D55E00', purple='#CC79A7', sky='#56B4E9', grey='#777777', yellow='#F0E442')
 plt.rcParams.update({'font.size': 9, 'axes.spines.top': False, 'axes.spines.right': False, 'figure.dpi': 100,
                      'legend.frameon': False, 'pdf.fonttype': 42})
-def save(fig, name): fig.tight_layout(); fig.savefig(os.path.join(FIG, name)); plt.close(fig)
+def save(fig, name):
+    fig.tight_layout()
+    fig.savefig(os.path.join(FIG, name), metadata={'CreationDate': None})   # no date: same bytes on every run
+    plt.close(fig)
 
 # F1 one-step gain
 rows = load('single_gain.csv'); G = group(rows, 'model')
