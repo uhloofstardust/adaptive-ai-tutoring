@@ -38,9 +38,10 @@ check the copies. All settings are guesses until Sir decides them (note, Section
     ./run_all.sh          # about 5 minutes on 12 cores; WORKERS=4 ./run_all.sh to use fewer
 
 Seeds are fixed, so the result files come out byte for byte the same (the
-compressed files are written with a fixed timestamp). The figures and the note
+compressed files are written with a fixed timestamp). The figures and the PDF are
+written without a creation date, so a rerun leaves them unchanged too. The figures and the note
 can be rebuilt from the committed `data/` alone:
 
-    python3 make_figs.py && python3 make_numbers.py && latexmk -pdf report.tex
+    python3 make_figs.py && python3 make_numbers.py && latexmk -pdf report.tex && cp report.pdf easy_hard_note.pdf
 
 Needs Python 3 with numpy and matplotlib, and LaTeX for the PDF.
