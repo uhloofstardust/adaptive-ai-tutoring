@@ -11,7 +11,7 @@ every experiment, the literature, the open questions for Sir, and the limits.
 **Status.** A standalone study on the `difficulty` branch, made from `main`. It does
 not use the repository's `cursim` package and changes nothing outside this folder.
 The simulator files it needs are copied unchanged into `simcore/` from the
-`forgetting` branch (commit `5ae59c6`, Sanved's reorganised simulator), so the study
+`forgetting` branch (commit `d95830c`, Sanved's reorganised simulator), so the study
 does not depend on that branch; `simcore/PROVENANCE.md` lists each file and how to
 check the copies. All settings are guesses until Sir decides them (note, Section 9).
 
