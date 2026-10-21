@@ -3,8 +3,9 @@
 This folder is a copy of the parts of the shared simulator that this study needs,
 so the study runs from `main` without depending on the `forgetting` branch.
 
-Copied unchanged (byte for byte) from branch `forgetting`, commit `5ae59c6`
-(Sanved's reorganised simulator):
+Copied unchanged (byte for byte) from branch `forgetting`, commit `d95830c`
+(Sanved's reorganised simulator). Before the 22 October 2026 history clean-up, which
+removed only commit-message trailers, this commit was `5ae59c6`; its files are identical:
 
 | Here | Original |
 |---|---|
@@ -23,13 +24,13 @@ Written here (not copies): `simcore/students/__init__.py` and
 that importing one student or one scheduler does not load the rest of the package.
 
 Check that all nine copies still match the original. Run this from the
-repository root, after `git fetch origin forgetting` so that commit `5ae59c6` is
+repository root, after `git fetch origin forgetting` so that commit `d95830c` is
 available. It prints nothing when every file matches:
 
     for f in __init__.py curriculum.py params.py mastery.py students/continuous.py schedulers/base.py schedulers/curriculum_tutor_paper.py; do
-      git show 5ae59c6:cursim/$f | cmp - experiments/difficulty/simcore/$f; done
+      git show d95830c:cursim/$f | cmp - experiments/difficulty/simcore/$f; done
     for f in curricula/layered_40.json params.json; do
-      git show 5ae59c6:data/$f | cmp - experiments/difficulty/data/$f; done
+      git show d95830c:data/$f | cmp - experiments/difficulty/data/$f; done
 
 If the shared simulator later gets the easy/hard rule properly, this copy should
 be removed and the study pointed at the shared code.
